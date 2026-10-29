@@ -1,0 +1,365 @@
+<main class="registro">
+  <section class="panel-marca" aria-labelledby="presentacion-registro">
+    <div class="marca" aria-label="AliviaTech">
+      <span class="marca-icono" aria-hidden="true">A</span>
+      <span>AliviaTech</span>
+    </div>
+
+    <div class="presentacion">
+      <span class="etiqueta-profesional">Cuenta profesional</span>
+      <h1 id="presentacion-registro">Tu espacio profesional,<br />con información clara.</h1>
+      <p>
+        Crea tu cuenta para acompañar el seguimiento entre<br class="solo-escritorio" />
+        sesiones de tus pacientes de forma asincrónica y segura.
+      </p>
+    </div>
+
+    <div class="alcance">
+      <strong>Diseñado para acompañar, no para vigilar.</strong>
+      <span>No es un servicio de emergencia ni monitoreo 24/7.</span>
+    </div>
+  </section>
+
+  <section class="panel-formulario" aria-label="Registro de cuenta profesional">
+    @if (pasoActual === 1) {
+      <div class="tarjeta">
+        <span class="indicador-paso">PASO 1 DE 2</span>
+        <h2>Crear cuenta profesional</h2>
+        <p class="descripcion">Primero completa tus datos personales y de contacto.</p>
+
+        <form [formGroup]="formulario" (ngSubmit)="continuar()" novalidate>
+          <div class="campos">
+            <div class="campo">
+              <label for="nombres">Nombres</label>
+              <input
+                id="nombres"
+                type="text"
+                formControlName="nombres"
+                placeholder="Andrea"
+                autocomplete="given-name"
+                [class.invalido]="campoInvalido('nombres')"
+                [attr.aria-invalid]="campoInvalido('nombres')"
+              />
+            </div>
+
+            <div class="campo">
+              <label for="apellidos">Apellidos</label>
+              <input
+                id="apellidos"
+                type="text"
+                formControlName="apellidos"
+                placeholder="Salazar Mendoza"
+                autocomplete="family-name"
+                [class.invalido]="campoInvalido('apellidos')"
+                [attr.aria-invalid]="campoInvalido('apellidos')"
+              />
+            </div>
+
+            <div class="campo">
+              <label for="dni">DNI</label>
+              <input
+                id="dni"
+                type="text"
+                formControlName="dni"
+                placeholder="70451236"
+                autocomplete="off"
+                inputmode="numeric"
+                [class.invalido]="campoInvalido('dni')"
+                [attr.aria-invalid]="campoInvalido('dni')"
+              />
+            </div>
+
+            <div class="campo">
+              <label for="correo-profesional">Correo profesional</label>
+              <input
+                id="correo-profesional"
+                type="email"
+                formControlName="correoProfesional"
+                placeholder="andrea@correo.com"
+                autocomplete="email"
+                [class.invalido]="campoInvalido('correoProfesional')"
+                [attr.aria-invalid]="campoInvalido('correoProfesional')"
+                aria-describedby="error-correo"
+              />
+              @if (
+                campoInvalido('correoProfesional') &&
+                formulario.controls.correoProfesional.hasError('email')
+              ) {
+                <span id="error-correo" class="error-campo"
+                  >Ingresa un correo electrónico válido.</span
+                >
+              }
+            </div>
+
+            <div class="campo campo-completo">
+              <label for="telefono">Teléfono</label>
+              <input
+                id="telefono"
+                type="tel"
+                formControlName="telefono"
+                placeholder="987 654 321"
+                autocomplete="tel"
+                [class.invalido]="campoInvalido('telefono')"
+                [attr.aria-invalid]="campoInvalido('telefono')"
+              />
+            </div>
+          </div>
+
+          @if (intentoContinuar && faltanCamposObligatorios()) {
+            <p class="error-general" role="alert">
+              <span aria-hidden="true">!</span>
+              Completa todos los campos obligatorios para continuar
+            </p>
+          }
+
+          <aside class="privacidad">
+            <svg class="candado" viewBox="0 0 19 22" fill="none" aria-hidden="true">
+              <path d="M5.5 9V6a4 4 0 0 1 8 0v3" />
+              <rect x="2" y="9" width="15" height="11" rx="3" />
+              <path d="M9.5 13v3" />
+            </svg>
+            <div>
+              <strong>Privacidad del perfil</strong>
+              <p>
+                Estos datos identifican tu cuenta profesional y no se muestran públicamente a
+                pacientes.
+              </p>
+            </div>
+          </aside>
+
+          <button class="boton boton-principal" type="submit">Continuar</button>
+          <button
+            class="boton boton-secundario"
+            type="button"
+            disabled
+            title="Inicio de sesión pendiente de implementación"
+          >
+            Volver al inicio de sesión
+          </button>
+        </form>
+
+        <p class="pie-tarjeta">¿Ya tienes una cuenta? Inicia sesión con tu correo.</p>
+      </div>
+    } @else if (pasoActual === 2) {
+      <div class="tarjeta tarjeta-profesional">
+        <span class="indicador-paso">PASO 2 DE 2</span>
+        <h2>Completa tu perfil profesional</h2>
+        <p class="descripcion">Esta información aparecerá en tu perfil dentro de AliviaTech.</p>
+
+        <form
+          class="formulario-profesional"
+          [formGroup]="formularioProfesional"
+          (ngSubmit)="crearCuentaProfesional()"
+          novalidate
+        >
+          <div class="campos">
+            <div class="campo">
+              <label for="numero-colegiatura">N.º de colegiatura</label>
+              <input
+                id="numero-colegiatura"
+                type="text"
+                formControlName="numeroColegiatura"
+                placeholder="CPSP 45872"
+                autocomplete="off"
+                [class.invalido]="campoProfesionalInvalido('numeroColegiatura')"
+                [attr.aria-invalid]="campoProfesionalInvalido('numeroColegiatura')"
+              />
+              @if (campoProfesionalInvalido('numeroColegiatura')) {
+                <span class="mensaje-error">El número de colegiatura es obligatorio.</span>
+              }
+            </div>
+
+            <div class="campo">
+              <label for="especialidad">Especialidad</label>
+              <input
+                id="especialidad"
+                type="text"
+                formControlName="especialidad"
+                placeholder="Ej. Psicología clínica"
+                autocomplete="off"
+                [class.invalido]="campoProfesionalInvalido('especialidad')"
+                [attr.aria-invalid]="campoProfesionalInvalido('especialidad')"
+              />
+              @if (campoProfesionalInvalido('especialidad')) {
+                <span class="mensaje-error">La especialidad es obligatoria.</span>
+              }
+            </div>
+
+            <div class="campo">
+              <label for="contrasena">Contraseña</label>
+              <input
+                id="contrasena"
+                type="password"
+                formControlName="contrasena"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                [class.invalido]="campoProfesionalInvalido('contrasena')"
+                [attr.aria-invalid]="campoProfesionalInvalido('contrasena')"
+                aria-describedby="seguridad-contrasena error-contrasena"
+              />
+              @if (campoProfesionalInvalido('contrasena')) {
+                <span id="error-contrasena" class="mensaje-error">
+                  @if (formularioProfesional.controls.contrasena.hasError('required')) {
+                    La contraseña es obligatoria.
+                  } @else {
+                    Usa al menos 8 caracteres, combinando letras y números.
+                  }
+                </span>
+              }
+            </div>
+
+            <div class="campo">
+              <label for="confirmar-contrasena">Confirmar contraseña</label>
+              <input
+                id="confirmar-contrasena"
+                type="password"
+                formControlName="confirmarContrasena"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                [class.invalido]="confirmacionContrasenaInvalida()"
+                [attr.aria-invalid]="confirmacionContrasenaInvalida()"
+                aria-describedby="error-confirmacion"
+              />
+              @if (confirmacionContrasenaInvalida()) {
+                <span id="error-confirmacion" class="mensaje-error">
+                  @if (formularioProfesional.controls.confirmarContrasena.hasError('required')) {
+                    Confirma tu contraseña.
+                  } @else {
+                    Las contraseñas no coinciden.
+                  }
+                </span>
+              }
+            </div>
+          </div>
+
+          @if (intentoRegistrar && formularioProfesional.invalid) {
+            <p class="error-general error-profesional" role="alert">
+              <span aria-hidden="true">!</span>
+              Completa todos los campos obligatorios para continuar.
+            </p>
+          }
+
+          <aside id="seguridad-contrasena" class="privacidad seguridad-cuenta">
+            <svg class="candado" viewBox="0 0 19 22" fill="none" aria-hidden="true">
+              <path d="M5.5 9V6a4 4 0 0 1 8 0v3" />
+              <rect x="2" y="9" width="15" height="11" rx="3" />
+              <path d="M9.5 13v3" />
+            </svg>
+            <div>
+              <strong>Seguridad de la cuenta</strong>
+              <p>Usa al menos 8 caracteres, combinando letras y números.</p>
+            </div>
+          </aside>
+
+          <div class="confirmaciones">
+            <div>
+              <label class="opcion-checkbox">
+                <input
+                  type="checkbox"
+                  formControlName="aceptaTerminos"
+                  [class.invalido]="campoProfesionalInvalido('aceptaTerminos')"
+                />
+                <span>Acepto los Términos de uso y la Política de privacidad.</span>
+              </label>
+              @if (campoProfesionalInvalido('aceptaTerminos')) {
+                <span class="mensaje-error error-checkbox">Debes aceptar los términos.</span>
+              }
+            </div>
+
+            <div>
+              <label class="opcion-checkbox">
+                <input
+                  type="checkbox"
+                  formControlName="confirmaDatos"
+                  [class.invalido]="campoProfesionalInvalido('confirmaDatos')"
+                />
+                <span>Confirmo que los datos profesionales ingresados son correctos.</span>
+              </label>
+              @if (campoProfesionalInvalido('confirmaDatos')) {
+                <span class="mensaje-error error-checkbox">Debes confirmar tus datos.</span>
+              }
+            </div>
+          </div>
+
+          <div class="acciones-profesionales">
+            <button class="boton boton-principal" type="submit">Crear cuenta profesional</button>
+            <button class="boton boton-secundario" type="button" (click)="volverADatosPersonales()">
+              Volver
+            </button>
+          </div>
+
+          <aside class="seguimiento-asincronico">
+            <strong>Seguimiento asincrónico</strong>
+            <p>
+              La plataforma organiza información entre sesiones. No sustituye atención de emergencia
+              ni requiere monitoreo en tiempo real.
+            </p>
+          </aside>
+        </form>
+      </div>
+    } @else if (pasoActual === 'exito') {
+      <div class="tarjeta tarjeta-resultado" role="status" aria-live="polite">
+        <div class="icono-resultado icono-exito" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="m7 17 6 6L26 8" />
+          </svg>
+        </div>
+        <h2>Cuenta profesional creada</h2>
+        <p class="descripcion-resultado">
+          En esta demostración, la verificación correspondería a<br />
+          <strong>{{ correoIngresado }}</strong>
+        </p>
+        <span class="etiqueta-demostracion">
+          DEMOSTRACIÓN · NO SE CREÓ UNA CUENTA NI SE ENVIÓ UN CORREO
+        </span>
+
+        <aside class="siguiente-paso">
+          <strong>SIGUIENTE PASO</strong>
+          <p>
+            En el flujo real, inicia sesión usando tu correo y contraseña después de verificarlo.
+          </p>
+        </aside>
+
+        <button
+          class="boton boton-principal"
+          type="button"
+          disabled
+          title="Inicio de sesión pendiente de implementación"
+        >
+          Volver al inicio de sesión
+        </button>
+      </div>
+    } @else {
+      <div class="tarjeta tarjeta-resultado" role="alert" aria-live="assertive">
+        <div class="icono-resultado icono-duplicado" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M8 8l16 16M24 8 8 24" />
+          </svg>
+        </div>
+        <h2>No pudimos crear tu cuenta</h2>
+        <p class="descripcion-resultado">
+          El DNI ingresado coincide con una cuenta registrada. Revisa tus datos o
+          inicia sesión si ya tienes una cuenta.
+        </p>
+        <span class="etiqueta-demostracion">DUPLICIDAD SIMULADA · SIN CONSULTAR END01</span>
+
+        <aside class="siguiente-paso">
+          <strong>SIGUIENTE PASO</strong>
+          <p>
+            Verifica la información ingresada. En un flujo conectado, END01 resolvería si el DNI o
+            correo ya existe.
+          </p>
+        </aside>
+
+        <button
+          class="boton boton-principal"
+          type="button"
+          disabled
+          title="Inicio de sesión pendiente de implementación"
+        >
+          Volver al inicio de sesión
+        </button>
+      </div>
+    }
+  </section>
+</main>

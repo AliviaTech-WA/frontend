@@ -1,0 +1,210 @@
+.tarjeta-profesional {
+  padding-top: 22px;
+}
+
+.formulario-profesional {
+  margin-top: 20px;
+}
+
+.mensaje-error {
+  display: block;
+  margin: 4px 2px 0;
+  color: #d72c2c;
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+.error-profesional {
+  margin-top: 6px;
+}
+
+.seguridad-cuenta {
+  margin-top: 19px;
+}
+
+.confirmaciones {
+  display: grid;
+  gap: 19px;
+  margin-top: 18px;
+}
+
+.opcion-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0;
+  color: #75807e;
+  font-size: 9.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.opcion-checkbox input {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  border: 1px solid #d8e1df;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.opcion-checkbox input:checked {
+  border-color: var(--verde);
+  background: var(--verde);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.opcion-checkbox input.invalido {
+  border-color: #df2929;
+}
+
+.error-checkbox {
+  margin-left: 24px;
+}
+
+.acciones-profesionales {
+  margin-top: 36px;
+}
+
+.acciones-profesionales .boton-principal {
+  margin-top: 0;
+}
+
+.seguimiento-asincronico {
+  margin-top: 18px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  text-align: left;
+  background: var(--verde-suave);
+}
+
+.seguimiento-asincronico strong {
+  color: #176f63;
+  font-size: 10px;
+}
+
+.seguimiento-asincronico p {
+  margin: 4px 0 0;
+  color: #71817d;
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.tarjeta-resultado {
+  width: min(100%, 371px);
+  min-height: 440px;
+  padding: 34px 28px 28px;
+  text-align: center;
+  transform: translateY(-24px);
+}
+
+.icono-resultado {
+  display: grid;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f4f1;
+}
+
+.icono-resultado svg {
+  width: 34px;
+  height: 34px;
+}
+
+.icono-resultado path {
+  stroke: #07675b;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.tarjeta-resultado h2 {
+  margin-top: 24px;
+  font-size: 22px;
+}
+
+.descripcion-resultado {
+  margin: 10px auto 0;
+  color: #77827f;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.descripcion-resultado strong {
+  color: #65716e;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.etiqueta-demostracion {
+  display: inline-block;
+  margin-top: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #58716c;
+  background: #f0f6f5;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.siguiente-paso {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  text-align: left;
+  background: var(--verde-suave);
+}
+
+.siguiente-paso strong {
+  color: #07675b;
+  font-size: 12px;
+}
+
+.siguiente-paso p {
+  margin: 8px 0 0;
+  color: #75827f;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.tarjeta-resultado .boton-principal {
+  margin-top: 29px;
+}
+
+.tarjeta-resultado .boton:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+  .tarjeta-resultado {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .tarjeta-profesional {
+    padding-inline: 20px;
+  }
+
+  .acciones-profesionales {
+    margin-top: 28px;
+  }
+
+  .tarjeta-resultado {
+    padding: 30px 20px 25px;
+  }
+
+  .icono-resultado {
+    width: 76px;
+    height: 76px;
+  }
+}
