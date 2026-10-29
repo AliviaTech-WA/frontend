@@ -1,0 +1,96 @@
+
+<aside class="sidebar">
+
+  <div class="marca">
+    <div class="logo">A</div>
+
+    <div>
+      <h3>AliviaTech</h3>
+      <p>
+        @if (rol === 'PACIENTE') {
+          Mi bienestar
+        } @else {
+          Espacio profesional
+        }
+      </p>
+    </div>
+  </div>
+
+  <nav class="menu">
+
+    @if (rol === 'PACIENTE') {
+
+      <a routerLink="/paciente/inicio" routerLinkActive="activo">
+        <span class="punto"></span> Inicio
+      </a>
+
+      <a routerLink="/paciente/registro" routerLinkActive="activo">
+        <span class="punto"></span> Mi registro
+      </a>
+
+      <a routerLink="/paciente/eventos" routerLinkActive="activo">
+        <span class="punto"></span> Eventos
+      </a>
+
+      <a routerLink="/paciente/sesiones" routerLinkActive="activo">
+        <span class="punto"></span> Mis sesiones
+      </a>
+
+    } @else {
+
+      <a routerLink="/psicologo/inicio" routerLinkActive="activo">
+        <span class="punto"></span> Inicio
+      </a>
+
+      <a routerLink="/psicologo/pacientes" routerLinkActive="activo">
+        <span class="punto"></span> Pacientes
+      </a>
+
+      <a routerLink="/psicologo/reportes" routerLinkActive="activo">
+        <span class="punto"></span> Reportes
+      </a>
+
+      <a routerLink="/psicologo/nuevo-paciente" routerLinkActive="activo">
+        <span class="punto"></span> Nuevo paciente
+      </a>
+
+    }
+
+  </nav>
+
+  <div class="parte-inferior">
+
+    <div class="mensaje">
+      @if (rol === 'PACIENTE') {
+        <strong>Tu información, a tu ritmo</strong>
+        <p>Puedes registrar cómo te sientes cuando lo necesites. No es obligatorio.</p>
+      } @else {
+        <strong>Seguimiento asincrónico</strong>
+        <p>Revisa la información cuando corresponda, sin monitoreo en tiempo real.</p>
+      }
+    </div>
+
+    <div class="perfil">
+      <div class="avatar">
+        @if (rol === 'PACIENTE') {
+          MG
+        } @else {
+          AS
+        }
+      </div>
+
+      <div class="datos-perfil">
+          <strong>{{ nombreUsuario }}</strong>
+
+          @if (rol === 'PACIENTE') {
+            <span>Paciente</span>
+          } @else {
+            <span>Psicólogo</span>
+          }
+      </div>
+    </div>
+
+  </div>
+
+</aside>
+
