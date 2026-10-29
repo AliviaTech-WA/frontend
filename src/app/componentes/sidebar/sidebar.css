@@ -1,0 +1,147 @@
+
+:host {
+  display: block;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.sidebar {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  padding: 24px 16px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background-color: #128575;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.marca h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #22332f;
+}
+
+.marca p {
+  margin: 3px 0 0;
+  font-size: 10px;
+  color: #80918c;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #52645e;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #a8b8b1;
+  flex-shrink: 0;
+}
+
+.menu a:hover {
+  background-color: #D8F2E8;
+  color: #006B58;
+}
+
+.menu a.activo {
+  background-color: #C2EBDD;
+  color: #006B58;
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 #008F75;
+}
+
+.menu a.activo .punto {
+  background-color: #008F75;
+  width: 7px;
+  height: 7px;
+}
+
+.parte-inferior {
+  margin-top: auto;
+}
+
+.mensaje {
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #eff9f6;
+  font-size: 10px;
+  color: #277768;
+}
+
+.mensaje p {
+  margin: 5px 0 0;
+  color: #748b83;
+  line-height: 1.5;
+}
+
+.perfil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 4px 4px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e4f4ef;
+  color: #087766;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.datos-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.datos-perfil strong {
+  font-size: 12px;
+  color: #263732;
+}
+
+.datos-perfil span {
+  font-size: 10px;
+  color: #85958f;
+}
