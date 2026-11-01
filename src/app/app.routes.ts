@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { LayoutPaciente } from './componentes/layout-paciente/layout-paciente';
+import { PacienteLayout } from './layouts/pacienteLayouts/paciente-layout';
 
 export const routes: Routes = [
-  { path: 'paciente', component: LayoutPaciente, },
+  { path: 'paciente', component: PacienteLayout, },
    {
     path: 'registro-psicologo', loadComponent: () =>
-      import('./componentes/registro-psicologo/registro-psicologo').then(
+      import('./features/authentication/registro-psicologo/registro-psicologo').then(
         (component) => component.RegistroPsicologo,
       ),
   },

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core'
 import { RouterOutlet } from '@angular/router';
-import { Sidebar } from '../sidebar/sidebar';
+import { Sidebar } from '../../shared/components/sidebar/sidebar';
 
 @Component({
   imports: [RouterOutlet, Sidebar],
   selector: 'app-layout-paciente',
-  styleUrl: './layout-paciente.css',
-  templateUrl: './layout-paciente.html',
+  styleUrl: './paciente-layout.css',
+  templateUrl: './paciente-layout.html',
 })
-export class LayoutPaciente {}
+export class PacienteLayout {}
