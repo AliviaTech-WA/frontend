@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
-  selector: 'app-sidebar',
+  selector: 'app-sidebar-paciente',
   styleUrl: './sidebar.css',
   templateUrl: './sidebar.html',
 })
