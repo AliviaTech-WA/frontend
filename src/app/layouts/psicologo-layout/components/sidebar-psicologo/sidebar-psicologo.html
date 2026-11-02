@@ -1,0 +1,64 @@
+
+<aside class="sidebar">
+
+  <!-- Logo y nombre de la aplicación -->
+  <div class="marca">
+    <div class="logo">A</div>
+
+    <div>
+      <h3>AliviaTech</h3>
+      <p>Espacio profesional</p>
+    </div>
+  </div>
+
+  <!-- Menú de navegación del psicólogo -->
+  <nav class="menu">
+
+    <a routerLink="/psicologo/inicio" routerLinkActive="activo">
+      <span class="punto"></span> Inicio
+    </a>
+
+    <a routerLink="/psicologo/pacientes" routerLinkActive="activo">
+      <span class="punto"></span> Pacientes
+    </a>
+
+    <a routerLink="/psicologo/reportes" routerLinkActive="activo">
+      <span class="punto"></span> Reportes
+    </a>
+
+    <a routerLink="/psicologo/nuevo-paciente" routerLinkActive="activo">
+      <span class="punto"></span> Nuevo paciente
+    </a>
+
+  </nav>
+
+  <!-- Información inferior del sidebar -->
+  <div class="parte-inferior">
+
+    <div class="mensaje">
+      <strong>Seguimiento asincrónico</strong>
+      <p>
+        Revisa la información cuando corresponda,
+        sin monitoreo en tiempo real.
+      </p>
+    </div>
+
+    <!-- Información del psicólogo -->
+    <!-- Los datos se tienen que cambiar de acuerdo al usuario -->
+    <a routerLink="/psicologo/perfil" class="perfil">
+      <div class="avatar">AS</div>
+
+      <div class="datos-perfil">
+        <strong>{{ nombreUsuario }}</strong>
+        <span>Psicólogo</span>
+      </div>
+
+      <!-- Flecha decorativa -->
+      <span class="flecha" aria-hidden="true">›</span>
+
+    </a>
+
+  </div>
+
+</aside>
+
