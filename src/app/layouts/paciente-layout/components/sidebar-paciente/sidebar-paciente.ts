@@ -1,3 +1,4 @@
+
 import { Component, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -8,6 +9,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './sidebar-paciente.html',
 })
 export class Sidebar {
-  @Input() rol: 'PACIENTE' | 'PSICOLOGO' = 'PACIENTE';
   @Input() nombreUsuario: string = '';
 }
