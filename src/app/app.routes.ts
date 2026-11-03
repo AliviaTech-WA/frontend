@@ -4,7 +4,19 @@ import { PsicologoLayout } from './layouts/psicologo-layout/psicologo-layout';
 
 export const routes: Routes = [
   { path: 'paciente', component: PacienteLayout },
-  { path: 'psicologo', component: PsicologoLayout },
+  {
+    path: 'psicologo',
+    component: PsicologoLayout,
+    children: [
+      {
+        path: 'perfil',
+        loadComponent: () =>
+          import('./features/psicologo/perfil-psicologo/perfil-psicologo').then(
+            (component) => component.PerfilPsicologo,
+          ),
+      },
+    ],
+  },
   {
     path: 'registro-psicologo',
     loadComponent: () =>
