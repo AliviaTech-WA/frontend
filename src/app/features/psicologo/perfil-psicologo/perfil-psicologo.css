@@ -302,3 +302,21 @@ button:disabled {
   }
 }
 
+/* Mensajes de consulta del perfil */
+.mensaje-estado {
+  padding: 12px 16px;
+  background-color: #eff9f6;
+  color: #087766;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.mensaje-error {
+  padding: 12px 16px;
+  background-color: #fff0f0;
+  color: #b42318;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+
