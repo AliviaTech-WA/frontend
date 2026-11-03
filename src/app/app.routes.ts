@@ -21,6 +21,15 @@ export const routes: Routes = [
     component: PsicologoLayout,
     canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PSICOLOGO' },
+    children: [
+      {
+        path: 'perfil',
+        loadComponent: () =>
+          import('./features/psicologo/perfil-psicologo/perfil-psicologo').then(
+            (component) => component.PerfilPsicologo,
+          ),
+      },
+    ],
   },
   {
     path: 'registro-psicologo',
