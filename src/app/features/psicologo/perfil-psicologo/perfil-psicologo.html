@@ -1,6 +1,20 @@
 
 <div class="perfil-psicologo">
 
+  <!-- Estado de carga del perfil -->
+  @if (cargando) {
+    <p class="mensaje-estado">
+      Cargando información del psicólogo...
+    </p>
+  }
+
+  <!-- Error al consultar el backend -->
+  @if (mensajeError) {
+    <p class="mensaje-error">
+      {{ mensajeError }}
+    </p>
+  }
+
   <!-- Encabezado -->
   <header class="encabezado">
     <div>
