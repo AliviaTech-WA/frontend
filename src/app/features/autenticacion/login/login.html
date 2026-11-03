@@ -1,0 +1,77 @@
+<app-auth-shell etiqueta="Seguimiento entre sesiones">
+  <section class="tarjeta-login" aria-labelledby="titulo-login">
+    <header>
+      <h2 id="titulo-login">Bienvenido de nuevo</h2>
+      <p>Ingresa con la cuenta asociada a AliviaTech.</p>
+    </header>
+
+    <form [formGroup]="formulario" (ngSubmit)="ingresar()" novalidate>
+      <div class="campo">
+        <label for="login-correo">Correo electrónico</label>
+        <input
+          id="login-correo"
+          type="email"
+          formControlName="correo"
+          placeholder="nombre@correo.com"
+          autocomplete="email"
+          [class.invalido]="campoInvalido('correo')"
+          [attr.aria-invalid]="campoInvalido('correo')"
+          aria-describedby="login-error-correo"
+        />
+        @if (campoInvalido('correo')) {
+          <span id="login-error-correo" class="error-campo">
+            @if (formulario.controls.correo.hasError('required')) {
+              El correo electrónico es obligatorio.
+            } @else {
+              Ingresa un correo electrónico válido.
+            }
+          </span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="login-contrasena">Contraseña</label>
+        <input
+          id="login-contrasena"
+          type="password"
+          formControlName="contrasena"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          [class.invalido]="campoInvalido('contrasena')"
+          [attr.aria-invalid]="campoInvalido('contrasena')"
+          aria-describedby="login-error-contrasena"
+        />
+        @if (campoInvalido('contrasena')) {
+          <span id="login-error-contrasena" class="error-campo">
+            La contraseña es obligatoria.
+          </span>
+        }
+      </div>
+
+      <div class="meta-login">
+        <span
+          class="sesion-persistente"
+          aria-disabled="true"
+          title="No disponible hasta que el backend ofrezca renovación segura de sesión"
+        >
+          Mantener sesión iniciada
+        </span>
+        <a routerLink="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      @if (mensajeError) {
+        <p class="mensaje-error" role="alert">{{ mensajeError }}</p>
+      }
+
+      <button class="boton boton-principal" type="submit" [disabled]="cargando">
+        {{ cargando ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+      <a class="boton boton-secundario" routerLink="/activar-cuenta">
+        Activar cuenta con invitación
+      </a>
+      <a class="boton boton-secundario" routerLink="/registro-psicologo">
+        Crear cuenta como psicólogo
+      </a>
+    </form>
+  </section>
+</app-auth-shell>
