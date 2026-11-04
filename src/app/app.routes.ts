@@ -15,6 +15,14 @@ export const routes: Routes = [
     component: PacienteLayout,
     canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PACIENTE' },
+    children: [
+      {
+        path: 'perfil',
+        loadComponent: () =>
+          import('./features/paciente/perfil-paciente/perfil-paciente')
+            .then((component) => component.PerfilPaciente),
+      }
+    ],
   },
   {
     path: 'psicologo',

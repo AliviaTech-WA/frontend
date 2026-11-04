@@ -7,3 +7,7 @@ export interface ConsultaDispositivoAsignado {
   fechaAsignacion: string;
   fechaUltimaSincronizacion: string | null;
 }
+
+export interface RenombrarDispositivoRequest{
+  alias: string;
+}

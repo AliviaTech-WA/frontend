@@ -1,0 +1,214 @@
+
+<section class="pagina-perfil">
+  <header class="encabezado">
+    <div>
+      <p class="miga">Mi espacio / Perfil</p>
+      <h1>Mi perfil</h1>
+      <p>
+        Consulta tus datos, contacto de emergencia
+        y dispositivo asignado.
+      </p>
+    </div>
+  </header>
+
+  <div class="cuadricula">
+    <!-- Zona reservada para HU21 -->
+    <article class="tarjeta tarjeta-informacion">
+      <p class="eyebrow">MI INFORMACIÓN</p>
+      <h2>Datos personales</h2>
+      <p>
+        Esta sección corresponde a HU21 y se integrará
+        con el componente de perfil personal del equipo.
+      </p>
+    </article>
+
+    <div class="columna-derecha">
+      <!-- HU14: Mostrar dispositivo -->
+      <article
+        class="tarjeta tarjeta-dispositivo"
+        aria-labelledby="titulo-dispositivo"
+      >
+        <div class="etiqueta-tarjeta">
+          DISPOSITIVO ASIGNADO
+        </div>
+
+        @if (cargando) {
+          <p class="estado-ayuda" role="status">
+            Cargando dispositivo...
+          </p>
+        } @else if (errorCarga) {
+          <div class="estado-ayuda" role="alert">
+            <p>{{ errorCarga }}</p>
+            <button
+              type="button"
+              class="boton-secundario"
+              (click)="cargarDispositivo()"
+            >
+              Reintentar
+            </button>
+          </div>
+        } @else if (dispositivo) {
+          <div class="dispositivo-titulo">
+            <div class="icono-dispositivo" aria-hidden="true">
+              ⌚
+            </div>
+
+            <div>
+              <h2 id="titulo-dispositivo">
+                {{ dispositivo.alias || dispositivo.modelo }}
+              </h2>
+
+              <span class="estado-activo">
+                {{ dispositivo.estado }}
+              </span>
+            </div>
+          </div>
+
+          <dl class="datos-dispositivo">
+            <div>
+              <dt>Modelo</dt>
+              <dd>{{ dispositivo.modelo }}</dd>
+            </div>
+
+            <div>
+              <dt>Código</dt>
+              <dd>{{ dispositivo.codigoDispositivo }}</dd>
+            </div>
+
+            <div>
+              <dt>Asignado el</dt>
+              <dd>
+                {{ dispositivo.fechaAsignacion | date:'dd/MM/yyyy' }}
+              </dd>
+            </div>
+
+            <div>
+              <dt>Última sincronización</dt>
+              <dd>
+                @if (dispositivo.fechaUltimaSincronizacion) {
+                  {{
+                    dispositivo.fechaUltimaSincronizacion
+                    | date:'dd/MM/yyyy, HH:mm'
+                  }}
+                } @else {
+                  Sin sincronización todavía
+                }
+              </dd>
+            </div>
+          </dl>
+
+          <p class="ayuda">
+            Puedes cambiar el nombre de tu dispositivo,
+            pero no el modelo asignado.
+          </p>
+
+          <button
+            type="button"
+            class="boton-primario boton-completo"
+            (click)="abrirRenombrar()"
+          >
+            Renombrar dispositivo
+          </button>
+        }
+      </article>
+
+      <!-- HU15: Confirmación -->
+      @if (mensajeExito) {
+        <div class="alerta-exito" role="status">
+          <strong>Cambios guardados</strong>
+          <span>{{ mensajeExito }}</span>
+          <button
+            type="button"
+            aria-label="Cerrar aviso"
+            (click)="mensajeExito = ''"
+          >
+            ×
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- HU15: Modal para renombrar -->
+@if (modalAbierto && dispositivo) {
+  <div class="fondo-modal" (click)="cerrarRenombrar()">
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="cabecera-modal">
+        <h2 id="titulo-modal">
+          Renombrar dispositivo
+        </h2>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          aria-label="Cerrar ventana"
+          [disabled]="guardando"
+          (click)="cerrarRenombrar()"
+        >
+          ×
+        </button>
+      </div>
+
+      <p class="subtitulo-modal">
+        El modelo asignado no cambia.
+      </p>
+
+      <form (ngSubmit)="guardarAlias()" novalidate>
+        <label for="nombre-dispositivo">
+          Nombre del dispositivo
+        </label>
+
+        <input
+          id="nombre-dispositivo"
+          name="alias"
+          type="text"
+          maxlength="100"
+          [(ngModel)]="aliasFormulario"
+          (ngModelChange)="errorAlias = ''"
+          [attr.aria-invalid]="errorAlias ? 'true' : null"
+          [disabled]="guardando"
+          autocomplete="off"
+        />
+
+        <div class="pie-campo">
+          <span>
+            Modelo asignado: {{ dispositivo.modelo }}
+          </span>
+          <span>{{ aliasFormulario.length }}/100</span>
+        </div>
+
+        @if (errorAlias) {
+          <p class="error-campo" role="alert">
+            {{ errorAlias }}
+          </p>
+        }
+
+        <div class="acciones-modal">
+          <button
+            type="button"
+            class="boton-secundario"
+            [disabled]="guardando"
+            (click)="cerrarRenombrar()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="boton-primario"
+            [disabled]="guardando || !aliasValido"
+          >
+            {{ guardando ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
