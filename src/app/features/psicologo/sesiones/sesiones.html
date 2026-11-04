@@ -1,0 +1,186 @@
+<section class="pagina-sesiones">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  <div class="ruta-paciente">
+    <span>Pacientes</span>
+    <span>/</span>
+    <span>{{ paciente.nombres }}</span>
+  </div>
+
+  <!-- Encabezado del paciente -->
+  <mat-card class="tarjeta-paciente">
+    <mat-card-content>
+      <div class="encabezado-paciente">
+        <div class="avatar-paciente">
+          {{ paciente.iniciales }}
+        </div>
+
+        <div class="datos-paciente">
+          <div class="nombre-estado">
+            <h1>{{ paciente.nombres }}</h1>
+            <span class="estado">{{ paciente.estado }}</span>
+          </div>
+
+          <p>{{ paciente.edad }} años · DNI {{ paciente.dni }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Pestañas visuales: la navegación se conectará después -->
+  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+    <span>Resumen</span>
+    <span>Registros</span>
+    <span>Wearable</span>
+    <span>Episodios</span>
+    <span>Analizar con IA</span>
+    <span class="pestana-activa" aria-current="page">Sesiones</span>
+  </nav>
+
+  <div class="columnas-sesiones">
+
+    <div class="columna-principal">
+
+      <!-- HU28: registro de información de una sesión realizada -->
+      <mat-card class="tarjeta-formulario">
+        <mat-card-content>
+          <span class="etiqueta-seccion">POST SESIÓN</span>
+
+          <h2>Registrar información de la sesión</h2>
+
+          <form
+            [formGroup]="sesionForm"
+            (ngSubmit)="guardarInformacion()"
+            class="formulario-sesion">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha y hora de la sesión</mat-label>
+              <input
+                matInput
+                type="datetime-local"
+                formControlName="fechaSesion"
+                required>
+            </mat-form-field>
+
+            @if (
+              sesionForm.get('fechaSesion')?.touched &&
+              sesionForm.get('fechaSesion')?.hasError('required')
+              ) {
+              <p class="error-campo" role="alert">
+                Selecciona la fecha y hora de la sesión.
+              </p>
+            }
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nota interna</mat-label>
+              <textarea
+                matInput
+                formControlName="notaInterna"
+                rows="5"
+                placeholder="Solo visible para ti. Puedes registrar observaciones profesionales de la sesión.">
+              </textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Resumen compartido</mat-label>
+              <textarea
+                matInput
+                formControlName="resumenCompartido"
+                rows="4"
+                placeholder="Información que deseas que el paciente pueda consultar posteriormente en Mis sesiones.">
+              </textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Recomendación</mat-label>
+              <textarea
+                matInput
+                formControlName="recomendacionCompartida"
+                rows="4"
+                placeholder="Recomendación breve que quedará visible para el paciente.">
+              </textarea>
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              type="submit"
+              class="boton-guardar">
+              Guardar información de sesión
+            </button>
+
+            <p class="aviso-desarrollo">
+              Por ahora, este botón solo valida el formulario.
+              Todavía no guarda información en el servidor.
+            </p>
+
+            <div role="status" aria-live="polite">
+              @if (mensaje) {
+                <p class="mensaje-formulario">{{ mensaje }}</p>
+              }
+            </div>
+
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- El historial se conectará al trabajar HU29 -->
+      <mat-card class="tarjeta-historial">
+        <mat-card-content>
+          <h2>Sesiones anteriores</h2>
+
+          <p class="texto-secundario">
+            El historial se mostrará al conectar las sesiones del paciente.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <aside class="columna-informativa">
+
+      <section class="informacion-separada">
+        <span class="etiqueta-seccion">QUIÉN VE QUÉ</span>
+        <h2>Información separada</h2>
+
+        <div class="detalle-visibilidad">
+          <h3>Nota interna</h3>
+          <p>Solo visible para el psicólogo.</p>
+        </div>
+
+        <div class="detalle-visibilidad">
+          <h3>Resumen compartido</h3>
+          <p>Visible para el paciente en Mis sesiones.</p>
+        </div>
+
+        <div class="detalle-visibilidad">
+          <h3>Recomendación</h3>
+          <p>Visible para el paciente y destacada en su inicio.</p>
+        </div>
+      </section>
+
+      <mat-card class="tarjeta-ultima-sesion">
+        <mat-card-content>
+          <span class="etiqueta-seccion">ÚLTIMA SESIÓN</span>
+          <h2>Información de la última sesión</h2>
+
+          <p class="texto-secundario">
+            Se mostrará al consultar el historial del paciente.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="tarjeta-alcance">
+        <mat-card-content>
+          <span class="etiqueta-seccion">ALCANCE</span>
+
+          <p class="texto-secundario">
+            Este apartado documenta sesiones ya realizadas.
+            AliviaTech no reserva, cancela ni reprograma citas.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+    </aside>
+
+  </div>
+</section>
