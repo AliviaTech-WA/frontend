@@ -27,7 +27,7 @@ export class DispositivoService {
         solicitud: RenombrarDispositivoRequest
     ): Observable<ConsultaDispositivoAsignado> {
         return this.http.patch<ConsultaDispositivoAsignado>(
-            `${this.baseUrl}/${pacienteId}/dispositivo`,
+            `${this.baseUrl}/${pacienteId}/dispositivo/alias`,
             solicitud
         );
     }

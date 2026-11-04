@@ -1,7 +1,7 @@
 
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
@@ -16,19 +16,20 @@ import { DispositivoService } from '../dispositivos/services/dispositivo.service
   styleUrl: './perfil-paciente.css',
 })
 export class PerfilPaciente implements OnInit {
+
   private readonly autenticacion = inject(AutenticacionService);
   private readonly dispositivoService = inject(DispositivoService);
 
-  dispositivo: ConsultaDispositivoAsignado | null = null;
+  // HU14: Información del dispositivo
+  dispositivo = signal<ConsultaDispositivoAsignado | null>(null);
+  cargando = signal(false);
+  errorCarga = signal('');
 
-  cargando = false;
-  guardando = false;
-
-  errorCarga = '';
-  errorAlias = '';
-  mensajeExito = '';
-
-  modalAbierto = false;
+  // HU15: Estado del formulario y modal
+  guardando = signal(false);
+  errorAlias = signal('');
+  mensajeExito = signal('');
+  modalAbierto = signal(false);
   aliasFormulario = '';
 
   get aliasLimpio(): string {
@@ -36,78 +37,98 @@ export class PerfilPaciente implements OnInit {
   }
 
   get aliasValido(): boolean {
-    return this.aliasLimpio.length > 0
-      && this.aliasLimpio.length <= 100;
+    return (
+      this.aliasLimpio.length > 0 &&
+      this.aliasLimpio.length <= 100
+    );
   }
 
   get aliasModificado(): boolean {
     return this.aliasLimpio !==
-      (this.dispositivo?.alias ?? '').trim();
+      (this.dispositivo()?.alias ?? '').trim();
   }
 
   ngOnInit(): void {
     this.cargarDispositivo();
   }
 
-  // HU14: Consultar dispositivo
+  // ==============================
+  // HU14: CONSULTAR DISPOSITIVO
+  // ==============================
+
   cargarDispositivo(): void {
     const sesion = this.autenticacion.sesion();
 
     if (!sesion || sesion.rol !== 'PACIENTE') {
-      this.errorCarga =
-        'Inicia sesión como paciente para consultar tu dispositivo.';
+      this.cargando.set(false);
+      this.dispositivo.set(null);
+      this.errorCarga.set(
+        'Inicia sesión como paciente para consultar tu dispositivo.'
+      );
       return;
     }
 
-    this.cargando = true;
-    this.errorCarga = '';
+    this.cargando.set(true);
+    this.errorCarga.set('');
 
     this.dispositivoService.consultar(sesion.usuarioId)
       .pipe(
-        finalize(() => (this.cargando = false))
+        finalize(() => {
+          this.cargando.set(false);
+        })
       )
       .subscribe({
         next: (respuesta) => {
-          this.dispositivo = respuesta;
+          console.log('Dispositivo recibido:', respuesta);
+          this.dispositivo.set(respuesta);
         },
         error: (error: HttpErrorResponse) => {
-          this.dispositivo = null;
+          console.error('Error HTTP:', error);
 
-          this.errorCarga = error.status === 404
-            ? 'Todavía no tienes un dispositivo asignado.'
-            : error.status === 403
-              ? 'No tienes permiso para consultar este dispositivo.'
-              : 'No pudimos cargar tu dispositivo. Intenta nuevamente.';
-        },
+          this.dispositivo.set(null);
+
+          this.errorCarga.set(
+            error.status === 404
+              ? 'Todavía no tienes un dispositivo asignado.'
+              : error.status === 403
+                ? 'No tienes permiso para consultar este dispositivo.'
+                : 'No pudimos cargar tu dispositivo. Intenta nuevamente.'
+          );
+        }
       });
   }
 
-  // HU15: Abrir modal
+  // ==============================
+  // HU15: RENOMBRAR DISPOSITIVO
+  // ==============================
+
   abrirRenombrar(): void {
-    if (!this.dispositivo) return;
+    const dispositivoActual = this.dispositivo();
 
-    this.aliasFormulario = this.dispositivo.alias ?? '';
-    this.errorAlias = '';
-    this.mensajeExito = '';
-    this.modalAbierto = true;
+    if (!dispositivoActual) return;
+
+    this.aliasFormulario = dispositivoActual.alias ?? '';
+    this.errorAlias.set('');
+    this.mensajeExito.set('');
+    this.modalAbierto.set(true);
   }
-
-  // HU15: Cerrar modal
+  
   cerrarRenombrar(): void {
-    if (this.guardando) return;
+    if (this.guardando()) return;
 
-    this.modalAbierto = false;
-    this.errorAlias = '';
+    this.modalAbierto.set(false);
+    this.errorAlias.set('');
   }
 
-  // HU15: Guardar alias en el backend
   guardarAlias(): void {
-    if (this.guardando) return;
+    if (this.guardando()) return;
 
     if (!this.aliasValido) {
-      this.errorAlias = this.aliasLimpio.length === 0
-        ? 'Ingresa un nombre para tu dispositivo.'
-        : 'El nombre no debe superar los 100 caracteres.';
+      this.errorAlias.set(
+        this.aliasLimpio.length === 0
+          ? 'Ingresa un nombre para tu dispositivo.'
+          : 'El nombre no debe superar los 100 caracteres.'
+      );
       return;
     }
 
@@ -119,35 +140,44 @@ export class PerfilPaciente implements OnInit {
     const sesion = this.autenticacion.sesion();
 
     if (!sesion || sesion.rol !== 'PACIENTE') {
-      this.errorAlias =
-        'Tu sesión no está disponible. Vuelve a iniciar sesión.';
+      this.errorAlias.set(
+        'Tu sesión no está disponible. Vuelve a iniciar sesión.'
+      );
       return;
     }
 
-    this.guardando = true;
-    this.errorAlias = '';
+    this.guardando.set(true);
+    this.errorAlias.set('');
 
     this.dispositivoService.renombrar(
       sesion.usuarioId,
       { alias: this.aliasLimpio }
     )
       .pipe(
-        finalize(() => (this.guardando = false))
+        finalize(() => {
+          this.guardando.set(false);
+        })
       )
       .subscribe({
         next: (respuesta) => {
-          this.dispositivo = respuesta;
-          this.modalAbierto = false;
-          this.mensajeExito =
-            'Cambios guardados. El nombre de tu dispositivo se actualizó correctamente.';
+          this.dispositivo.set(respuesta);
+          this.modalAbierto.set(false);
+
+          this.mensajeExito.set(
+            'El nombre de tu dispositivo se actualizó correctamente.'
+          );
         },
         error: (error: HttpErrorResponse) => {
-          this.errorAlias = error.status === 400
-            ? 'El nombre no es válido. Revisa el campo e intenta nuevamente.'
-            : error.status === 403
-              ? 'No tienes permiso para modificar este dispositivo.'
-              : 'No se pudo guardar el nombre. Intenta nuevamente.';
-        },
+          console.error('Error al renombrar:', error);
+
+          this.errorAlias.set(
+            error.status === 400
+              ? 'El nombre no es válido. Revisa el campo e intenta nuevamente.'
+              : error.status === 403
+                ? 'No tienes permiso para modificar este dispositivo.'
+                : 'No se pudo guardar el nombre. Intenta nuevamente.'
+          );
+        }
       });
   }
 }
