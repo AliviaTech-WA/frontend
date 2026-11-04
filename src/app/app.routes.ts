@@ -19,15 +19,16 @@ export const routes: Routes = [
       {
         path: 'perfil',
         loadComponent: () =>
-          import('./features/paciente/perfil-paciente/perfil-paciente')
-            .then((component) => component.PerfilPaciente),
-      }
+          import('./features/paciente/perfil-paciente/perfil-paciente').then(
+            (component) => component.PerfilPaciente,
+          ),
+      },
     ],
   },
   {
     path: 'psicologo',
     component: PsicologoLayout,
-    canActivate: [autenticacionPorRolGuard],
+    //canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PSICOLOGO' },
     children: [
       {
@@ -36,6 +37,11 @@ export const routes: Routes = [
           import('./features/psicologo/perfil-psicologo/perfil-psicologo').then(
             (component) => component.PerfilPsicologo,
           ),
+      },
+      {
+        path: 'pacientes/:pacienteId/sesiones',
+        loadComponent: () =>
+          import('./features/psicologo/sesiones/sesiones').then((component) => component.Sesiones),
       },
     ],
   },
