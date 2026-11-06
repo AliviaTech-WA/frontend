@@ -49,7 +49,21 @@
             <h2>{{ nombreCompleto() }}</h2>
             <p>Paciente · Cuenta activa</p>
           </div>
+
+          <button type="button" class="boton-secundario boton-editar" (click)="abrirEditarDatos()">
+            Editar datos
+          </button>
         </article>
+
+        @if (mensajePerfil()) {
+
+          <div class="alerta-exito" role="status">
+            <strong>Datos actualizados</strong>
+            <span>{{ mensajePerfil() }}</span>
+            <button type="button" aria-label="Cerrar aviso" (click)="mensajePerfil.set('')">×</button>
+          </div>
+
+        }
 
         <!-- DATOS PERSONALES -->
         <article class="tarjeta" aria-labelledby="titulo-datos">
@@ -409,6 +423,101 @@
             }}
           </button>
 
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+}
+
+
+<!-- ====================================== -->
+<!-- HU21: MODAL EDITAR DATOS PERSONALES    -->
+<!-- ====================================== -->
+
+@if (modalDatosAbierto()) {
+
+  <div class="fondo-modal" (click)="cerrarEditarDatos()">
+
+    <section
+      class="modal modal-perfil"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-datos"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="cabecera-modal">
+        <h2 id="titulo-modal-datos">Editar datos personales</h2>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          aria-label="Cerrar ventana"
+          [disabled]="guardandoDatos()"
+          (click)="cerrarEditarDatos()"
+        >
+          ×
+        </button>
+      </div>
+
+      <p class="subtitulo-modal">Solo puedes modificar tus datos de contacto.</p>
+
+      <form (ngSubmit)="guardarDatos()" novalidate>
+
+        <div class="grupo-campo">
+          <label for="correo-perfil">Correo</label>
+          <input
+            id="correo-perfil"
+            name="correo"
+            type="email"
+            maxlength="254"
+            [(ngModel)]="correoFormulario"
+            (ngModelChange)="errorDatos.set('')"
+            [disabled]="guardandoDatos()"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="telefono-perfil">Teléfono</label>
+          <input
+            id="telefono-perfil"
+            name="telefono"
+            type="tel"
+            maxlength="20"
+            [(ngModel)]="telefonoFormulario"
+            (ngModelChange)="errorDatos.set('')"
+            [disabled]="guardandoDatos()"
+            autocomplete="tel"
+          />
+        </div>
+
+        <div class="aviso-modal">
+          <strong>Datos no editables</strong>
+          <p>Nombres, apellidos, DNI y fecha de nacimiento permanecen bloqueados.</p>
+        </div>
+
+        @if (errorDatos()) {
+          <p class="error-campo" role="alert">{{ errorDatos() }}</p>
+        }
+
+        <div class="acciones-modal acciones-perfil">
+          <button
+            type="button"
+            class="boton-secundario"
+            [disabled]="guardandoDatos()"
+            (click)="cerrarEditarDatos()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="boton-primario" [disabled]="guardandoDatos()">
+            {{ guardandoDatos() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
         </div>
 
       </form>

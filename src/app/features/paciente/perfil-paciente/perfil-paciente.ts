@@ -8,7 +8,7 @@ import { finalize } from 'rxjs';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { ConsultaDispositivoAsignado } from '../dispositivos/models/dispositivo.model';
 import { DispositivoService } from '../dispositivos/services/dispositivo.service';
-import { PerfilPersonal } from './models/perfil-personal.model';
+import { ActualizarPerfilRequest, PerfilPersonal } from './models/perfil-personal.model';
 import { PerfilPersonalService } from './services/perfil-personal.service';
 
 @Component({
@@ -38,6 +38,14 @@ export class PerfilPaciente implements OnInit {
     if (!datos) return '';
     return `${datos.nombres.charAt(0)}${datos.apellidos.charAt(0)}`.toUpperCase();
   });
+
+  // HU21: edición de correo y teléfono
+  modalDatosAbierto = signal(false);
+  guardandoDatos = signal(false);
+  errorDatos = signal('');
+  mensajePerfil = signal('');
+  correoFormulario = '';
+  telefonoFormulario = '';
 
   // HU14: Información del dispositivo
   dispositivo = signal<ConsultaDispositivoAsignado | null>(null);
@@ -146,6 +154,84 @@ export class PerfilPaciente implements OnInit {
                 : 'No pudimos cargar tu dispositivo. Intenta nuevamente.'
           );
         }
+      });
+  }
+
+  // ==============================
+  // HU21: EDITAR CORREO Y TELÉFONO
+  // ==============================
+
+  abrirEditarDatos(): void {
+    const datos = this.perfil();
+    if (!datos) return;
+
+    this.correoFormulario = datos.correo;
+    this.telefonoFormulario = datos.telefono ?? '';
+    this.errorDatos.set('');
+    this.mensajePerfil.set('');
+    this.modalDatosAbierto.set(true);
+  }
+
+  cerrarEditarDatos(): void {
+    if (this.guardandoDatos()) return;
+
+    this.modalDatosAbierto.set(false);
+    this.errorDatos.set('');
+  }
+
+  guardarDatos(): void {
+    const datos = this.perfil();
+    const sesion = this.autenticacion.sesion();
+    if (!datos || this.guardandoDatos()) return;
+
+    const correo = this.correoFormulario.trim();
+    const telefono = this.telefonoFormulario.trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      this.errorDatos.set('Ingresa un correo válido.');
+      return;
+    }
+
+    if (!telefono || telefono.length > 20) {
+      this.errorDatos.set('Ingresa un teléfono de hasta 20 caracteres.');
+      return;
+    }
+
+    const solicitud: ActualizarPerfilRequest = {};
+    if (correo !== datos.correo) solicitud.correo = correo;
+    if (telefono !== (datos.telefono ?? '')) solicitud.telefono = telefono;
+
+    if (!solicitud.correo && !solicitud.telefono) {
+      this.cerrarEditarDatos();
+      return;
+    }
+
+    if (!sesion || sesion.rol !== 'PACIENTE') {
+      this.errorDatos.set('Tu sesión no está disponible. Vuelve a iniciar sesión.');
+      return;
+    }
+
+    this.guardandoDatos.set(true);
+    this.errorDatos.set('');
+
+    this.perfilPersonalService
+      .actualizar(sesion.usuarioId, solicitud)
+      .pipe(finalize(() => this.guardandoDatos.set(false)))
+      .subscribe({
+        next: (respuesta) => {
+          this.perfil.set({ ...datos, correo: respuesta.correo, telefono: respuesta.telefono });
+          this.modalDatosAbierto.set(false);
+          this.mensajePerfil.set('Tus datos de contacto se actualizaron correctamente.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorDatos.set(
+            error.status === 409
+              ? 'El correo ya está asociado a otra cuenta.'
+              : error.status === 400
+                ? 'Revisa los datos ingresados e intenta nuevamente.'
+                : 'No se pudieron guardar los cambios. Intenta nuevamente.',
+          );
+        },
       });
   }
 
