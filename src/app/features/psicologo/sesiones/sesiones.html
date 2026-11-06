@@ -4,28 +4,31 @@
   <div class="ruta-paciente">
     <span>Pacientes</span>
     <span>/</span>
-    <span>{{ paciente.nombres }}</span>
+    <span>Sesiones</span>
   </div>
 
-  <!-- Encabezado del paciente -->
-  <mat-card class="tarjeta-paciente">
-    <mat-card-content>
-      <div class="encabezado-paciente">
-        <div class="avatar-paciente">
-          {{ paciente.iniciales }}
-        </div>
+  @if (pacienteId !== null) {
+    <mat-card class="tarjeta-paciente">
+      <mat-card-content>
+        @if (pacienteSeleccionado(); as paciente) {
+          <div class="encabezado-paciente">
+            <div class="avatar-paciente" aria-hidden="true">
+              {{ paciente.nombres.charAt(0) }}{{ paciente.apellidos.charAt(0) }}
+            </div>
 
-        <div class="datos-paciente">
-          <div class="nombre-estado">
-            <h1>{{ paciente.nombres }}</h1>
-            <span class="estado">{{ paciente.estado }}</span>
+            <div class="datos-paciente">
+              <div class="nombre-estado">
+                <h1>{{ paciente.nombres }} {{ paciente.apellidos }}</h1>
+              </div>
+              <p>DNI {{ paciente.dni }}</p>
+            </div>
           </div>
-
-          <p>{{ paciente.edad }} años · DNI {{ paciente.dni }}</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+        } @else {
+          <h1>Paciente #{{ pacienteId }}</h1>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
 
   <!-- Pestañas visuales: la navegación se conectará después -->
   <nav class="pestanas-paciente" aria-label="Secciones del paciente">
@@ -53,23 +56,9 @@
             (ngSubmit)="guardarInformacion()"
             class="formulario-sesion">
 
-            <mat-form-field appearance="outline">
-              <mat-label>Fecha y hora de la sesión</mat-label>
-              <input
-                matInput
-                type="datetime-local"
-                formControlName="fechaSesion"
-                required>
-            </mat-form-field>
-
-            @if (
-              sesionForm.get('fechaSesion')?.touched &&
-              sesionForm.get('fechaSesion')?.hasError('required')
-              ) {
-              <p class="error-campo" role="alert">
-                Selecciona la fecha y hora de la sesión.
-              </p>
-            }
+            <p class="texto-secundario">
+              Sesión realizada: {{ fechaMostrada() | date:'dd/MM/yyyy' }}
+            </p>
 
             <mat-form-field appearance="outline">
               <mat-label>Nota interna</mat-label>
@@ -104,20 +93,19 @@
             <button
               mat-raised-button
               type="submit"
-              class="boton-guardar">
-              Guardar información de sesión
+              class="boton-guardar"
+              [disabled]="guardando() || pacienteId === null"
+            >
+              {{ guardando() ? 'Guardando…' : 'Guardar información de sesión' }}
             </button>
 
-            <p class="aviso-desarrollo">
-              Por ahora, este botón solo valida el formulario.
-              Todavía no guarda información en el servidor.
-            </p>
+            @if (mensaje()) {
+              <p class="mensaje-formulario" role="status">{{ mensaje() }}</p>
+            }
 
-            <div role="status" aria-live="polite">
-              @if (mensaje) {
-                <p class="mensaje-formulario">{{ mensaje }}</p>
-              }
-            </div>
+            @if (errorGuardado()) {
+              <p class="error-campo" role="alert">{{ errorGuardado() }}</p>
+            }
 
           </form>
         </mat-card-content>
@@ -129,7 +117,23 @@
           <h2>Sesiones anteriores</h2>
 
           <p class="texto-secundario">
-            El historial se mostrará al conectar las sesiones del paciente.
+            @if (cargandoHistorial()) {
+              <p class="texto-secundario" role="status">Cargando sesiones…</p>
+            } @else if (errorHistorial()) {
+              <p class="error-campo" role="alert">{{ errorHistorial() }}</p>
+              <button mat-button type="button" (click)="cargarHistorial()">Reintentar</button>
+            } @else {
+              @for (sesion of historial(); track sesion.sesionId) {
+                <article>
+                  <h3>{{ sesion.fechaSesion | date:'dd/MM/yyyy' }}</h3>
+                  <p class="texto-secundario">
+                    {{ sesion.resumenCompartido || 'Sin resumen compartido' }}
+                  </p>
+                </article>
+              } @empty {
+                <p class="texto-secundario">Este paciente aún no tiene sesiones registradas.</p>
+              }
+            }
           </p>
         </mat-card-content>
       </mat-card>
@@ -164,7 +168,25 @@
           <h2>Información de la última sesión</h2>
 
           <p class="texto-secundario">
-            Se mostrará al consultar el historial del paciente.
+            @if (cargandoHistorial()) {
+              <p class="texto-secundario">Cargando última sesión…</p>
+            } @else if (errorHistorial()) {
+              <p class="texto-secundario">No se pudo consultar la última sesión.</p>
+            } @else if (historial()[0]; as ultimaSesion) {
+              <p><strong>{{ ultimaSesion.fechaSesion | date:'dd/MM/yyyy' }}</strong></p>
+
+              <p class="texto-secundario">
+                {{ ultimaSesion.resumenCompartido || 'Sin resumen compartido' }}
+              </p>
+
+              @if (ultimaSesion.recomendacionCompartida) {
+                <p class="texto-secundario">
+                  <strong>Recomendación:</strong> {{ ultimaSesion.recomendacionCompartida }}
+                </p>
+              }
+            } @else {
+              <p class="texto-secundario">Aún no hay una sesión registrada.</p>
+            }
           </p>
         </mat-card-content>
       </mat-card>
