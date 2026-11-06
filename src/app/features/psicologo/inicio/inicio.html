@@ -1,0 +1,156 @@
+<section class="pagina-inicio">
+
+  <!-- ENCABEZADO -->
+  <header class="encabezado">
+    <h1>Inicio</h1>
+    <p>{{ hoy | date: 'dd/MM/yyyy' }} · Información de seguimiento pendiente</p>
+  </header>
+
+  @if (cargando()) {
+
+    <p class="estado-ayuda" role="status">Cargando tu resumen...</p>
+
+  } @else if (errorCarga()) {
+
+    <div class="tarjeta estado-ayuda" role="alert">
+      <p>{{ errorCarga() }}</p>
+      <button type="button" class="boton-secundario" (click)="cargarDashboard()">Reintentar</button>
+    </div>
+
+  } @else if (dashboard(); as datos) {
+
+    <!-- ================================== -->
+    <!-- HU22: INDICADORES PRINCIPALES      -->
+    <!-- ================================== -->
+    <div class="indicadores">
+      <article class="tarjeta indicador">
+        <p class="indicador-titulo">Pacientes activos</p>
+        <strong>{{ datos.pacientesActivos }}</strong>
+        <span>Seguimientos en curso</span>
+      </article>
+
+      <article class="tarjeta indicador">
+        <p class="indicador-titulo">Invitaciones pendientes</p>
+        <strong>{{ datos.invitacionesPendientes }}</strong>
+        <span>Por aceptar enlace</span>
+      </article>
+
+      <article class="tarjeta indicador">
+        <p class="indicador-titulo">Tiempo medio desde revisión</p>
+        <strong>{{ datos.tiempoMedioDesdeRevisionDias }} {{ datos.tiempoMedioDesdeRevisionDias === 1 ? 'día' : 'días' }}</strong>
+        <span>Tiempo promedio</span>
+      </article>
+    </div>
+
+    <div class="cuadricula">
+
+      <div class="columna-principal">
+
+        <!-- ÚLTIMAS NOVEDADES -->
+        <article class="tarjeta">
+          <div class="cabecera-seccion">
+            <div>
+              <h2>Últimas novedades</h2>
+              <p class="subtitulo">Novedades desde tu última revisión</p>
+            </div>
+            <a routerLink="/psicologo/pacientes" class="enlace">Ver todos</a>
+          </div>
+
+          @for (novedad of datos.ultimasNovedades.slice(0, 5); track novedad.pacienteId) {
+
+            <div class="fila-novedad">
+              <div class="avatar">{{ iniciales(novedad.nombreCompleto) }}</div>
+
+              <div class="novedad-texto">
+                <strong>{{ novedad.nombreCompleto }}</strong>
+                <span>{{ novedad.fechaHora | date: 'dd/MM, HH:mm' }}</span>
+              </div>
+
+              <span class="insignia" [class.episodios]="novedad.tipo === 'NUEVOS_EPISODIOS'">
+                {{ etiquetasNovedad[novedad.tipo] }}
+              </span>
+            </div>
+
+          } @empty {
+
+            <p class="estado-vacio">No hay novedades desde tu última revisión.</p>
+
+          }
+        </article>
+
+        <!-- ACTIVIDAD DE LOS ÚLTIMOS 7 DÍAS -->
+        <article class="tarjeta">
+          <div class="cabecera-seccion">
+            <div>
+              <h2>Actividad de seguimiento</h2>
+              <p class="subtitulo">Registros manuales y episodios confirmados · últimos 7 días</p>
+            </div>
+            <span class="resumen-actividad">
+              {{ totalRegistros() }} registros · {{ totalEpisodios() }} episodios
+            </span>
+          </div>
+
+          <div class="grafico" role="img" aria-label="Actividad de los últimos 7 días">
+            @for (dia of datos.actividadUltimos7Dias; track dia.fecha) {
+
+              <div class="columna-grafico">
+                <span class="valor">{{ dia.registrosManuales + dia.episodiosConfirmados }}</span>
+
+                <div class="barra">
+                  <div class="segmento-episodios" [style.height.%]="alturaBarra(dia.episodiosConfirmados)"></div>
+                  <div class="segmento-registros" [style.height.%]="alturaBarra(dia.registrosManuales)"></div>
+                </div>
+
+                <span class="dia">{{ nombreDia(dia.fecha) }}</span>
+              </div>
+
+            }
+          </div>
+
+          <div class="leyenda">
+            <span><i class="punto registros"></i> Registros manuales</span>
+            <span><i class="punto episodios"></i> Episodios confirmados</span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- ESTADO DE REVISIÓN -->
+      <aside class="columna-lateral">
+        <article class="tarjeta">
+          <h2>Estado de revisión</h2>
+          <p class="subtitulo">{{ datos.pacientesActivos }} pacientes activos · no indica gravedad clínica</p>
+
+          <ul class="distribucion">
+            <li>
+              <i class="punto episodios"></i>
+              <span>Pacientes con nuevos episodios</span>
+              <strong>{{ datos.distribucionNovedades.conNuevosEpisodios }}</strong>
+            </li>
+            <li>
+              <i class="punto pendientes"></i>
+              <span>Pacientes con nuevos registros</span>
+              <strong>{{ datos.distribucionNovedades.conNuevosRegistros }}</strong>
+            </li>
+            <li>
+              <i class="punto registros"></i>
+              <span>Pacientes sin novedades</span>
+              <strong>{{ datos.distribucionNovedades.sinNovedades }}</strong>
+            </li>
+          </ul>
+        </article>
+
+        <article class="tarjeta alcance">
+          <p class="etiqueta">ALCANCE DEL SISTEMA</p>
+          <p>
+            AliviaTech organiza información para consulta posterior. No requiere vigilancia
+            continua ni atención inmediata.
+          </p>
+        </article>
+      </aside>
+
+    </div>
+
+  }
+
+</section>
