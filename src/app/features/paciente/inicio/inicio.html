@@ -1,19 +1,49 @@
 <div class="inicio-paciente">
 
   <div class="encabezado">
-    <h1>Hola, Marta</h1>
-    <p>Bienvenida a tu espacio de bienestar</p>
+    @if (dashboard(); as datos) {
+      <h1>Hola, {{ datos.nombres }}</h1>
+    } @else if (cargando()) {
+      <h1>Cargando...</h1>
+    } @else {
+      <h1>Bienvenida a AliviaTech</h1>
+    }
+
+    <p>{{ fechaActual }}</p>
   </div>
+
+  @if (errorCarga()) {
+    <p class="mensaje-error" role="alert">
+      {{ errorCarga() }}
+    </p>
+  }
 
   <section class="bienvenida">
     <div class="bienvenida-contenido">
       <span>TU ESPACIO</span>
+
       <h2>¿Cómo te has sentido hoy?</h2>
+
       <p>
         Puedes registrar cómo te sientes cuando quieras.
         No es obligatorio y toma menos de un minuto.
       </p>
-      <button>Hacer un registro</button>
+
+      <button type="button">
+        Hacer un registro
+      </button>
+    </div>
+
+    <div class="ultimo-registro">
+      <span>ÚLTIMO REGISTRO</span>
+
+      @if (dashboard()?.ultimoRegistro; as registro) {
+        <h3>{{ obtenerDiaRegistro(registro.fechaHora) }}</h3>
+        <p>{{ registro.fechaHora | date:'HH:mm' }}</p>
+      } @else {
+        <h3>Sin registros</h3>
+        <p>Aún no tienes registros de bienestar.</p>
+      }
     </div>
   </section>
 

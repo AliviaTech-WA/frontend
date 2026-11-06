@@ -35,13 +35,70 @@
 .bienvenida p {
   font-size: 14px;
   margin-bottom: 24px;
+  color: #B2DED4;
 }
 
 .bienvenida button {
   background-color: white;
-  color: #30403c;
+  color: #30403C;
+  font-weight: 600;
   border: none;
   border-radius: 12px;
   padding: 14px 20px;
   cursor: pointer;
+}
+
+.bienvenida {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.bienvenida-contenido {
+  flex: 1;
+  min-width: 0;
+}
+
+.ultimo-registro {
+  background-color: #1f6b5e;
+  border-radius: 18px;
+  width: 230px;
+  min-height: 150px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ultimo-registro span {
+  color: #b8e0d6;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ultimo-registro h3 {
+  color: white;
+  font-size: 26px;
+  margin: 6px 0;
+}
+
+.ultimo-registro p {
+  color: #b8e0d6;
+  font-size: 11px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .bienvenida {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ultimo-registro {
+    width: 100%;
+  }
 }

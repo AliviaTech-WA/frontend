@@ -1,3 +1,4 @@
+// HU08: indicadores del dashboard del paciente
 export interface DashboardPacienteModel {
   nombres: string;
   notificacionesPendientes: number;
