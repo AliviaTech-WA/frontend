@@ -1,15 +1,20 @@
-
 /* Contenedor del componente */
 :host {
   display: block;
   width: 220px;
   flex-shrink: 0;
+
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  overflow-y: auto;
 }
 
 /* Menú lateral del psicólogo */
 .sidebar {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
   padding: 24px 16px;
