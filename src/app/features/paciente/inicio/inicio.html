@@ -226,8 +226,32 @@
             </p>
           </article>
         }
-
       }
+
+      <!-- recomendacion destacada card -->
+      @if (dashboard()?.ultimaRecomendacion; as recomendacion) {
+        <article class="recomendacion-destacada">
+
+          <h2>ÚLTIMA RECOMENDACIÓN</h2>
+
+          <div class="recomendacion-destacada-contenido">
+            <p>{{ recomendacion.texto }}</p>
+          </div>
+
+        </article>
+      }
+
+      <!-- aviso importante card-->
+      <article class="aviso-importante">
+
+        <span>IMPORTANTE</span>
+
+        <p>
+          AliviaTech no reemplaza la atención profesional
+          ni funciona como servicio de emergencia.
+        </p>
+
+      </article>
 
     </aside>
 
