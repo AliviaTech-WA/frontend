@@ -30,6 +30,13 @@ export const routes: Routes = [
             (component) => component.Eventos,
           ),
       },
+      {
+        path: 'sesiones',
+        loadComponent: () =>
+          import('./features/paciente/sesiones/sesiones').then(
+            (component) => component.Sesiones,
+          ),
+      },
     ],
   },
   {
