@@ -45,9 +45,15 @@
           <span>N.º de colegiatura: {{ psicologo.colegiatura }}</span>
         </div>
 
-        <button type="button" class="btn-editar" disabled>
+        <button
+          type="button"
+          class="btn-editar"
+          (click)="abrirEdicion()"
+          [disabled]="cargando || !!mensajeError"
+        >
           Editar perfil
         </button>
+
       </section>
 
       <!-- Información profesional -->
