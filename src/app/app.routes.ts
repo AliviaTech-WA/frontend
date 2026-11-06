@@ -28,7 +28,7 @@ export const routes: Routes = [
   {
     path: 'psicologo',
     component: PsicologoLayout,
-    //canActivate: [autenticacionPorRolGuard],
+    canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PSICOLOGO' },
     children: [
       {
@@ -36,6 +36,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/psicologo/perfil-psicologo/perfil-psicologo').then(
             (component) => component.PerfilPsicologo,
+          ),
+      },
+      {
+        path: 'pacientes',
+        loadComponent: () =>
+          import('./features/psicologo/pacientes/pacientes').then(
+            (component) => component.Pacientes,
           ),
       },
       {
