@@ -1,0 +1,225 @@
+.pagina-pacientes {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 0 32px;
+  color: #263732;
+}
+
+.encabezado h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.encabezado p {
+  margin: 0;
+  color: #687d75;
+  font-size: 14px;
+}
+
+.barra-controles,
+.buscador,
+.filtros {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.barra-controles {
+  gap: 12px;
+  margin: 20px 0 26px;
+}
+
+.buscador input {
+  width: min(260px, 100%);
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #dce8e3;
+  border-radius: 9px;
+  background: #fff;
+  color: inherit;
+}
+
+button,
+.boton-ver {
+  min-height: 34px;
+  padding: 7px 14px;
+  border: 1px solid #e3eeea;
+  border-radius: 9px;
+  background: #fff;
+  color: #263732;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filtros button {
+  border-radius: 20px;
+}
+
+.filtros button[aria-pressed='true'],
+.boton-ver {
+  background: #e3f5ef;
+  color: #087766;
+  font-weight: 600;
+}
+
+.tarjeta-pacientes {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #e7efeb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(35, 65, 53, 0.05);
+}
+
+.tarjeta-pacientes h2 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.total-pacientes,
+.estado-lista {
+  margin: 0 0 14px;
+  color: #687d75;
+  font-size: 13px;
+}
+
+.estado-lista[role='alert'] {
+  color: #b42318;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla-pacientes {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 13px;
+}
+
+.tabla-pacientes th {
+  background: #eff9f6;
+  color: #526860;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.tabla-pacientes th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.tabla-pacientes th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.tabla-pacientes th,
+.tabla-pacientes td {
+  padding: 12px 10px;
+}
+
+.tabla-pacientes td {
+  height: 68px;
+}
+
+.datos-paciente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.datos-paciente small {
+  display: block;
+  margin-top: 4px;
+  color: #687d75;
+}
+
+.avatar {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f5ef;
+  color: #087766;
+  font-weight: 700;
+}
+
+.insignia {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.insignia[data-novedad='NUEVOS_EPISODIOS'] {
+  background: #fbeae5;
+  color: #a33d2e;
+}
+
+.insignia[data-novedad='NUEVOS_REGISTROS'] {
+  background: #fcf3da;
+  color: #805600;
+}
+
+.insignia[data-novedad='SIN_NOVEDADES'] {
+  background: #e2f5eb;
+  color: #176b49;
+}
+
+.boton-ver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  text-decoration: none;
+}
+
+button:focus-visible,
+.boton-ver:focus-visible,
+.buscador input:focus-visible {
+  outline: 2px solid #128575;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .tarjeta-pacientes {
+    padding: 14px;
+  }
+
+  .buscador {
+    width: 100%;
+  }
+
+  .buscador input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+.pagina-pacientes .buscador button {
+  background-color: #fff;
+  color: #263732;
+  border: 1px solid #dce8e3;
+  box-shadow: none;
+}
+
+.pagina-pacientes .filtros button[aria-pressed='true'] {
+  background-color: #e3f5ef;
+  color: #087766;
+  border-color: transparent;
+}
+
+.pagina-pacientes .tabla-pacientes a.boton-ver {
+  background-color: #eff9f6;
+  color: #087766;
+  border-color: transparent;
+  box-shadow: none;
+}

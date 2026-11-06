@@ -1,0 +1,138 @@
+
+<div class="perfil-psicologo">
+
+  <!-- Estado de carga del perfil -->
+  @if (cargando) {
+    <p class="mensaje-estado">
+      Cargando información del psicólogo...
+    </p>
+  }
+
+  <!-- Error al consultar el backend -->
+  @if (mensajeError) {
+    <p class="mensaje-error">
+      {{ mensajeError }}
+    </p>
+  }
+
+  <!-- Encabezado -->
+  <header class="encabezado">
+    <div>
+      <h1>Mi perfil</h1>
+      <p>Consulta y administra tu información profesional.</p>
+    </div>
+
+    <button type="button" class="btn-cerrar" disabled>
+      Cerrar sesión
+    </button>
+  </header>
+
+  <!-- Distribución principal del perfil -->
+  <div class="perfil-columnas">
+
+    <!-- Columna izquierda -->
+    <div class="columna-izquierda">
+
+      <!-- Presentación del psicólogo -->
+      <section class="tarjeta-presentacion">
+        <div class="avatar-grande">
+          {{ psicologo.nombres.charAt(0) }}{{ psicologo.apellidos.charAt(0) }}
+        </div>
+
+        <div class="datos-presentacion">
+          <h2>{{ psicologo.nombres }} {{ psicologo.apellidos }}</h2>
+          <p>Psicólogo · {{ psicologo.especialidad }}</p>
+          <span>N.º de colegiatura: {{ psicologo.colegiatura }}</span>
+        </div>
+
+        <button
+          type="button"
+          class="btn-editar"
+          (click)="abrirEdicion()"
+          [disabled]="cargando || !!mensajeError"
+        >
+          Editar perfil
+        </button>
+
+      </section>
+
+      <!-- Información profesional -->
+      <section class="tarjeta">
+        <h2>Información profesional</h2>
+
+        <div class="cuadricula-datos">
+          <div class="campo">
+            <span>Nombres</span>
+            <strong>{{ psicologo.nombres }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>Apellidos</span>
+            <strong>{{ psicologo.apellidos }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>DNI</span>
+            <strong>{{ psicologo.dni }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>N.º de colegiatura</span>
+            <strong>{{ psicologo.colegiatura }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>Especialidad</span>
+            <strong>{{ psicologo.especialidad }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>Teléfono</span>
+            <strong>{{ psicologo.telefono }}</strong>
+          </div>
+
+          <div class="campo">
+            <span>Correo</span>
+            <strong>{{ psicologo.correo }}</strong>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="columna-derecha">
+
+      <!-- Seguridad -->
+      <section class="tarjeta tarjeta-seguridad">
+        <span class="etiqueta">CUENTA</span>
+        <h2>Seguridad</h2>
+
+        <div class="seguridad">
+          <div>
+            <span>Correo de acceso</span>
+            <strong>{{ psicologo.correo }}</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn-secundario" disabled>
+          Cambiar contraseña
+        </button>
+      </section>
+
+      <!-- Datos protegidos -->
+      <section class="aviso">
+        <span class="etiqueta">DATOS PROTEGIDOS</span>
+        <h2>No editables</h2>
+        <p>
+          DNI, nombres, apellidos y número de colegiatura
+          se mantienen bloqueados.
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+</div>
+
+

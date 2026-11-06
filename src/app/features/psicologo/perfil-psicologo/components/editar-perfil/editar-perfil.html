@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Editar perfil profesional</h2>
+
+<form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+  <mat-dialog-content>
+    <p>Actualiza únicamente los datos permitidos del perfil.</p>
+
+    <div class="campos-edicion">
+      <mat-form-field appearance="outline">
+        <mat-label>Especialidad</mat-label>
+        <input matInput formControlName="especialidad">
+        <mat-error>Ingresa una especialidad de hasta 100 caracteres.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Correo</mat-label>
+        <input matInput type="email" formControlName="correo" autocomplete="email">
+        <mat-error>Ingresa un correo válido de hasta 254 caracteres.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput type="tel" formControlName="telefono" autocomplete="tel">
+        <mat-error>Ingresa un teléfono de hasta 20 caracteres.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="datos-protegidos">
+      <strong>Datos protegidos</strong>
+      <p>Nombres, apellidos, DNI y número de colegiatura permanecen bloqueados.</p>
+    </div>
+
+    @if (mensajeError) {
+      <p class="error-guardado" role="alert">{{ mensajeError }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close [disabled]="guardando">
+      Cancelar
+    </button>
+
+    <button mat-raised-button type="submit" class="boton-guardar" [disabled]="guardando">
+      {{ guardando ? 'Guardando…' : 'Guardar cambios' }}
+    </button>
+  </mat-dialog-actions>
+</form>

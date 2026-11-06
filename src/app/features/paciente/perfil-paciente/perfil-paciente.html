@@ -1,0 +1,420 @@
+
+<section class="pagina-perfil">
+
+  <!-- ENCABEZADO DE LA PÁGINA -->
+  <header class="encabezado">
+    <div>
+      <p class="miga">Mi espacio / Perfil</p>
+
+      <h1>Mi perfil</h1>
+
+      <p>
+        Consulta tus datos, contacto de emergencia
+        y dispositivo asignado.
+      </p>
+    </div>
+  </header>
+
+  <div class="cuadricula">
+
+    <!-- ================================== -->
+    <!-- HU21: PERFIL PERSONAL              -->
+    <!-- ================================== -->
+    <div class="columna-izquierda">
+
+      @if (cargandoPerfil()) {
+
+        <article class="tarjeta">
+          <p class="estado-ayuda" role="status">Cargando tus datos...</p>
+        </article>
+
+      } @else if (errorPerfil()) {
+
+        <article class="tarjeta">
+          <div class="estado-ayuda" role="alert">
+            <p>{{ errorPerfil() }}</p>
+            <button type="button" class="boton-secundario" (click)="cargarPerfil()">
+              Reintentar
+            </button>
+          </div>
+        </article>
+
+      } @else if (perfil(); as datos) {
+
+        <!-- TARJETA DE PRESENTACIÓN -->
+        <article class="tarjeta tarjeta-presentacion">
+          <div class="avatar-perfil" aria-hidden="true">{{ iniciales() }}</div>
+
+          <div class="presentacion-texto">
+            <h2>{{ nombreCompleto() }}</h2>
+            <p>Paciente · Cuenta activa</p>
+          </div>
+        </article>
+
+        <!-- DATOS PERSONALES -->
+        <article class="tarjeta" aria-labelledby="titulo-datos">
+          <h2 id="titulo-datos" class="titulo-seccion">Datos personales</h2>
+
+          <dl class="campos-perfil">
+            <div class="campo">
+              <dt>Nombres</dt>
+              <dd>{{ datos.nombres }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Apellidos</dt>
+              <dd>{{ datos.apellidos }}</dd>
+            </div>
+            <div class="campo">
+              <dt>DNI</dt>
+              <dd>{{ datos.dni }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Correo</dt>
+              <dd>{{ datos.correo }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Teléfono</dt>
+              <dd>{{ datos.telefono || 'Sin registrar' }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Fecha de nacimiento</dt>
+              <dd>{{ datos.fechaNacimiento ? (datos.fechaNacimiento | date: 'dd/MM/yyyy') : 'Sin registrar' }}</dd>
+            </div>
+          </dl>
+
+          <p class="nota-campos">
+            Puedes editar correo y teléfono. Nombres, apellidos y DNI permanecen bloqueados.
+          </p>
+        </article>
+
+        <!-- CONTACTO DE EMERGENCIA -->
+        <article class="tarjeta" aria-labelledby="titulo-contacto">
+          <h2 id="titulo-contacto" class="titulo-seccion">Contacto de emergencia</h2>
+
+          @if (datos.contactoEmergencia; as contacto) {
+
+            <dl class="campos-perfil">
+              <div class="campo">
+                <dt>Nombre completo</dt>
+                <dd>{{ contacto.nombreCompleto }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Relación</dt>
+                <dd>{{ contacto.relacion }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Teléfono</dt>
+                <dd>{{ contacto.telefono }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Correo</dt>
+                <dd>{{ contacto.correo || 'Sin registrar' }}</dd>
+              </div>
+            </dl>
+
+          } @else {
+
+            <p class="nota-campos">Todavía no registras un contacto de emergencia.</p>
+
+          }
+        </article>
+
+      }
+
+    </div>
+
+    <div class="columna-derecha">
+
+      <!-- ================================== -->
+      <!-- HU14: CONSULTAR DISPOSITIVO        -->
+      <!-- ================================== -->
+
+      <article
+        class="tarjeta tarjeta-dispositivo"
+        aria-labelledby="titulo-dispositivo"
+      >
+
+        <div class="etiqueta-tarjeta">
+          DISPOSITIVO ASIGNADO
+        </div>
+
+        <!-- ESTADO: CARGANDO -->
+        @if (cargando()) {
+
+          <p class="estado-ayuda" role="status">
+            Cargando dispositivo...
+          </p>
+
+        }
+
+        <!-- ESTADO: ERROR -->
+        @else if (errorCarga()) {
+
+          <div class="estado-ayuda" role="alert">
+
+            <p>{{ errorCarga() }}</p>
+
+            <button
+              type="button"
+              class="boton-secundario"
+              (click)="cargarDispositivo()"
+            >
+              Reintentar
+            </button>
+
+          </div>
+
+        }
+
+        <!-- ESTADO: DISPOSITIVO ENCONTRADO -->
+        @else if (dispositivo(); as dispositivo) {
+
+          <div class="dispositivo-titulo">
+
+            <div
+              class="icono-dispositivo"
+              aria-hidden="true"
+            >
+              ⌚
+            </div>
+
+            <div>
+              <h2 id="titulo-dispositivo">
+                {{ dispositivo.alias || dispositivo.modelo }}
+              </h2>
+
+              <span class="estado-activo">
+                {{ dispositivo.estado }}
+              </span>
+            </div>
+
+          </div>
+
+          <!-- INFORMACIÓN DEL DISPOSITIVO -->
+          <dl class="datos-dispositivo">
+
+            <div>
+              <dt>Modelo</dt>
+              <dd>{{ dispositivo.modelo }}</dd>
+            </div>
+
+            <div>
+              <dt>Código</dt>
+              <dd>{{ dispositivo.codigoDispositivo }}</dd>
+            </div>
+
+            <div>
+              <dt>Asignado el</dt>
+              <dd>
+                {{
+                  dispositivo.fechaAsignacion
+                    | date:'dd/MM/yyyy'
+                }}
+              </dd>
+            </div>
+
+            <div>
+              <dt>Última sincronización</dt>
+
+              <dd>
+                @if (dispositivo.fechaUltimaSincronizacion) {
+
+                  {{
+                    dispositivo.fechaUltimaSincronizacion
+                      | date:'dd/MM/yyyy, HH:mm'
+                  }}
+
+                } @else {
+
+                  Sin sincronización todavía
+
+                }
+              </dd>
+            </div>
+
+          </dl>
+
+          <p class="ayuda">
+            Puedes cambiar el nombre de tu dispositivo,
+            pero no el modelo asignado.
+          </p>
+
+          <!-- BOTÓN DE HU15 -->
+          <button
+            type="button"
+            class="boton-primario boton-completo"
+            (click)="abrirRenombrar()"
+          >
+            Renombrar dispositivo
+          </button>
+
+        }
+
+        <!-- ESTADO: SIN DATOS -->
+        @else {
+
+          <p class="estado-ayuda">
+            No hay información del dispositivo disponible.
+          </p>
+
+        }
+
+      </article>
+
+      <!-- ================================== -->
+      <!-- HU15: MENSAJE DE CONFIRMACIÓN      -->
+      <!-- ================================== -->
+
+      @if (mensajeExito()) {
+
+        <div
+          class="alerta-exito"
+          role="status"
+        >
+
+          <strong>Cambios guardados</strong>
+
+          <span>
+            {{ mensajeExito() }}
+          </span>
+
+          <button
+            type="button"
+            aria-label="Cerrar aviso"
+            (click)="mensajeExito.set('')"
+          >
+            ×
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ====================================== -->
+<!-- HU15: MODAL RENOMBRAR DISPOSITIVO      -->
+<!-- ====================================== -->
+
+@if (modalAbierto() && dispositivo(); as dispositivoActual) {
+
+  <div
+    class="fondo-modal"
+    (click)="cerrarRenombrar()"
+  >
+
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- ENCABEZADO DEL MODAL -->
+      <div class="cabecera-modal">
+
+        <h2 id="titulo-modal">
+          Renombrar dispositivo
+        </h2>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          aria-label="Cerrar ventana"
+          [disabled]="guardando()"
+          (click)="cerrarRenombrar()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <p class="subtitulo-modal">
+        El modelo asignado no cambia.
+      </p>
+
+      <!-- FORMULARIO -->
+      <form
+        (ngSubmit)="guardarAlias()"
+        novalidate
+      >
+
+        <label for="nombre-dispositivo">
+          Nombre del dispositivo
+        </label>
+
+        <input
+          id="nombre-dispositivo"
+          name="alias"
+          type="text"
+          maxlength="100"
+          [(ngModel)]="aliasFormulario"
+          (ngModelChange)="errorAlias.set('')"
+          [attr.aria-invalid]="errorAlias() ? 'true' : null"
+          [disabled]="guardando()"
+          autocomplete="off"
+        />
+
+        <!-- INFORMACIÓN DEL MODELO -->
+        <div class="pie-campo">
+
+          <span>
+            Modelo asignado:
+            {{ dispositivoActual.modelo }}
+          </span>
+
+          <span>
+            {{ aliasFormulario.length }}/100
+          </span>
+
+        </div>
+
+        <!-- ERROR DE VALIDACIÓN -->
+        @if (errorAlias()) {
+
+          <p
+            class="error-campo"
+            role="alert"
+          >
+            {{ errorAlias() }}
+          </p>
+
+        }
+
+        <!-- BOTONES DEL MODAL -->
+        <div class="acciones-modal">
+
+          <button
+            type="button"
+            class="boton-secundario"
+            [disabled]="guardando()"
+            (click)="cerrarRenombrar()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="boton-primario"
+            [disabled]="guardando() || !aliasValido"
+          >
+            {{
+              guardando()
+                ? 'Guardando...'
+                : 'Guardar'
+            }}
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+}

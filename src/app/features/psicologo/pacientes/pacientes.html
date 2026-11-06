@@ -1,0 +1,120 @@
+<section class="pagina-pacientes">
+  <header class="encabezado">
+    <div>
+      <h1>Pacientes</h1>
+      <p>Consulta la información registrada entre sesiones y organiza tu revisión.</p>
+    </div>
+  </header>
+
+  <div class="barra-controles">
+    <form class="buscador" (ngSubmit)="cargarPacientes()">
+      <input
+        type="search"
+        name="busqueda"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar por nombre o DNI..."
+        aria-label="Buscar por nombre o DNI"
+      >
+      <button mat-raised-button type="submit">Buscar</button>
+    </form>
+
+    <div class="filtros" role="group" aria-label="Filtrar por novedades">
+      <button mat-stroked-button type="button"
+              [attr.aria-pressed]="novedadSeleccionada === undefined"
+              (click)="filtrarPorNovedad()">
+        Todos
+      </button>
+
+      <button type="button"
+              [attr.aria-pressed]="novedadSeleccionada === 'NUEVOS_EPISODIOS'"
+              (click)="filtrarPorNovedad('NUEVOS_EPISODIOS')">
+        Nuevos episodios
+      </button>
+
+      <button type="button"
+              [attr.aria-pressed]="novedadSeleccionada === 'NUEVOS_REGISTROS'"
+              (click)="filtrarPorNovedad('NUEVOS_REGISTROS')">
+        Nuevos registros
+      </button>
+
+      <button type="button"
+              [attr.aria-pressed]="novedadSeleccionada === 'SIN_NOVEDADES'"
+              (click)="filtrarPorNovedad('SIN_NOVEDADES')">
+        Sin novedades
+      </button>
+    </div>
+  </div>
+
+  <section class="tarjeta-pacientes" aria-labelledby="titulo-lista">
+    <h2 id="titulo-lista">Pacientes en seguimiento activo</h2>
+
+    @if (cargando()) {
+      <p class="estado-lista" role="status">Cargando pacientes...</p>
+    } @else if (mensajeError()) {
+      <p class="estado-lista" role="alert">{{ mensajeError() }}</p>
+      <button mat-stroked-button type="button" (click)="cargarPacientes()">Reintentar</button>
+    } @else if (pacientes().length === 0) {
+      <p class="estado-lista">No se encontraron pacientes para esta consulta.</p>
+    } @else {
+      <p class="total-pacientes">Resultados: {{ pacientes().length }}</p>
+
+      <div class="tabla-contenedor">
+        <table class="tabla-pacientes">
+          <thead>
+          <tr>
+            <th scope="col">Paciente</th>
+            <th scope="col">Novedades</th>
+            <th scope="col">Último registro</th>
+            <th scope="col">Último episodio</th>
+            <th scope="col">Acción</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (paciente of pacientes(); track paciente.pacienteId) {
+              <tr>
+                <td>
+                  <div class="datos-paciente">
+                    <span class="avatar" aria-hidden="true">
+                      {{ paciente.nombres.charAt(0) }}{{ paciente.apellidos.charAt(0) }}
+                    </span>
+                    <div>
+                      <strong>{{ paciente.nombres }} {{ paciente.apellidos }}</strong>
+                      <small>DNI {{ paciente.dni }}</small>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="insignia" [attr.data-novedad]="paciente.novedad">
+                    {{ etiquetasNovedad[paciente.novedad] }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ paciente.fechaUltimoRegistro
+                  ? (paciente.fechaUltimoRegistro | date:'dd/MM/yyyy HH:mm')
+                  : 'Sin registros' }}
+                </td>
+
+                <td>
+                  {{ paciente.fechaUltimoEpisodio
+                  ? (paciente.fechaUltimoEpisodio | date:'dd/MM/yyyy HH:mm')
+                  : 'Sin episodios' }}
+                </td>
+
+                <td>
+                  <a mat-button class="boton-ver"
+                     [routerLink]="['/psicologo/pacientes', paciente.pacienteId, 'sesiones']"
+                     [attr.aria-label]="'Ver sesiones de ' + paciente.nombres + ' ' + paciente.apellidos">
+                    Ver
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>

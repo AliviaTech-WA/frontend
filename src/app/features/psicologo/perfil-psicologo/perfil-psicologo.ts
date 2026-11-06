@@ -1,0 +1,100 @@
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { EditarPerfil } from './components/editar-perfil/editar-perfil';
+import { PerfilPsicologoService } from './services/perfil-psicologo-service';
+
+@Component({
+  imports: [],
+  selector: 'app-perfil-psicologo',
+  styleUrl: './perfil-psicologo.css',
+  templateUrl: './perfil-psicologo.html',
+})
+export class PerfilPsicologo implements OnInit {
+  private autenticacionService = inject(AutenticacionService);
+  private perfilService = inject(PerfilPsicologoService);
+  private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef);
+
+  psicologo = {
+    nombres: '',
+    apellidos: '',
+    dni: '',
+    colegiatura: '',
+    especialidad: '',
+    telefono: '',
+    correo: '',
+  };
+
+  cargando = false;
+  mensajeError = '';
+
+  ngOnInit() {
+    this.cargarPerfil();
+  }
+
+  cargarPerfil() {
+    const sesion = this.autenticacionService.sesion();
+
+    if (!sesion || sesion.rol !== 'PSICOLOGO') {
+      this.mensajeError = 'No hay una sesión de psicólogo activa.';
+      return;
+    }
+
+    this.cargando = true;
+    this.mensajeError = '';
+
+    this.perfilService.obtenerPerfil(sesion.usuarioId).subscribe({
+      next: (data) => {
+        this.psicologo = {
+          nombres: data.nombres,
+          apellidos: data.apellidos,
+          dni: data.dni,
+          colegiatura: data.numeroColegiatura,
+          especialidad: data.especialidad,
+          telefono: data.telefono,
+          correo: data.correo,
+        };
+
+        this.cargando = false;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error al cargar perfil:', error);
+        this.mensajeError = 'No se pudo cargar el perfil.';
+        this.cargando = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  abrirEdicion() {
+    const sesion = this.autenticacionService.sesion();
+
+    if (!sesion || sesion.rol !== 'PSICOLOGO') {
+      this.mensajeError = 'No hay una sesión de psicólogo activa.';
+      return;
+    }
+
+    const dialogRef = this.dialog.open(EditarPerfil, {
+      width: '480px',
+      data: {
+        psicologoId: sesion.usuarioId,
+        correo: this.psicologo.correo,
+        telefono: this.psicologo.telefono,
+        especialidad: this.psicologo.especialidad,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((perfilActualizado) => {
+      if (!perfilActualizado) {
+        return;
+      }
+
+      this.psicologo.correo = perfilActualizado.correo;
+      this.psicologo.telefono = perfilActualizado.telefono;
+      this.psicologo.especialidad = perfilActualizado.especialidad;
+      this.cdr.markForCheck();
+    });
+  }
+}

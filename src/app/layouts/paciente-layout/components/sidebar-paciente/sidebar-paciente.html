@@ -1,0 +1,60 @@
+
+<aside class="sidebar">
+
+  <!-- Logo y nombre -->
+  <div class="marca">
+    <div class="logo">A</div>
+
+    <div>
+      <h3>AliviaTech</h3>
+      <p>Mi bienestar</p>
+    </div>
+  </div>
+
+  <!-- Menú del paciente -->
+  <nav class="menu">
+
+    <a routerLink="/paciente/inicio" routerLinkActive="activo">
+      <span class="punto"></span> Inicio
+    </a>
+
+    <a routerLink="/paciente/registro" routerLinkActive="activo">
+      <span class="punto"></span> Mi registro
+    </a>
+
+    <a routerLink="/paciente/eventos" routerLinkActive="activo">
+      <span class="punto"></span> Eventos
+    </a>
+
+    <a routerLink="/paciente/sesiones" routerLinkActive="activo">
+      <span class="punto"></span> Mis sesiones
+    </a>
+
+  </nav>
+
+  <!-- Parte inferior -->
+  <div class="parte-inferior">
+
+    <div class="mensaje">
+      <strong>Tu información, a tu ritmo</strong>
+      <p>Puedes registrar cómo te sientes cuando lo necesites. No es obligatorio.</p>
+    </div>
+
+    <!-- Perfil del paciente -->
+    <a routerLink="/paciente/perfil" class="perfil">
+
+      <div class="avatar">MG</div>
+
+      <div class="datos-perfil">
+        <strong>{{ nombreUsuario }}</strong>
+        <span>Paciente</span>
+      </div>
+
+      <!-- Flecha decorativa -->
+      <span class="flecha" aria-hidden="true">›</span>
+
+    </a>
+
+  </div>
+
+</aside>
