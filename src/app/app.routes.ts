@@ -23,6 +23,13 @@ export const routes: Routes = [
             (component) => component.PerfilPaciente,
           ),
       },
+      {
+        path: 'eventos',
+        loadComponent: () =>
+          import('./features/paciente/eventos/eventos').then(
+            (component) => component.Eventos,
+          ),
+      },
     ],
   },
   {

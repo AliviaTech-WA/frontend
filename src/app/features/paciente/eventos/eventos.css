@@ -1,0 +1,750 @@
+
+/* ======================================
+   ALIVIATECH - EVENTOS
+   HU16 Y HU17
+====================================== */
+
+:host {
+  display: block;
+
+  --verde: #128573;
+  --verde-oscuro: #075d51;
+
+  --texto: #1d2c29;
+  --texto-secundario: #778782;
+
+  --fondo-suave: #f0f9f6;
+  --blanco: #ffffff;
+  --borde: #e0e9e5;
+
+  --confirmado-fondo: #ffebe6;
+  --confirmado-texto: #ef4837;
+
+  --descartado-fondo: #e3f7ec;
+  --descartado-texto: #199767;
+
+  --pendiente-fondo: #fff5dd;
+  --pendiente-texto: #a66d0b;
+
+  font-family: Inter, Arial, sans-serif;
+  color: var(--texto);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* PÁGINA */
+
+.eventos-pagina {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 20px 24px 32px;
+}
+
+/* ENCABEZADO */
+
+.eventos-encabezado {
+  margin-bottom: 24px;
+}
+
+.eventos-encabezado h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.eventos-encabezado p {
+  margin: 0;
+  color: var(--texto-secundario);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* COLUMNAS */
+
+.eventos-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.9fr)
+    minmax(270px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.eventos-columna-principal,
+.eventos-columna-lateral {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TARJETAS */
+
+.eventos-tarjeta {
+  background: var(--blanco);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 22px rgba(24, 56, 46, 0.045);
+}
+
+/* TÍTULO DE PENDIENTES */
+
+.seccion-titulo {
+  margin-bottom: 14px;
+}
+
+.seccion-titulo h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.contador-pendientes {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 25px;
+  min-height: 25px;
+  padding: 3px 8px;
+
+  border-radius: 999px;
+  background: var(--pendiente-fondo);
+  color: var(--pendiente-texto);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ======================================
+   HU16 - TARJETAS PENDIENTES
+====================================== */
+
+.evento-pendiente {
+  margin-bottom: 18px;
+}
+
+.evento-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.evento-cabecera h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.evento-descripcion {
+  margin: 0 0 12px;
+  font-size: 11px;
+  line-height: 1.65;
+  color: #455651;
+}
+
+/* MÉTRICAS */
+
+.evento-metricas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.evento-metrica {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+  padding: 10px 8px;
+
+  background: var(--fondo-suave);
+  border-radius: 11px;
+
+  color: #304540;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* CONTEXTO */
+
+.evento-formulario {
+  margin-bottom: 14px;
+}
+
+.evento-formulario label {
+  display: block;
+  margin-bottom: 10px;
+  color: #2d3e39;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.evento-formulario textarea {
+  display: block;
+  width: 100%;
+  min-height: 79px;
+  padding: 12px;
+
+  resize: vertical;
+  background: #ffffff;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--texto);
+
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.evento-formulario textarea::placeholder {
+  color: #899894;
+}
+
+.evento-formulario textarea:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(18, 133, 115, 0.1);
+}
+
+.evento-formulario textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* PREGUNTA */
+
+.evento-respuesta h3 {
+  margin: 0 0 12px;
+  color: #30423d;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* BOTONES */
+
+.evento-botones {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.evento-boton {
+  flex: 0 1 138px;
+  min-height: 40px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--borde);
+  border-radius: 11px;
+  background: #ffffff;
+  color: #344641;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.evento-boton:hover:not(:disabled) {
+  border-color: var(--verde);
+  background: var(--fondo-suave);
+}
+
+.evento-boton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.evento-boton:focus-visible {
+  outline: 3px solid rgba(18, 133, 115, 0.3);
+  outline-offset: 2px;
+}
+
+.evento-boton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* BOTÓN SÍ */
+
+.boton-si {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: white;
+}
+
+.boton-si:hover:not(:disabled) {
+  background: var(--verde-oscuro);
+  border-color: var(--verde-oscuro);
+}
+
+/* BOTÓN NO */
+
+.boton-no {
+  background: #ffffff;
+}
+
+/* BOTÓN NO ESTOY SEGURO */
+
+.boton-inseguro {
+  flex-basis: 156px;
+  background: #ffffff;
+}
+
+/* ======================================
+   INSIGNIAS DE ESTADO
+====================================== */
+
+.evento-estado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  min-height: 29px;
+  min-width: 85px;
+  padding: 7px 15px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.estado-pendiente {
+  background: var(--pendiente-fondo);
+  color: var(--pendiente-texto);
+}
+
+.estado-confirmado {
+  background: var(--confirmado-fondo);
+  color: var(--confirmado-texto);
+}
+
+.estado-descartado {
+  background: var(--descartado-fondo);
+  color: var(--descartado-texto);
+}
+
+.estado-sin-confirmar {
+  background: var(--pendiente-fondo);
+  color: var(--pendiente-texto);
+}
+
+/* ======================================
+   HU17 - HISTORIAL
+====================================== */
+
+.historial {
+  margin-top: 2px;
+  padding: 20px;
+}
+
+.historial > h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.historial-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.historial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+
+  min-height: 75px;
+  padding: 13px 12px;
+
+  background: var(--fondo-suave);
+  border-radius: 12px;
+}
+
+.historial-informacion {
+  min-width: 0;
+}
+
+.historial-informacion h3 {
+  margin: 0 0 5px;
+  color: #263a34;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.historial-informacion p {
+  margin: 0;
+  color: #80918b;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.historial-informacion .historial-fecha {
+  margin-top: 5px;
+  color: #667a73;
+}
+
+.historial-item .evento-estado {
+  min-width: 100px;
+}
+
+.historial-mensaje {
+  color: var(--texto-secundario);
+  font-size: 12px;
+}
+
+/* ======================================
+   COLUMNA DERECHA
+====================================== */
+
+.eventos-explicacion {
+  background: var(--fondo-suave);
+  border-radius: 18px;
+  margin-bottom: 16px;
+  min-height: 260px;
+  padding: 18px 16px;
+}
+
+.eventos-etiqueta {
+  display: inline-block;
+  color: var(--verde-oscuro);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.eventos-explicacion h2 {
+  margin: 12px 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.eventos-explicacion p {
+  max-width: 330px;
+  margin: 0;
+
+  color: var(--texto-secundario);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* ESTADOS POSIBLES */
+
+.estados-posibles {
+  min-height: 230px;
+  margin-bottom: 16px;
+  padding: 18px;
+}
+
+.estados-posibles h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.estado-explicacion {
+  margin-bottom: 10px;
+}
+
+.estado-explicacion:last-child {
+  margin-bottom: 0;
+}
+
+.estado-explicacion p {
+  margin: 9px 0 0;
+  color: var(--texto-secundario);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* NOTIFICACIONES */
+
+.eventos-notificaciones {
+  min-height: 155px;
+  padding: 18px;
+}
+
+.eventos-notificaciones p {
+  margin: 12px 0 0;
+  color: var(--texto-secundario);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ======================================
+   MENSAJES
+====================================== */
+
+.mensaje-exito {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 18px;
+  margin-bottom: 16px;
+
+  border: 1px solid #bde7d1;
+  border-radius: 12px;
+
+  background: #e3f7ec;
+  color: #16845d;
+  font-size: 12px;
+}
+
+.mensaje-exito button {
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.mensaje-error {
+  margin: 12px 0;
+  font-size: 12px;
+  color: #c0392b;
+  line-height: 1.5;
+}
+
+.mensaje-guardando {
+  margin: 12px 0 0;
+  color: var(--verde);
+  font-size: 12px;
+}
+
+/* SIN EVENTOS PENDIENTES */
+
+.estado-general {
+  margin-bottom: 18px;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.estado-general h2 {
+  margin: 10px 0 8px;
+  font-size: 18px;
+}
+
+.estado-general p {
+  margin: 0 0 12px;
+  color: var(--texto-secundario);
+  font-size: 12px;
+}
+
+.estado-general .evento-boton {
+  margin-top: 10px;
+}
+
+
+
+/* ======================================
+   RESPONSIVE - TABLETS
+====================================== */
+
+@media (max-width: 1024px) {
+  .eventos-grid {
+    grid-template-columns:
+      minmax(0, 1.6fr)
+      minmax(230px, 1fr);
+    gap: 16px;
+  }
+
+  .eventos-pagina {
+    padding: 20px 16px;
+  }
+
+  .evento-botones {
+    flex-wrap: wrap;
+  }
+}
+
+/* ======================================
+   RESPONSIVE - PANTALLAS PEQUEÑAS
+====================================== */
+
+@media (max-width: 760px) {
+  .eventos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eventos-columna-lateral {
+    gap: 16px;
+  }
+
+  .eventos-explicacion {
+    min-height: 0;
+    padding: 8px 4px;
+  }
+
+  .estados-posibles {
+    margin-bottom: 0;
+  }
+
+  .eventos-notificaciones {
+    min-height: 0;
+  }
+}
+
+/* ======================================
+   RESPONSIVE - CELULARES
+====================================== */
+
+@media (max-width: 480px) {
+  .eventos-pagina {
+    padding: 16px 8px 24px;
+  }
+
+  .eventos-encabezado h1 {
+    font-size: 26px;
+  }
+
+  .eventos-tarjeta {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .evento-cabecera h2 {
+    font-size: 16px;
+  }
+
+  .evento-metricas {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .evento-metrica {
+    min-height: 36px;
+  }
+
+  .evento-botones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .evento-boton {
+    width: 100%;
+  }
+
+  .boton-inseguro {
+    grid-column: 1 / -1;
+  }
+
+  .historial-item {
+    flex-wrap: wrap;
+  }
+  
+/* ====================================
+   HISTORIAL - AJUSTE VISUAL FIGMA
+==================================== */
+
+.historial {
+  margin-top: 2px;
+  padding: 20px 16px 16px;
+  border-radius: 18px;
+}
+
+.historial > h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1d2c29;
+}
+
+.historial-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.historial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  min-height: 75px;
+  padding: 13px 12px;
+
+  background: #f0f9f6;
+  border-radius: 12px;
+}
+
+.historial-informacion {
+  flex: 1;
+  min-width: 0;
+}
+
+.historial-informacion h3 {
+  margin: 0 0 5px;
+
+  font-size: 11px;
+  font-weight: 700;
+  color: #263a34;
+}
+
+.historial-informacion p {
+  margin: 0;
+
+  font-size: 10px;
+  line-height: 1.45;
+  color: #80918b;
+  overflow-wrap: anywhere;
+}
+
+.historial-item .evento-estado {
+  min-width: 101px;
+  min-height: 29px;
+  padding: 7px 14px;
+  font-size: 11px;
+  border-radius: 999px;
+}
+
+@media (max-width: 480px) {
+  .historial {
+    padding: 16px 12px;
+  }
+
+  .historial-item {
+    gap: 10px;
+    padding: 12px 10px;
+  }
+
+  .historial-item .evento-estado {
+    min-width: 85px;
+    padding: 7px 10px;
+  }
+}
+
+}
+
