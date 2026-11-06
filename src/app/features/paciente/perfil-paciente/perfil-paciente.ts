@@ -8,7 +8,7 @@ import { finalize } from 'rxjs';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { ConsultaDispositivoAsignado } from '../dispositivos/models/dispositivo.model';
 import { DispositivoService } from '../dispositivos/services/dispositivo.service';
-import { ActualizarPerfilRequest, PerfilPersonal } from './models/perfil-personal.model';
+import { ActualizarPerfilRequest, ContactoEmergencia, PerfilPersonal } from './models/perfil-personal.model';
 import { PerfilPersonalService } from './services/perfil-personal.service';
 
 @Component({
@@ -46,6 +46,12 @@ export class PerfilPaciente implements OnInit {
   mensajePerfil = signal('');
   correoFormulario = '';
   telefonoFormulario = '';
+
+  // HU21: edición del contacto de emergencia
+  modalContactoAbierto = signal(false);
+  guardandoContacto = signal(false);
+  errorContacto = signal('');
+  contactoFormulario: ContactoEmergencia = this.contactoVacio();
 
   // HU14: Información del dispositivo
   dispositivo = signal<ConsultaDispositivoAsignado | null>(null);
@@ -233,6 +239,90 @@ export class PerfilPaciente implements OnInit {
           );
         },
       });
+  }
+
+  // ==============================
+  // HU21: EDITAR CONTACTO DE EMERGENCIA
+  // ==============================
+
+  abrirEditarContacto(): void {
+    const datos = this.perfil();
+    if (!datos) return;
+
+    this.contactoFormulario = datos.contactoEmergencia
+      ? { ...datos.contactoEmergencia, correo: datos.contactoEmergencia.correo ?? '' }
+      : this.contactoVacio();
+    this.errorContacto.set('');
+    this.mensajePerfil.set('');
+    this.modalContactoAbierto.set(true);
+  }
+
+  cerrarEditarContacto(): void {
+    if (this.guardandoContacto()) return;
+
+    this.modalContactoAbierto.set(false);
+    this.errorContacto.set('');
+  }
+
+  guardarContacto(): void {
+    const datos = this.perfil();
+    const sesion = this.autenticacion.sesion();
+    if (!datos || this.guardandoContacto()) return;
+
+    const solicitud: ContactoEmergencia = {
+      nombreCompleto: this.contactoFormulario.nombreCompleto.trim(),
+      relacion: this.contactoFormulario.relacion.trim(),
+      telefono: this.contactoFormulario.telefono.trim(),
+      correo: (this.contactoFormulario.correo ?? '').trim() || null,
+    };
+
+    if (!solicitud.nombreCompleto || !solicitud.relacion || !solicitud.telefono) {
+      this.errorContacto.set('Completa el nombre, la relación y el teléfono del contacto.');
+      return;
+    }
+
+    if (solicitud.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(solicitud.correo)) {
+      this.errorContacto.set('Ingresa un correo válido o deja el campo vacío.');
+      return;
+    }
+
+    if (!sesion || sesion.rol !== 'PACIENTE') {
+      this.errorContacto.set('Tu sesión no está disponible. Vuelve a iniciar sesión.');
+      return;
+    }
+
+    this.guardandoContacto.set(true);
+    this.errorContacto.set('');
+
+    this.perfilPersonalService
+      .guardarContacto(sesion.usuarioId, solicitud)
+      .pipe(finalize(() => this.guardandoContacto.set(false)))
+      .subscribe({
+        next: (respuesta) => {
+          this.perfil.set({
+            ...datos,
+            contactoEmergencia: {
+              nombreCompleto: respuesta.nombreCompleto,
+              relacion: respuesta.relacion,
+              telefono: respuesta.telefono,
+              correo: respuesta.correo,
+            },
+          });
+          this.modalContactoAbierto.set(false);
+          this.mensajePerfil.set('Tu contacto de emergencia se guardó correctamente.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorContacto.set(
+            error.status === 400
+              ? 'Revisa los datos del contacto e intenta nuevamente.'
+              : 'No se pudo guardar el contacto. Intenta nuevamente.',
+          );
+        },
+      });
+  }
+
+  private contactoVacio(): ContactoEmergencia {
+    return { nombreCompleto: '', relacion: '', telefono: '', correo: '' };
   }
 
   // ==============================
