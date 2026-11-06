@@ -1,5 +1,5 @@
+<!-- HU08: dashboard del paciente -->
 <div class="inicio-paciente">
-
   <div class="encabezado">
     @if (dashboard(); as datos) {
       <h1>Hola, {{ datos.nombres }}</h1>
@@ -18,6 +18,7 @@
     </p>
   }
 
+  <!--registro-estado-card -->
   <section class="bienvenida">
     <div class="bienvenida-contenido">
       <span>TU ESPACIO</span>
@@ -46,6 +47,60 @@
       }
     </div>
   </section>
+
+
+  <!-- evento-pendiente-card-->
+  <div class="contenido-grid">
+    <div class="columna-principal">
+
+      @if (dashboard(); as datos) {
+
+        @if (datos.eventoPendiente; as evento) {
+          <article class="evento-pendiente">
+
+            <div class="evento-encabezado">
+              <div>
+                <h2>Tienes un evento por confirmar</h2>
+
+                <p class="evento-fecha">
+                  {{ obtenerDiaRegistro(evento.fechaHoraInicio) }}
+                  ·
+                  {{ evento.fechaHoraInicio | date:'HH:mm' }}
+                </p>
+              </div>
+
+              <span class="evento-estado">
+              Pendiente
+            </span>
+            </div>
+
+            <p class="evento-descripcion">
+              Registramos cambios en tus datos durante este momento.
+              Puedes indicar si coincidieron con ansiedad o malestar.
+            </p>
+
+            <a
+              class="evento-boton"
+              routerLink="/paciente/eventos">
+              Revisar evento
+            </a>
+
+          </article>
+
+        } @else {
+          <article class="evento-pendiente">
+            <h2>No tienes eventos pendientes</h2>
+            <p class="evento-descripcion">
+              No hay eventos que necesiten tu confirmación.
+            </p>
+          </article>
+        }
+
+      }
+
+    </div>
+  </div>
+
 
 </div>
 
