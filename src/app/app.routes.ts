@@ -38,6 +38,12 @@ export const routes: Routes = [
     canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PSICOLOGO' },
     children: [
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./features/psicologo/inicio/inicio').then((component) => component.InicioPsicologo),
+      },
       {
         path: 'perfil',
         loadComponent: () =>
