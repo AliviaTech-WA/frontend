@@ -329,3 +329,85 @@ button:disabled {
     gap: 12px;
   }
 }
+
+/* ================================== */
+/* HU21: PERFIL PERSONAL              */
+/* ================================== */
+
+.columna-izquierda {
+  display: grid;
+  gap: 16px;
+}
+
+.tarjeta-presentacion {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 26px 18px;
+}
+
+.avatar-perfil {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #e6f5ef;
+  color: #0f5f52;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.presentacion-texto h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.presentacion-texto p {
+  margin: 0;
+  color: #6e7d78;
+  font-size: 12px;
+}
+
+.titulo-seccion {
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+
+.campos-perfil {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.campo {
+  background: #f1f8f5;
+  border-radius: 10px;
+  padding: 12px 12px 14px;
+}
+
+.campo dt {
+  margin-bottom: 6px;
+  color: #6e7d78;
+  font-size: 10px;
+}
+
+.campo dd {
+  margin: 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.nota-campos {
+  margin: 14px 0 0;
+  color: #6e7d78;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .campos-perfil {
+    grid-template-columns: 1fr;
+  }
+}
