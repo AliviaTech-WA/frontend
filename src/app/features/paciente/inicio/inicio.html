@@ -133,8 +133,7 @@
       }
 
 
-
-      <!-- HU08: ÚLTIMA SESIÓN -->
+      <!-- ÚLTIMA SESIÓN -->
       @if (dashboard()?.ultimaSesion; as sesion) {
         <article class="tarjeta-sesion">
 
@@ -183,10 +182,55 @@
           </p>
         </article>
       }
-
     </div>
+
+    <!-- HU08: DISPOSITIVO ASIGNADO -->
+    <aside class="columna-lateral">
+
+      @if (dashboard(); as datos) {
+
+        @if (datos.dispositivo; as dispositivo) {
+          <article class="tarjeta-dispositivo">
+
+            <div class="dispositivo-encabezado">
+              <div class="dispositivo-informacion">
+                <h2>{{ dispositivo.alias }}</h2>
+                <p>{{ dispositivo.modelo }} · Vinculada</p>
+              </div>
+
+              <span
+                class="dispositivo-estado"
+                [class.estado-no-activo]="dispositivo.estado !== 'ACTIVO'">
+            {{ dispositivo.estado === 'ACTIVO' ? 'Activa' : dispositivo.estado }}
+          </span>
+            </div>
+
+            @if (dispositivo.fechaUltimaSincronizacion) {
+              <p class="dispositivo-sincronizacion">
+                Última sincronización:
+                {{ dispositivo.fechaUltimaSincronizacion | date:'dd/MM/yyyy, HH:mm':'-0500' }}
+              </p>
+            } @else {
+              <p class="dispositivo-sincronizacion">
+                Sin sincronizaciones registradas.
+              </p>
+            }
+
+          </article>
+
+        } @else {
+          <article class="tarjeta-dispositivo">
+            <h2>Sin dispositivo asignado</h2>
+            <p class="dispositivo-sincronizacion">
+              Todavía no tienes una pulsera vinculada.
+            </p>
+          </article>
+        }
+
+      }
+
+    </aside>
+
   </div>
-
-
 </div>
 
