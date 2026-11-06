@@ -411,3 +411,43 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+/* HU21: botón y modal de edición de datos personales */
+.boton-editar {
+  margin-left: auto;
+  padding-inline: 20px;
+}
+
+.modal-perfil {
+  width: min(620px, 100%);
+  min-height: auto;
+}
+
+.grupo-campo {
+  margin-bottom: 18px;
+}
+
+.aviso-modal {
+  background: #f1f8f5;
+  border-radius: 12px;
+  padding: 14px 12px;
+  margin-top: 8px;
+}
+
+.aviso-modal strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #0f5f52;
+  font-size: 12px;
+}
+
+.aviso-modal p {
+  margin: 0;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.acciones-perfil {
+  margin-top: 40px;
+}
