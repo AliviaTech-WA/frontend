@@ -1,0 +1,47 @@
+
+.inicio-paciente {
+  padding: 32px;
+  background-color: #f6f9f8;
+  min-height: 100vh;
+}
+
+.encabezado {
+  margin-bottom: 24px;
+}
+
+.encabezado h1 {
+  font-size: 30px;
+  color: #1a2825;
+  margin-bottom: 6px;
+}
+
+.encabezado p {
+  font-size: 13px;
+  color: #6e7d78;
+}
+
+.bienvenida {
+  background-color: #0c5c50;
+  border-radius: 22px;
+  padding: 28px;
+  color: white;
+}
+
+.bienvenida h2 {
+  font-size: 28px;
+  margin: 12px 0;
+}
+
+.bienvenida p {
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.bienvenida button {
+  background-color: white;
+  color: #30403c;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+}
