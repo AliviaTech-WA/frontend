@@ -16,6 +16,12 @@ export const routes: Routes = [
     canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PACIENTE' },
     children: [
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./features/paciente/inicio/inicio').then((component) => component.Inicio),
+      },
       {
         path: 'perfil',
         loadComponent: () =>
@@ -26,9 +32,7 @@ export const routes: Routes = [
       {
         path: 'eventos',
         loadComponent: () =>
-          import('./features/paciente/eventos/eventos').then(
-            (component) => component.Eventos,
-          ),
+          import('./features/paciente/eventos/eventos').then((component) => component.Eventos),
       },
       {
         path: 'sesiones',
@@ -45,6 +49,14 @@ export const routes: Routes = [
     canActivate: [autenticacionPorRolGuard],
     data: { rol: 'PSICOLOGO' },
     children: [
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./features/psicologo/inicio/inicio').then(
+            (component) => component.InicioPsicologo,
+          ),
+      },
       {
         path: 'perfil',
         loadComponent: () =>

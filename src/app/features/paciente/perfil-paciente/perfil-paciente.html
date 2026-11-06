@@ -49,7 +49,21 @@
             <h2>{{ nombreCompleto() }}</h2>
             <p>Paciente · Cuenta activa</p>
           </div>
+
+          <button type="button" class="boton-secundario boton-editar" (click)="abrirEditarDatos()">
+            Editar datos
+          </button>
         </article>
+
+        @if (mensajePerfil()) {
+
+          <div class="alerta-exito" role="status">
+            <strong>Datos actualizados</strong>
+            <span>{{ mensajePerfil() }}</span>
+            <button type="button" aria-label="Cerrar aviso" (click)="mensajePerfil.set('')">×</button>
+          </div>
+
+        }
 
         <!-- DATOS PERSONALES -->
         <article class="tarjeta" aria-labelledby="titulo-datos">
@@ -89,7 +103,13 @@
 
         <!-- CONTACTO DE EMERGENCIA -->
         <article class="tarjeta" aria-labelledby="titulo-contacto">
-          <h2 id="titulo-contacto" class="titulo-seccion">Contacto de emergencia</h2>
+          <div class="cabecera-seccion">
+            <h2 id="titulo-contacto" class="titulo-seccion">Contacto de emergencia</h2>
+
+            <button type="button" class="enlace-editar" (click)="abrirEditarContacto()">
+              {{ datos.contactoEmergencia ? 'Editar' : 'Registrar' }}
+            </button>
+          </div>
 
           @if (datos.contactoEmergencia; as contacto) {
 
@@ -409,6 +429,225 @@
             }}
           </button>
 
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+}
+
+
+<!-- ====================================== -->
+<!-- HU21: MODAL EDITAR DATOS PERSONALES    -->
+<!-- ====================================== -->
+
+@if (modalDatosAbierto()) {
+
+  <div class="fondo-modal" (click)="cerrarEditarDatos()">
+
+    <section
+      class="modal modal-perfil"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-datos"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="cabecera-modal">
+        <h2 id="titulo-modal-datos">Editar datos personales</h2>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          aria-label="Cerrar ventana"
+          [disabled]="guardandoDatos()"
+          (click)="cerrarEditarDatos()"
+        >
+          ×
+        </button>
+      </div>
+
+      <p class="subtitulo-modal">Solo puedes modificar tus datos de contacto.</p>
+
+      <form (ngSubmit)="guardarDatos()" novalidate>
+
+        <div class="grupo-campo">
+          <label for="correo-perfil">Correo</label>
+          <input
+            id="correo-perfil"
+            name="correo"
+            type="email"
+            maxlength="254"
+            [(ngModel)]="correoFormulario"
+            (ngModelChange)="errorDatos.set('')"
+            [disabled]="guardandoDatos()"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="telefono-perfil">Teléfono</label>
+          <input
+            id="telefono-perfil"
+            name="telefono"
+            type="tel"
+            maxlength="20"
+            [(ngModel)]="telefonoFormulario"
+            (ngModelChange)="errorDatos.set('')"
+            [disabled]="guardandoDatos()"
+            autocomplete="tel"
+          />
+        </div>
+
+        <div class="aviso-modal">
+          <strong>Datos no editables</strong>
+          <p>Nombres, apellidos, DNI y fecha de nacimiento permanecen bloqueados.</p>
+        </div>
+
+        @if (errorDatos()) {
+          <p class="error-campo" role="alert">{{ errorDatos() }}</p>
+        }
+
+        <div class="acciones-modal acciones-perfil">
+          <button
+            type="button"
+            class="boton-secundario"
+            [disabled]="guardandoDatos()"
+            (click)="cerrarEditarDatos()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="boton-primario" [disabled]="guardandoDatos()">
+            {{ guardandoDatos() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+}
+
+
+<!-- ====================================== -->
+<!-- HU21: MODAL CONTACTO DE EMERGENCIA     -->
+<!-- ====================================== -->
+
+@if (modalContactoAbierto()) {
+
+  <div class="fondo-modal" (click)="cerrarEditarContacto()">
+
+    <section
+      class="modal modal-perfil modal-contacto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-contacto"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="cabecera-modal">
+        <h2 id="titulo-modal-contacto">Editar contacto de emergencia</h2>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          aria-label="Cerrar ventana"
+          [disabled]="guardandoContacto()"
+          (click)="cerrarEditarContacto()"
+        >
+          ×
+        </button>
+      </div>
+
+      <p class="subtitulo-modal">Actualiza a la persona que deseas registrar como contacto.</p>
+
+      <form (ngSubmit)="guardarContacto()" novalidate>
+
+        <div class="fila-campos">
+          <div class="grupo-campo">
+            <label for="nombre-contacto">Nombre completo</label>
+            <input
+              id="nombre-contacto"
+              name="nombreCompleto"
+              type="text"
+              maxlength="200"
+              [(ngModel)]="contactoFormulario.nombreCompleto"
+              (ngModelChange)="errorContacto.set('')"
+              [disabled]="guardandoContacto()"
+            />
+          </div>
+
+          <div class="grupo-campo">
+            <label for="relacion-contacto">Relación</label>
+            <input
+              id="relacion-contacto"
+              name="relacion"
+              type="text"
+              maxlength="50"
+              [(ngModel)]="contactoFormulario.relacion"
+              (ngModelChange)="errorContacto.set('')"
+              [disabled]="guardandoContacto()"
+            />
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="telefono-contacto">Teléfono</label>
+          <input
+            id="telefono-contacto"
+            name="telefonoContacto"
+            type="tel"
+            maxlength="20"
+            [(ngModel)]="contactoFormulario.telefono"
+            (ngModelChange)="errorContacto.set('')"
+            [disabled]="guardandoContacto()"
+          />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="correo-contacto">Correo</label>
+          <input
+            id="correo-contacto"
+            name="correoContacto"
+            type="email"
+            maxlength="254"
+            [(ngModel)]="contactoFormulario.correo"
+            (ngModelChange)="errorContacto.set('')"
+            [disabled]="guardandoContacto()"
+          />
+        </div>
+
+        <div class="aviso-modal">
+          <strong>Uso del contacto</strong>
+          <p>
+            Este dato queda registrado en tu perfil. AliviaTech no realiza llamadas automáticas
+            ni atención de emergencia.
+          </p>
+        </div>
+
+        @if (errorContacto()) {
+          <p class="error-campo" role="alert">{{ errorContacto() }}</p>
+        }
+
+        <div class="acciones-modal acciones-perfil">
+          <button
+            type="button"
+            class="boton-secundario"
+            [disabled]="guardandoContacto()"
+            (click)="cerrarEditarContacto()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="boton-primario" [disabled]="guardandoContacto()">
+            {{ guardandoContacto() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
         </div>
 
       </form>
