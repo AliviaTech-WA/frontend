@@ -1,13 +1,15 @@
 
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { ConsultaDispositivoAsignado } from '../dispositivos/models/dispositivo.model';
 import { DispositivoService } from '../dispositivos/services/dispositivo.service';
+import { PerfilPersonal } from './models/perfil-personal.model';
+import { PerfilPersonalService } from './services/perfil-personal.service';
 
 @Component({
   selector: 'app-perfil-paciente',
@@ -19,6 +21,23 @@ export class PerfilPaciente implements OnInit {
 
   private readonly autenticacion = inject(AutenticacionService);
   private readonly dispositivoService = inject(DispositivoService);
+  private readonly perfilPersonalService = inject(PerfilPersonalService);
+
+  // HU21: datos personales y contacto de emergencia
+  perfil = signal<PerfilPersonal | null>(null);
+  cargandoPerfil = signal(false);
+  errorPerfil = signal('');
+
+  nombreCompleto = computed(() => {
+    const datos = this.perfil();
+    return datos ? `${datos.nombres} ${datos.apellidos}` : '';
+  });
+
+  iniciales = computed(() => {
+    const datos = this.perfil();
+    if (!datos) return '';
+    return `${datos.nombres.charAt(0)}${datos.apellidos.charAt(0)}`.toUpperCase();
+  });
 
   // HU14: Información del dispositivo
   dispositivo = signal<ConsultaDispositivoAsignado | null>(null);
@@ -49,7 +68,39 @@ export class PerfilPaciente implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarPerfil();
     this.cargarDispositivo();
+  }
+
+  // ==============================
+  // HU21: CONSULTAR PERFIL PERSONAL
+  // ==============================
+
+  cargarPerfil(): void {
+    const sesion = this.autenticacion.sesion();
+
+    if (!sesion || sesion.rol !== 'PACIENTE') {
+      this.errorPerfil.set('Inicia sesión como paciente para consultar tu perfil.');
+      return;
+    }
+
+    this.cargandoPerfil.set(true);
+    this.errorPerfil.set('');
+
+    this.perfilPersonalService
+      .consultar(sesion.usuarioId)
+      .pipe(finalize(() => this.cargandoPerfil.set(false)))
+      .subscribe({
+        next: (respuesta) => this.perfil.set(respuesta),
+        error: (error: HttpErrorResponse) => {
+          this.perfil.set(null);
+          this.errorPerfil.set(
+            error.status === 403
+              ? 'No tienes permiso para consultar este perfil.'
+              : 'No pudimos cargar tus datos. Intenta nuevamente.',
+          );
+        },
+      });
   }
 
   // ==============================
