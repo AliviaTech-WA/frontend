@@ -1,6 +1,7 @@
 <!-- HU08: dashboard del paciente -->
 <div class="inicio-paciente">
   <div class="encabezado">
+    <div class="encabezado-informacion">
     @if (dashboard(); as datos) {
       <h1>Hola, {{ datos.nombres }}</h1>
     } @else if (cargando()) {
@@ -11,6 +12,10 @@
 
     <p>{{ fechaActual }}</p>
   </div>
+
+  <app-notificaciones-paciente />
+  </div>
+
 
   @if (errorCarga()) {
     <p class="mensaje-error" role="alert">
