@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { DashboardPacienteModel } from './models/dashboard-paciente.model';
 import { DashboardPacienteService } from './services/dashboard-paciente.service';
@@ -47,6 +47,14 @@ export class Inicio {
       day: 'numeric',
       month: 'short',
     }).format(fecha);
+  }
+
+  protected formatearFechaSesion(fechaSesion: string): string {
+    return new Intl.DateTimeFormat('es-PE', {
+      day: 'numeric',
+      month: 'long',
+      timeZone: 'America/Lima',
+    }).format(new Date(fechaSesion));
   }
 
   ngOnInit(): void {

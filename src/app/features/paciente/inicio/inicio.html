@@ -18,7 +18,7 @@
     </p>
   }
 
-  <!--registro-estado-card -->
+  <!--registro estado card -->
   <section class="bienvenida">
     <div class="bienvenida-contenido">
       <span>TU ESPACIO</span>
@@ -49,7 +49,7 @@
   </section>
 
 
-  <!-- evento-pendiente-card-->
+  <!-- evento pendiente card-->
   <div class="contenido-grid">
     <div class="columna-principal">
 
@@ -91,11 +91,97 @@
           <article class="evento-pendiente">
             <h2>No tienes eventos pendientes</h2>
             <p class="evento-descripcion">
-              No hay eventos que necesiten tu confirmación.
+              No hay eventos por confirmar en este momento.<br>
+              Si detectamos una variación en los datos de tu pulsera, aparecerá aquí para que puedas revisarla.
             </p>
           </article>
         }
+      }
 
+      <!--  ultima recomendacion card -->
+      @if (dashboard()?.ultimaRecomendacion; as recomendacion) {
+        <article class="tarjeta-recomendacion">
+
+    <span class="recomendacion-etiqueta">
+      ÚLTIMA RECOMENDACIÓN
+    </span>
+
+          <h2 class="recomendacion-texto">
+            {{ recomendacion.texto }}
+          </h2>
+
+          <p class="recomendacion-autor">
+            {{ recomendacion.psicologo }}
+            ·
+            {{ recomendacion.fecha | date:'dd/MM/yyyy' }}
+          </p>
+
+        </article>
+
+      } @else if (dashboard()) {
+        <article class="tarjeta-recomendacion">
+
+    <span class="recomendacion-etiqueta">
+      ÚLTIMA RECOMENDACIÓN
+    </span>
+
+          <p class="recomendacion-vacia">
+            Tu psicólogo todavía no ha compartido recomendaciones.
+          </p>
+
+        </article>
+      }
+
+
+
+      <!-- HU08: ÚLTIMA SESIÓN -->
+      @if (dashboard()?.ultimaSesion; as sesion) {
+        <article class="tarjeta-sesion">
+
+    <span class="sesion-etiqueta">
+      ÚLTIMA SESIÓN
+    </span>
+
+          <div class="sesion-fila">
+            <h2 class="sesion-fecha">
+              {{ formatearFechaSesion(sesion.fechaSesion) }}
+            </h2>
+
+            <span class="sesion-enlace">
+        Ver mis sesiones
+      </span>
+          </div>
+
+          @if (sesion.tieneResumen && sesion.tieneRecomendacion) {
+            <p class="sesion-descripcion">
+              Hay un resumen y una recomendación disponibles.
+            </p>
+          } @else if (sesion.tieneResumen) {
+            <p class="sesion-descripcion">
+              Tienes un resumen de la sesión disponible.
+            </p>
+          } @else if (sesion.tieneRecomendacion) {
+            <p class="sesion-descripcion">
+              Tienes una recomendación disponible.
+            </p>
+          } @else {
+            <p class="sesion-descripcion">
+              Aún no hay información compartida de esta sesión.
+            </p>
+          }
+
+        </article>
+
+      } @else if (dashboard()) {
+        <article class="tarjeta-sesion">
+    <span class="sesion-etiqueta">
+      ÚLTIMA SESIÓN
+    </span>
+
+          <p class="sesion-descripcion">
+            Todavía no tienes sesiones registradas.
+          </p>
+        </article>
       }
 
     </div>
