@@ -17,17 +17,111 @@
 
   <div class="cuadricula">
 
-    <!-- SECCIÓN RESERVADA PARA HU21 -->
-    <article class="tarjeta tarjeta-informacion">
-      <p class="eyebrow">MI INFORMACIÓN</p>
+    <!-- ================================== -->
+    <!-- HU21: PERFIL PERSONAL              -->
+    <!-- ================================== -->
+    <div class="columna-izquierda">
 
-      <h2>Datos personales</h2>
+      @if (cargandoPerfil()) {
 
-      <p>
-        Esta sección corresponde a HU21 y se integrará
-        con el componente de perfil personal del equipo.
-      </p>
-    </article>
+        <article class="tarjeta">
+          <p class="estado-ayuda" role="status">Cargando tus datos...</p>
+        </article>
+
+      } @else if (errorPerfil()) {
+
+        <article class="tarjeta">
+          <div class="estado-ayuda" role="alert">
+            <p>{{ errorPerfil() }}</p>
+            <button type="button" class="boton-secundario" (click)="cargarPerfil()">
+              Reintentar
+            </button>
+          </div>
+        </article>
+
+      } @else if (perfil(); as datos) {
+
+        <!-- TARJETA DE PRESENTACIÓN -->
+        <article class="tarjeta tarjeta-presentacion">
+          <div class="avatar-perfil" aria-hidden="true">{{ iniciales() }}</div>
+
+          <div class="presentacion-texto">
+            <h2>{{ nombreCompleto() }}</h2>
+            <p>Paciente · Cuenta activa</p>
+          </div>
+        </article>
+
+        <!-- DATOS PERSONALES -->
+        <article class="tarjeta" aria-labelledby="titulo-datos">
+          <h2 id="titulo-datos" class="titulo-seccion">Datos personales</h2>
+
+          <dl class="campos-perfil">
+            <div class="campo">
+              <dt>Nombres</dt>
+              <dd>{{ datos.nombres }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Apellidos</dt>
+              <dd>{{ datos.apellidos }}</dd>
+            </div>
+            <div class="campo">
+              <dt>DNI</dt>
+              <dd>{{ datos.dni }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Correo</dt>
+              <dd>{{ datos.correo }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Teléfono</dt>
+              <dd>{{ datos.telefono || 'Sin registrar' }}</dd>
+            </div>
+            <div class="campo">
+              <dt>Fecha de nacimiento</dt>
+              <dd>{{ datos.fechaNacimiento ? (datos.fechaNacimiento | date: 'dd/MM/yyyy') : 'Sin registrar' }}</dd>
+            </div>
+          </dl>
+
+          <p class="nota-campos">
+            Puedes editar correo y teléfono. Nombres, apellidos y DNI permanecen bloqueados.
+          </p>
+        </article>
+
+        <!-- CONTACTO DE EMERGENCIA -->
+        <article class="tarjeta" aria-labelledby="titulo-contacto">
+          <h2 id="titulo-contacto" class="titulo-seccion">Contacto de emergencia</h2>
+
+          @if (datos.contactoEmergencia; as contacto) {
+
+            <dl class="campos-perfil">
+              <div class="campo">
+                <dt>Nombre completo</dt>
+                <dd>{{ contacto.nombreCompleto }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Relación</dt>
+                <dd>{{ contacto.relacion }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Teléfono</dt>
+                <dd>{{ contacto.telefono }}</dd>
+              </div>
+              <div class="campo">
+                <dt>Correo</dt>
+                <dd>{{ contacto.correo || 'Sin registrar' }}</dd>
+              </div>
+            </dl>
+
+          } @else {
+
+            <p class="nota-campos">Todavía no registras un contacto de emergencia.</p>
+
+          }
+        </article>
+
+      }
+
+    </div>
 
     <div class="columna-derecha">
 
