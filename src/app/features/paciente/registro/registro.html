@@ -117,10 +117,7 @@
         <p class="historial-mensaje" role="status">
           Cargando registros...
         </p>
-      }
-
-      <!-- HU10: permite reintentar si falla la consulta. -->
-      @else if (errorRegistros()) {
+      } @else if (errorRegistros()) {
         <p class="mensaje-error" role="alert">
           {{ errorRegistros() }}
         </p>
@@ -132,26 +129,16 @@
         >
           Reintentar
         </button>
-      }
-
-      <!-- HU10: estado vacío cuando todavía no existen registros. -->
-      @else if (registros().length === 0) {
+      } @else if (registros().length === 0) {
         <p class="historial-mensaje">
           Todavía no tienes registros de bienestar.
           Cuando realices uno, aparecerá aquí.
         </p>
-      }
-
-      <!-- HU10: registros reales ordenados del más reciente al más antiguo. -->
-      @else {
+      } @else {
         <div class="lista-registros">
-
           @for (registro of registros(); track registro.registroId) {
-
             <article class="item-registro">
-
               <div class="registro-superior">
-
                 <time [attr.datetime]="registro.fechaHora">
                   {{ formatearFecha(registro.fechaHora) }}
                 </time>
@@ -160,12 +147,10 @@
               <span class="etiqueta-ansiedad">
                 Ansiedad: {{ registro.nivelAnsiedad }}/10
               </span>
-
                   <span class="etiqueta-animo">
                 {{ mostrarEstado(registro.estadoAnimo) }}
-              </span>
+                  </span>
                 </div>
-
               </div>
 
               <!-- Muestra el comentario únicamente cuando existe. -->
@@ -175,11 +160,8 @@
               >
                 {{ registro.comentario?.trim() || 'Sin comentario' }}
               </p>
-
             </article>
-
           }
-
         </div>
       }
     </aside>
