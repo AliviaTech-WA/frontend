@@ -179,6 +179,19 @@
   background-color: #BFE5D8;
 }
 
+/* Mantiene resaltada la tarjeta del usuario mientras está en su perfil. */
+.perfil.activo,
+.perfil.activo:hover {
+  background-color: #C2EBDD;
+  box-shadow: inset 3px 0 0 #008F75;
+}
+
+/* Resalta el nombre del usuario cuando su perfil está seleccionado. */
+.perfil.activo .datos-perfil strong {
+  color: #006B58;
+}
+
+
 /* Flecha decorativa */
 .flecha {
   margin-left: auto;

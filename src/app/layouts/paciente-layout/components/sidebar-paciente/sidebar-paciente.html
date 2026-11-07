@@ -66,9 +66,10 @@
     </div>
 
     <!-- Perfil del paciente -->
-    <a routerLink="/paciente/perfil" class="perfil">
+    <a routerLink="/paciente/perfil" routerLinkActive="activo" class="perfil">
 
-      <div class="avatar">MG</div>
+      <!-- Muestra las iniciales del paciente autenticado. -->
+      <div class="avatar">{{ iniciales }}</div>
 
       <div class="datos-perfil">
         <strong>{{ nombreUsuario }}</strong>
@@ -79,7 +80,5 @@
       <span class="flecha" aria-hidden="true">›</span>
 
     </a>
-
   </div>
-
 </aside>

@@ -1,6 +1,9 @@
 <div class="paciente-layout">
   <!-- Sidebar del paciente -->
-  <app-sidebar-paciente></app-sidebar-paciente>
+  <!-- Envía el nombre del paciente autenticado al sidebar. -->
+  <app-sidebar-paciente
+    [nombreUsuario]="nombreUsuario()"
+  ></app-sidebar-paciente>
   <!-- Contenido principal -->
   <main class="contenido-paciente">
     <router-outlet></router-outlet>
