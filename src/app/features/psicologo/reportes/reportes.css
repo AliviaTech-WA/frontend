@@ -10,17 +10,52 @@
   margin: 0 auto;
 }
 
-.pagina-reportes > h1 {
+.encabezado-reportes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px 20px;
+  margin-bottom: 22px;
+}
+
+.encabezado-reportes h1 {
   margin: 0 0 8px;
   font-size: 29px;
   font-weight: 700;
   line-height: 1.2;
 }
 
-.pagina-reportes > p:first-of-type {
-  margin: 0 0 22px;
+.encabezado-reportes p {
+  margin: 0;
   color: #6e7d78;
   font-size: 13px;
+}
+
+.acciones-reportes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.acciones-reportes button {
+  min-height: 40px;
+  padding-inline: 18px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.acciones-reportes .boton-imprimir:not(:disabled) {
+  border-color: #dce5e1;
+  background: #fff;
+  color: #253f38;
+}
+
+.acciones-reportes .boton-exportar:not(:disabled) {
+  border-color: #b9dcd2;
+  background: #e6f5ef;
+  color: #005b51;
 }
 
 /* Filtros y selector de fechas */
@@ -559,4 +594,73 @@
   .fila-actividad strong {
     grid-column: 1 / -1;
   }
+}
+@media print {
+  body:has(.pagina-reportes) app-sidebar-psicologo,
+  .pagina-reportes .acciones-reportes,
+  .pagina-reportes .filtros-periodo {
+    display: none !important;
+  }
+
+  body:has(.pagina-reportes) .psicologo-layout {
+    display: block;
+    min-height: 0;
+  }
+
+  body:has(.pagina-reportes) .contenido-psicologo {
+    min-height: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .pagina-reportes {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+.confirmacion-reporte {
+  padding: 24px;
+  background: #fff;
+  color: #1a2825;
+  font-family: Inter, Arial, sans-serif;
+}
+
+.confirmacion-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirmacion-cabecera h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.confirmacion-icono {
+  display: grid;
+  flex: 0 0 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e2f7ec;
+  color: #168451;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.confirmacion-reporte p {
+  margin: 14px 0 22px;
+  color: #526e65;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.confirmacion-reporte .confirmacion-boton {
+  width: 100%;
+  min-height: 38px;
+  border-radius: 10px;
+  background: #128573;
+  color: #fff;
+  font-weight: 600;
 }
