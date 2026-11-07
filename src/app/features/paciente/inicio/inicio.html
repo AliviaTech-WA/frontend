@@ -1,15 +1,19 @@
 <!-- HU08: dashboard del paciente -->
 <div class="inicio-paciente">
   <div class="encabezado">
-    @if (nombrePaciente(); as nombre) {
-      <h1>Hola, {{ nombre }}</h1>
-    } @else if (cargando()) {
-      <h1>Cargando...</h1>
-    } @else {
-      <h1>Bienvenida a AliviaTech</h1>
-    }
+    <div class="encabezado-informacion">
+      @if (nombrePaciente(); as nombre) {
+        <h1>Hola, {{ nombre }}</h1>
+      } @else if (cargando()) {
+        <h1>Cargando...</h1>
+      } @else {
+        <h1>Bienvenida a AliviaTech</h1>
+      }
+      <p>{{ fechaActual }}</p>
+    </div>
 
-    <p>{{ fechaActual }}</p>
+    <app-notificaciones-paciente />
+
   </div>
 
   @if (errorCarga()) {
