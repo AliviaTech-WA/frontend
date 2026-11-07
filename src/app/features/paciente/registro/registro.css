@@ -1,0 +1,238 @@
+/* HU09: contenedor principal de Mi registro. */
+:host {
+  display: block;
+  color: #1a2825;
+  font-family: Inter, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.pagina-registro {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 32px 30px;
+}
+
+/* HU09: encabezado de la pantalla. */
+.encabezado {
+  margin-bottom: 20px;
+}
+
+.encabezado h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.encabezado p,
+.descripcion {
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* HU09: formulario basado en la tarjeta de Figma. */
+.tarjeta-registro {
+  width: 100%;
+  max-width: 720px;
+  padding: 18px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(20, 36, 31, 0.05);
+}
+
+.etiqueta {
+  font-size: 10px;
+  font-weight: 700;
+  color: #0c5c50;
+}
+
+.tarjeta-registro h2 {
+  margin: 14px 0 4px;
+  font-size: 22px;
+}
+
+.descripcion {
+  margin-bottom: 20px;
+}
+
+.campo {
+  margin-bottom: 24px;
+}
+
+.campo h3,
+.campo label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #30403c;
+}
+
+/* HU09: escala de ansiedad del 1 al 10. */
+.escala-ansiedad {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.nivel {
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: #f2fbf9;
+  color: #30403c;
+  cursor: pointer;
+}
+
+.nivel:hover {
+  background: #d8f2e8;
+}
+
+.nivel.seleccionado {
+  background: #128573;
+  color: white;
+  font-weight: 700;
+}
+
+/* HU09: opciones seleccionables del estado de ánimo. */
+.opciones-animo {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.opcion-animo {
+  min-height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: white;
+  color: #30403c;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.opcion-animo:hover,
+.opcion-animo.seleccionado {
+  background: #e6f6f1;
+  color: #0c5c50;
+}
+
+/* HU09: campo opcional de comentarios. */
+.campo textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #e0e8e5;
+  border-radius: 12px;
+  resize: vertical;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.campo textarea:focus {
+  outline: 2px solid #128573;
+  outline-offset: 1px;
+}
+
+/* HU09: errores de validación y de guardado. */
+.mensaje-error {
+  margin-top: 10px;
+  color: #b42318;
+  font-size: 12px;
+}
+
+/* HU09: botón principal del formulario. */
+.boton-guardar {
+  width: 100%;
+  min-height: 42px;
+  padding: 12px;
+  background: #128573;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-guardar:hover:not(:disabled) {
+  background: #0c6e60;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* HU09: ventana de confirmación del registro exitoso. */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 36, 31, 0.35);
+}
+
+.modal-confirmacion {
+  width: min(440px, 100%);
+  padding: 28px;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 12px 32px rgba(20, 36, 31, 0.12);
+}
+
+.modal-encabezado {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.modal-encabezado h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.icono-exito {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e5f7ed;
+  color: #339e6b;
+  font-size: 20px;
+}
+
+.modal-confirmacion p {
+  margin: 14px 0 22px;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* HU09: adapta las opciones a pantallas pequeñas. */
+@media (max-width: 700px) {
+  .pagina-registro {
+    padding: 20px 12px;
+  }
+
+  .escala-ansiedad {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .opciones-animo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

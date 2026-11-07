@@ -39,6 +39,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/paciente/sesiones/sesiones').then((component) => component.Sesiones),
       },
+      // HU09: permite acceder al formulario de registro de bienestar.
+      {
+        path: 'registro',
+        loadComponent: () =>
+          import('./features/paciente/registro/registro').then((component) => component.Registro),
+      },
     ],
   },
   {

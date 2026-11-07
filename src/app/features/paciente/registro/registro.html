@@ -1,0 +1,134 @@
+<!-- HU09: pantalla de registro voluntario de bienestar. -->
+<main class="pagina-registro">
+
+  <header class="encabezado">
+    <h1>Mi registro</h1>
+    <p>Un espacio breve y voluntario para registrar cómo te sientes.</p>
+  </header>
+
+  <section class="tarjeta-registro">
+
+    <span class="etiqueta">REGISTRO DE BIENESTAR</span>
+
+    <h2>¿Cómo te sientes hoy?</h2>
+
+    <p class="descripcion">
+      No es obligatorio. Puedes completarlo solo cuando te resulte útil.
+    </p>
+
+    <!-- HU09: selección obligatoria del nivel de ansiedad. -->
+    <div class="campo">
+      <h3 id="titulo-ansiedad">Nivel de ansiedad percibido</h3>
+
+      <div class="escala-ansiedad" role="group" aria-labelledby="titulo-ansiedad">
+        @for (nivel of nivelesAnsiedad; track nivel) {
+          <button
+            type="button"
+            class="nivel"
+            [class.seleccionado]="nivelAnsiedad() === nivel"
+            [attr.aria-pressed]="nivelAnsiedad() === nivel"
+            [disabled]="guardando()"
+            (click)="seleccionarNivel(nivel)"
+          >
+            {{ nivel }}
+          </button>
+        }
+      </div>
+
+      @if (intentoGuardar() && nivelAnsiedad() === null) {
+        <p class="mensaje-error" role="alert">
+          Selecciona tu nivel de ansiedad.
+        </p>
+      }
+    </div>
+
+    <!-- HU09: selección obligatoria del estado de ánimo. -->
+    <div class="campo">
+      <h3 id="titulo-animo">Estado de ánimo</h3>
+
+      <div class="opciones-animo" role="group" aria-labelledby="titulo-animo">
+        @for (opcion of estadosAnimo; track opcion.valor) {
+          <button
+            type="button"
+            class="opcion-animo"
+            [class.seleccionado]="estadoAnimo() === opcion.valor"
+            [attr.aria-pressed]="estadoAnimo() === opcion.valor"
+            [disabled]="guardando()"
+            (click)="seleccionarEstado(opcion.valor)"
+          >
+            {{ opcion.etiqueta }}
+          </button>
+        }
+      </div>
+
+      @if (intentoGuardar() && estadoAnimo() === null) {
+        <p class="mensaje-error" role="alert">
+          Selecciona tu estado de ánimo.
+        </p>
+      }
+    </div>
+
+    <!-- HU09: comentario opcional del paciente. -->
+    <div class="campo">
+      <label for="comentario">Comentario opcional</label>
+
+      <textarea
+        id="comentario"
+        rows="5"
+        [value]="comentario()"
+        [disabled]="guardando()"
+        (input)="comentario.set($any($event.target).value)"
+        placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
+      ></textarea>
+    </div>
+
+    @if (errorGuardado()) {
+      <p class="mensaje-error" role="alert">
+        {{ errorGuardado() }}
+      </p>
+    }
+
+    <!-- HU09: registra la información en PostgreSQL mediante END08. -->
+    <button
+      type="button"
+      class="boton-guardar"
+      [disabled]="guardando()"
+      (click)="guardarRegistro()"
+    >
+      {{ guardando() ? 'Guardando...' : 'Guardar registro' }}
+    </button>
+
+  </section>
+
+</main>
+
+<!-- HU09: confirmación visual después de guardar correctamente. -->
+@if (confirmacionVisible()) {
+  <div class="fondo-modal">
+    <section
+      class="modal-confirmacion"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-confirmacion"
+    >
+      <div class="modal-encabezado">
+        <div class="icono-exito" aria-hidden="true">✓</div>
+        <h2 id="titulo-confirmacion">Registro guardado</h2>
+      </div>
+
+      <p>
+        Tu registro de bienestar se guardó correctamente
+        y quedará disponible en tu historial.
+      </p>
+
+      <button
+        type="button"
+        class="boton-guardar"
+        (click)="cerrarConfirmacion()"
+      >
+        Entendido
+      </button>
+    </section>
+  </div>
+}
+
