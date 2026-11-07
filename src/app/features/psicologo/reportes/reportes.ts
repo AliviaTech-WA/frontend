@@ -1,7 +1,7 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { DecimalPipe, DatePipe } from '@angular/common';
+import { Component, computed, inject, OnInit, signal, TemplateRef} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -18,7 +18,7 @@ import { finalize } from 'rxjs';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { ReporteGeneral } from './models/reporte-general.model';
 import { ReportesService } from './services/reportes.service';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 type Atajo = 'mes' | 'trimestre';
 type Rango = { desde: Date; hasta: Date };
 
@@ -39,6 +39,9 @@ type Rango = { desde: Date; hasta: Date };
     MatDatepickerInput,
     MatDatepickerToggle,
     MatDatepickerToggleIcon,
+    DatePipe,
+    MatButton,
+    MatDialogModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './reportes.html',
@@ -50,6 +53,21 @@ export class Reportes implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   private rangoAplicado?: Rango;
+  get periodoImpresion(): Rango | undefined {
+    return this.rangoAplicado;
+  }
+  private mostrarConfirmacion(
+    plantilla: TemplateRef<unknown>,
+    titulo: string,
+    mensaje: string,
+  ): void {
+    this.dialogo.open(plantilla, {
+      width: '390px',
+      maxWidth: 'calc(100vw - 32px)',
+      ariaLabel: titulo,
+      data: { titulo, mensaje },
+    });
+  }
 
   readonly reporte = signal<ReporteGeneral | null>(null);
   readonly maximoRegistros = computed(() => {
@@ -69,7 +87,14 @@ export class Reportes implements OnInit {
     desde: this.fb.control<Date | null>(null, Validators.required),
     hasta: this.fb.control<Date | null>(null, Validators.required),
   });
+  //exportar reporte
+  readonly exportandoPdf = signal(false);
+  readonly errorExportacion = signal('');
 
+  readonly accionesDisponibles = computed(
+    () => !!this.reporte() && !this.cargando() && !this.mensajeError(),
+  );
+  private readonly dialogo = inject(MatDialog);
   ngOnInit(): void {
     this.usarUltimos30Dias();
   }
@@ -130,6 +155,7 @@ export class Reportes implements OnInit {
   private cargarReporte({ desde, hasta }: Rango): void {
     const sesion = this.autenticacion.sesion();
     this.mensajeError.set('');
+    this.errorExportacion.set('');
 
     if (!sesion || sesion.rol !== 'PSICOLOGO') {
       this.mensajeError.set('Inicia sesión como psicólogo para consultar tus reportes.');
@@ -144,6 +170,70 @@ export class Reportes implements OnInit {
       .subscribe({
         next: (reporte) => this.reporte.set(reporte),
         error: () => this.mensajeError.set('No se pudo cargar el reporte general.'),
+      });
+  }
+  //exportar pdf e imprimir
+  imprimir(plantilla: TemplateRef<unknown>): void {
+    if (!this.accionesDisponibles()) {
+      return;
+    }
+
+    window.addEventListener(
+      'afterprint',
+      () =>
+        this.mostrarConfirmacion(
+          plantilla,
+          'Vista de impresión cerrada',
+          'Volviste al reporte después de cerrar la ventana de impresión.',
+        ),
+      { once: true },
+    );
+
+    window.print();
+  }
+
+  exportarPdf(plantilla: TemplateRef<unknown>): void {
+    const sesion = this.autenticacion.sesion();
+    const rango = this.rangoAplicado;
+
+    if (
+      !this.accionesDisponibles() ||
+      this.exportandoPdf() ||
+      !rango ||
+      !sesion ||
+      sesion.rol !== 'PSICOLOGO'
+    ) {
+      return;
+    }
+
+    this.exportandoPdf.set(true);
+
+    this.reportesService
+      .exportarPdf(
+        sesion.usuarioId,
+        this.formatearFecha(rango.desde),
+        this.formatearFecha(rango.hasta),
+      )
+      .pipe(finalize(() => this.exportandoPdf.set(false)))
+      .subscribe({
+        next: (pdf) => {
+          const url = URL.createObjectURL(pdf);
+          const enlace = document.createElement('a');
+          enlace.href = url;
+          enlace.download = 'reporte-aliviatech.pdf';
+
+          document.body.appendChild(enlace);
+          enlace.click();
+          enlace.remove();
+          this.mostrarConfirmacion(
+            plantilla,
+            'Informe descargado',
+            'Puedes encontrar el informe PDF en las descargas de tu navegador.',
+          );
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        },
+        error: () =>
+          this.errorExportacion.set('No se pudo exportar el reporte. Intenta nuevamente.'),
       });
   }
 

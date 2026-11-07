@@ -17,3 +17,40 @@ button,
 input {
   font-family: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
+.pagina-reportes .periodo-impresion {
+  display: none;
+}
+@media print {
+  body:has(.pagina-reportes) app-sidebar-psicologo,
+  .pagina-reportes .acciones-reportes,
+  .pagina-reportes .filtros-periodo {
+    display: none !important;
+  }
+
+  body:has(.pagina-reportes) .psicologo-layout {
+    display: block;
+    min-height: 0;
+  }
+
+  body:has(.pagina-reportes) .contenido-psicologo {
+    min-height: 0;
+    padding: 0;
+    background: #eef7f4;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .pagina-reportes {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pagina-reportes .periodo-impresion {
+    display: inline-block;
+    margin: 10px 0 0;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: #e6f5ef;
+    color: #005b51;
+    font-size: 12px;
+  }
+}

@@ -1,6 +1,42 @@
 <section class="pagina-reportes">
-  <h1>Reportes</h1>
-  <p>Indicadores generales del seguimiento durante el periodo seleccionado.</p>
+  <header class="encabezado-reportes">
+    <div>
+      <h1>Reportes</h1>
+      <p>Indicadores generales del seguimiento durante el periodo seleccionado.</p>
+    </div>
+    @if (periodoImpresion; as periodo) {
+      <p class="periodo-impresion">
+        <strong>Periodo del reporte</strong>
+        {{ periodo.desde | date:'dd/MM/yyyy' }} al
+        {{ periodo.hasta | date:'dd/MM/yyyy' }}
+      </p>
+    }
+    <div class="acciones-reportes">
+      <button
+        mat-stroked-button
+        type="button"
+        class="boton-imprimir"
+        [disabled]="!accionesDisponibles()"
+        (click)="imprimir(confirmacionReporte)"
+      >
+        Imprimir
+      </button>
+
+      <button
+        mat-flat-button
+        type="button"
+        class="boton-exportar"
+        [disabled]="!accionesDisponibles() || exportandoPdf()"
+        (click)="exportarPdf(confirmacionReporte)"
+      >
+        {{ exportandoPdf() ? 'Exportando…' : 'Exportar PDF' }}
+      </button>
+    </div>
+  </header>
+
+  @if (errorExportacion()) {
+    <p class="error-rango" role="alert">{{ errorExportacion() }}</p>
+  }
 
   <div class="filtros-periodo" role="group" aria-label="Periodo del reporte">
     <button
@@ -338,3 +374,17 @@
     </div>
   }
 </section>
+<ng-template #confirmacionReporte let-datos>
+  <div class="confirmacion-reporte">
+    <div class="confirmacion-cabecera">
+      <span class="confirmacion-icono" aria-hidden="true">✓</span>
+      <h2>{{ datos.titulo }}</h2>
+    </div>
+
+    <p>{{ datos.mensaje }}</p>
+
+    <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
+      Entendido
+    </button>
+  </div>
+</ng-template>

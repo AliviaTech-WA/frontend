@@ -18,4 +18,14 @@ export class ReportesService {
 
     return this.http.get<ReporteGeneral>(`${this.url}/${psicologoId}/reportes`, { params });
   }
+  exportarPdf(psicologoId: number, fechaDesde: string, fechaHasta: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('fechaDesde', fechaDesde)
+      .set('fechaHasta', fechaHasta);
+
+    return this.http.get(`${this.url}/${psicologoId}/reportes/pdf`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }
