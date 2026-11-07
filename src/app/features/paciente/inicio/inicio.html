@@ -1,8 +1,8 @@
 <!-- HU08: dashboard del paciente -->
 <div class="inicio-paciente">
   <div class="encabezado">
-    @if (dashboard(); as datos) {
-      <h1>Hola, {{ datos.nombres }}</h1>
+    @if (nombrePaciente(); as nombre) {
+      <h1>Hola, {{ nombre }}</h1>
     } @else if (cargando()) {
       <h1>Cargando...</h1>
     } @else {

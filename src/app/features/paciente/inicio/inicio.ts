@@ -18,6 +18,7 @@ export class Inicio {
   protected dashboard = signal<DashboardPacienteModel | null>(null);
   protected cargando = signal(true);
   protected errorCarga = signal('');
+  protected nombrePaciente = signal<string | null>(null);
 
   protected readonly fechaActual = (() => {
     const fecha = new Intl.DateTimeFormat('es-PE', {
@@ -66,8 +67,11 @@ export class Inicio {
       return;
     }
 
+    this.nombrePaciente.set(this.dashboardService.obtenerNombreGuardado(sesion.usuarioId));
+
     this.dashboardService.consultar(sesion.usuarioId).subscribe({
       next: (respuesta) => {
+        this.nombrePaciente.set(respuesta.nombres);
         this.dashboard.set(respuesta);
         this.cargando.set(false);
       },
