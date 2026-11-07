@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { EditarPerfil } from './components/editar-perfil/editar-perfil';
 import { PerfilPsicologoService } from './services/perfil-psicologo-service';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [],
@@ -12,9 +13,19 @@ import { PerfilPsicologoService } from './services/perfil-psicologo-service';
 })
 export class PerfilPsicologo implements OnInit {
   private autenticacionService = inject(AutenticacionService);
+  // HU07: permite redirigir al psicólogo al login después de salir.
+  private readonly router = inject(Router);
   private perfilService = inject(PerfilPsicologoService);
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
+
+  // HU07: elimina el token y los datos de la sesión del psicólogo.
+  cerrarSesion(): void {
+    this.autenticacionService.cerrarSesionLocal();
+
+    // Redirige al login sin conservar el perfil en el historial.
+    void this.router.navigateByUrl('/login', { replaceUrl: true });
+  }
 
   psicologo = {
     nombres: '',

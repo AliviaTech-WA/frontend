@@ -1,4 +1,3 @@
-
 <div class="perfil-psicologo">
 
   <!-- Estado de carga del perfil -->
@@ -22,9 +21,8 @@
       <p>Consulta y administra tu información profesional.</p>
     </div>
 
-    <button type="button" class="btn-cerrar" disabled>
-      Cerrar sesión
-    </button>
+    <!-- HU07: habilita el cierre de sesión del psicólogo. -->
+    <button type="button" class="btn-cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
   </header>
 
   <!-- Distribución principal del perfil -->
