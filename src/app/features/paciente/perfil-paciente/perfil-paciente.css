@@ -11,7 +11,12 @@
   padding: 10px 0 34px;
 }
 
+/* HU07: organiza el título del perfil y el botón de cerrar sesión. */
 .encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 26px;
 }
 
@@ -490,3 +495,29 @@ button:disabled {
     gap: 0;
   }
 }
+
+/* HU07: botón para finalizar la sesión del paciente. */
+.boton-cerrar-sesion {
+  background: #ffffff;
+  border: 1px solid #dbe8e3;
+  border-radius: 9px;
+  color: #52645e;
+  padding: 11px 18px;
+  font: 600 12px Inter, Arial, sans-serif;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* HU07: resalta el botón cuando el usuario pasa el cursor. */
+.boton-cerrar-sesion:hover {
+  background: #f1f8f5;
+}
+
+/* HU07: adapta el encabezado a pantallas pequeñas. */
+@media (max-width: 700px) {
+  .encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

@@ -1,4 +1,4 @@
-
+import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -18,8 +18,9 @@ import { PerfilPersonalService } from './services/perfil-personal.service';
   styleUrl: './perfil-paciente.css',
 })
 export class PerfilPaciente implements OnInit {
-
   private readonly autenticacion = inject(AutenticacionService);
+  // HU07: permite navegar al login después de cerrar la sesión.
+  private readonly router = inject(Router);
   private readonly dispositivoService = inject(DispositivoService);
   private readonly perfilPersonalService = inject(PerfilPersonalService);
 
@@ -70,15 +71,11 @@ export class PerfilPaciente implements OnInit {
   }
 
   get aliasValido(): boolean {
-    return (
-      this.aliasLimpio.length > 0 &&
-      this.aliasLimpio.length <= 100
-    );
+    return this.aliasLimpio.length > 0 && this.aliasLimpio.length <= 100;
   }
 
   get aliasModificado(): boolean {
-    return this.aliasLimpio !==
-      (this.dispositivo()?.alias ?? '').trim();
+    return this.aliasLimpio !== (this.dispositivo()?.alias ?? '').trim();
   }
 
   ngOnInit(): void {
@@ -127,20 +124,19 @@ export class PerfilPaciente implements OnInit {
     if (!sesion || sesion.rol !== 'PACIENTE') {
       this.cargando.set(false);
       this.dispositivo.set(null);
-      this.errorCarga.set(
-        'Inicia sesión como paciente para consultar tu dispositivo.'
-      );
+      this.errorCarga.set('Inicia sesión como paciente para consultar tu dispositivo.');
       return;
     }
 
     this.cargando.set(true);
     this.errorCarga.set('');
 
-    this.dispositivoService.consultar(sesion.usuarioId)
+    this.dispositivoService
+      .consultar(sesion.usuarioId)
       .pipe(
         finalize(() => {
           this.cargando.set(false);
-        })
+        }),
       )
       .subscribe({
         next: (respuesta) => {
@@ -157,9 +153,9 @@ export class PerfilPaciente implements OnInit {
               ? 'Todavía no tienes un dispositivo asignado.'
               : error.status === 403
                 ? 'No tienes permiso para consultar este dispositivo.'
-                : 'No pudimos cargar tu dispositivo. Intenta nuevamente.'
+                : 'No pudimos cargar tu dispositivo. Intenta nuevamente.',
           );
-        }
+        },
       });
   }
 
@@ -339,7 +335,7 @@ export class PerfilPaciente implements OnInit {
     this.mensajeExito.set('');
     this.modalAbierto.set(true);
   }
-  
+
   cerrarRenombrar(): void {
     if (this.guardando()) return;
 
@@ -354,7 +350,7 @@ export class PerfilPaciente implements OnInit {
       this.errorAlias.set(
         this.aliasLimpio.length === 0
           ? 'Ingresa un nombre para tu dispositivo.'
-          : 'El nombre no debe superar los 100 caracteres.'
+          : 'El nombre no debe superar los 100 caracteres.',
       );
       return;
     }
@@ -367,32 +363,26 @@ export class PerfilPaciente implements OnInit {
     const sesion = this.autenticacion.sesion();
 
     if (!sesion || sesion.rol !== 'PACIENTE') {
-      this.errorAlias.set(
-        'Tu sesión no está disponible. Vuelve a iniciar sesión.'
-      );
+      this.errorAlias.set('Tu sesión no está disponible. Vuelve a iniciar sesión.');
       return;
     }
 
     this.guardando.set(true);
     this.errorAlias.set('');
 
-    this.dispositivoService.renombrar(
-      sesion.usuarioId,
-      { alias: this.aliasLimpio }
-    )
+    this.dispositivoService
+      .renombrar(sesion.usuarioId, { alias: this.aliasLimpio })
       .pipe(
         finalize(() => {
           this.guardando.set(false);
-        })
+        }),
       )
       .subscribe({
         next: (respuesta) => {
           this.dispositivo.set(respuesta);
           this.modalAbierto.set(false);
 
-          this.mensajeExito.set(
-            'El nombre de tu dispositivo se actualizó correctamente.'
-          );
+          this.mensajeExito.set('El nombre de tu dispositivo se actualizó correctamente.');
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al renombrar:', error);
@@ -402,9 +392,17 @@ export class PerfilPaciente implements OnInit {
               ? 'El nombre no es válido. Revisa el campo e intenta nuevamente.'
               : error.status === 403
                 ? 'No tienes permiso para modificar este dispositivo.'
-                : 'No se pudo guardar el nombre. Intenta nuevamente.'
+                : 'No se pudo guardar el nombre. Intenta nuevamente.',
           );
-        }
+        },
       });
+  }
+
+  // HU07: elimina la sesión del navegador y redirige al inicio de sesión.
+  cerrarSesion(): void {
+    this.autenticacion.cerrarSesionLocal();
+
+    // Reemplaza la ruta actual para evitar regresar al perfil con Atrás.
+    void this.router.navigateByUrl('/login', { replaceUrl: true });
   }
 }
