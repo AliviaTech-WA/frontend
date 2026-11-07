@@ -10,6 +10,7 @@ import {
   MatDatepicker,
   MatDatepickerInput,
   MatDatepickerToggle,
+  MatDatepickerToggleIcon,
 } from '@angular/material/datepicker';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -37,6 +38,7 @@ type Rango = { desde: Date; hasta: Date };
     MatDatepicker,
     MatDatepickerInput,
     MatDatepickerToggle,
+    MatDatepickerToggleIcon,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './reportes.html',
@@ -52,7 +54,9 @@ export class Reportes implements OnInit {
   readonly reporte = signal<ReporteGeneral | null>(null);
   readonly maximoRegistros = computed(() => {
     const semanas = this.reporte()?.actividadSemanal ?? [];
-    return Math.max(1, ...semanas.map((semana) => semana.registros));
+    const maximo = Math.max(1, ...semanas.map((semana) => semana.registros));
+
+    return Math.ceil(maximo / 4) * 4;
   });
   readonly cargando = signal(false);
   readonly mensajeError = signal('');
