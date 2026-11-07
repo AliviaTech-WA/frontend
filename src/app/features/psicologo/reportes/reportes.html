@@ -49,8 +49,23 @@
       (ngSubmit)="aplicarPeriodo()"
     >
       <div class="cabecera-rango">
-        <h2 id="titulo-rango">Seleccionar rango</h2>
-        <button mat-button type="button" aria-label="Cerrar" (click)="cerrarPanel()">
+        <div class="titulo-panel-rango">
+    <span class="icono-panel-rango" aria-hidden="true">
+      <svg class="icono-calendario" viewBox="0 0 24 24">
+        <rect x="4" y="5" width="16" height="16" rx="2" />
+        <path d="M8 3v4m8-4v4M4 10h16m-12 4h1m3 0h1m3 0h1m-9 3h1m3 0h1" />
+      </svg>
+    </span>
+          <h2 id="titulo-rango">Seleccionar rango</h2>
+        </div>
+
+        <button
+          mat-button
+          type="button"
+          class="cerrar-rango"
+          aria-label="Cerrar selector de rango"
+          (click)="cerrarPanel()"
+        >
           ×
         </button>
       </div>
@@ -74,19 +89,42 @@
       </div>
 
       <div class="fechas-rango">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" hideRequiredMarker>
           <mat-label>Desde</mat-label>
-          <input matInput [matDatepicker]="calendarioDesde" formControlName="desde"
-                 (dateChange)="opcionRango.set('personalizado')">
-          <mat-datepicker-toggle matIconSuffix [for]="calendarioDesde"></mat-datepicker-toggle>
+          <input
+            matInput
+            readonly
+            [matDatepicker]="calendarioDesde"
+            formControlName="desde"
+            (click)="calendarioDesde.open()"
+            (dateChange)="opcionRango.set('personalizado')"
+          >
+          <mat-datepicker-toggle matIconSuffix [for]="calendarioDesde">
+            <svg matDatepickerToggleIcon class="icono-calendario" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="5" width="16" height="16" rx="2" />
+              <path d="M8 3v4m8-4v4M4 10h16" />
+            </svg>
+          </mat-datepicker-toggle>
           <mat-datepicker #calendarioDesde></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" hideRequiredMarker>
           <mat-label>Hasta</mat-label>
-          <input matInput [matDatepicker]="calendarioHasta" formControlName="hasta"
-                 (dateChange)="opcionRango.set('personalizado')">
-          <mat-datepicker-toggle matIconSuffix [for]="calendarioHasta"></mat-datepicker-toggle>
+          <input
+            matInput
+            readonly
+            [matDatepicker]="calendarioHasta"
+            formControlName="hasta"
+            (click)="calendarioHasta.open()"
+            (dateChange)="opcionRango.set('personalizado')"
+          >
+          <mat-datepicker-toggle matIconSuffix [for]="calendarioHasta">
+            <svg matDatepickerToggleIcon class="icono-calendario" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="5" width="16" height="16" rx="2" />
+              <path d="M8 3v4m8-4v4M4 10h16" />
+              <circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+          </mat-datepicker-toggle>
           <mat-datepicker #calendarioHasta></mat-datepicker>
         </mat-form-field>
       </div>
@@ -96,7 +134,9 @@
       }
 
       <div class="acciones-rango">
-        <button mat-button type="button" (click)="cerrarPanel()">Cancelar</button>
+        <button mat-button type="button" class="cancelar-rango" (click)="cerrarPanel()">
+          Cancelar
+        </button>
         <button mat-raised-button type="submit" class="aplicar-rango">Aplicar filtro</button>
       </div>
     </form>
@@ -144,27 +184,61 @@
       <div class="columna-reporte">
         <mat-card>
           <mat-card-content>
-            <h2>Actividad registrada por semana</h2>
-            <p class="texto-reporte">Registros manuales y episodios confirmados durante el periodo.</p>
+            <div class="cabecera-actividad">
+              <div>
+                <h2>Actividad registrada por semana</h2>
+                <p class="texto-reporte">
+                  Registros manuales por semana. Cada etiqueta coral indica episodios confirmados.
+                </p>
+              </div>
 
-            <div class="grafico-semanal">
-              @for (semana of datos.actividadSemanal; track semana.semana) {
-                <div class="semana-reporte">
-                  <div class="escala-semanal">
-                    <div class="barra-semanal"
-                         [style.height.%]="semana.registros / maximoRegistros() * 100"
-                         aria-hidden="true"></div>
-                  </div>
-                  <strong>Sem. {{ semana.semana }}</strong>
-                  <span>{{ semana.registros }} reg.</span>
-                  <span class="episodios-semana">{{ semana.episodios }} ep.</span>
-                </div>
-              } @empty {
-                <p class="texto-reporte">No hay actividad semanal para este periodo.</p>
-              }
+              <div class="leyenda-actividad" aria-label="Leyenda del gráfico">
+                <span><i class="punto-registros" aria-hidden="true"></i> Registros</span>
+                <span><i class="punto-episodios" aria-hidden="true"></i> Episodios</span>
+              </div>
             </div>
+
+            @if (datos.actividadSemanal.length > 0) {
+              <div class="grafico-con-eje">
+                <div class="eje-registros" aria-hidden="true">
+                  @for (nivel of [4, 3, 2, 1, 0]; track nivel) {
+                    <span [style.top.%]="(4 - nivel) * 25">
+              {{ maximoRegistros() * nivel / 4 }}
+            </span>
+                  }
+                </div>
+
+                <div class="grafico-semanal">
+                  @for (semana of datos.actividadSemanal; track semana.semana) {
+                    <div class="semana-reporte">
+                      <div class="escala-semanal">
+                        <div
+                          class="barra-semanal"
+                          [style.height.%]="semana.registros / maximoRegistros() * 100"
+                        >
+                          <strong class="valor-semanal">{{ semana.registros }}</strong>
+                        </div>
+                      </div>
+
+                      <span class="episodios-semana">{{ semana.episodios }} ep.</span>
+                      <span class="nombre-semana">Sem {{ semana.semana }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            } @else {
+              <p class="texto-reporte">No hay actividad semanal para este periodo.</p>
+            }
+
+            <p class="texto-reporte total-actividad">
+              Total del periodo: {{ datos.registrosRecibidos }}
+              {{ datos.registrosRecibidos === 1 ? 'registro manual' : 'registros manuales' }}
+              · {{ datos.episodiosConfirmados }}
+              {{ datos.episodiosConfirmados === 1 ? 'episodio confirmado' : 'episodios confirmados' }}
+            </p>
           </mat-card-content>
         </mat-card>
+
 
         <mat-card>
           <mat-card-content>
@@ -172,12 +246,21 @@
 
             <ul class="lista-actividad">
               @for (paciente of datos.pacientesMayorActividad; track paciente.pacienteId) {
-                <li>
+                <li class="fila-actividad">
                   <strong>{{ paciente.nombreCompleto }}</strong>
-                  <span>{{ paciente.registros }} reg. · {{ paciente.episodios }} ep.</span>
+
+                  <span>
+        {{ paciente.registros }}
+                    {{ paciente.registros === 1 ? 'registro' : 'registros' }}
+      </span>
+
+                  <span>
+        {{ paciente.episodios }}
+                    {{ paciente.episodios === 1 ? 'episodio' : 'episodios' }}
+      </span>
                 </li>
               } @empty {
-                <li>No hay pacientes para mostrar en este periodo.</li>
+                <li class="actividad-vacia">No hay pacientes para mostrar en este periodo.</li>
               }
             </ul>
           </mat-card-content>
