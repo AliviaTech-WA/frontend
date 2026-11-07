@@ -15,7 +15,7 @@ textarea {
 }
 
 .pagina-registro {
-  max-width: 1140px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 32px 30px;
 }
@@ -236,3 +236,137 @@ button:disabled {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* HU09 y HU10: distribuye el formulario y el historial en dos columnas. */
+.contenido-registro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* HU10: tarjeta del historial ubicada a la derecha. */
+.tarjeta-historial {
+  min-width: 0;
+  min-height: 620px;
+  max-height: 800px;
+  overflow-y: auto;
+  padding: 18px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(20, 36, 31, 0.05);
+}
+
+.tarjeta-historial h2 {
+  margin: 8px 0;
+  font-size: 18px;
+  color: #1a2825;
+}
+
+.historial-descripcion {
+  margin: 0 0 18px;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* HU10: organiza los registros uno debajo del otro. */
+.lista-registros {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* HU10: tarjeta individual de un registro anterior. */
+.item-registro {
+  padding: 14px 12px;
+  border-radius: 14px;
+  background: #f2f5f4;
+}
+
+.registro-superior {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.registro-superior time {
+  color: #6e7d78;
+  font-size: 11px;
+}
+
+/* HU10: etiquetas de ansiedad y estado de ánimo. */
+.registro-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.etiqueta-ansiedad,
+.etiqueta-animo {
+  padding: 4px 7px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.etiqueta-ansiedad {
+  background: #128573;
+  color: white;
+}
+
+.etiqueta-animo {
+  background: #d8f2e8;
+  color: #0c5c50;
+}
+
+/* HU10: comentario registrado por el paciente. */
+.registro-comentario {
+  margin: 12px 0 0;
+  color: #52645e;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.sin-comentario {
+  color: #9aa9a3;
+  font-style: italic;
+}
+
+.historial-mensaje {
+  padding: 20px 8px;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* HU10: botón para volver a consultar los registros. */
+.boton-reintentar {
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 1px solid #128573;
+  border-radius: 10px;
+  background: white;
+  color: #128573;
+  cursor: pointer;
+}
+
+/* HU10: coloca el historial debajo del formulario en pantallas pequeñas. */
+@media (max-width: 1050px) {
+  .contenido-registro {
+    grid-template-columns: 1fr;
+  }
+
+  .tarjeta-registro {
+    max-width: none;
+  }
+
+  .tarjeta-historial {
+    min-height: auto;
+  }
+}
+

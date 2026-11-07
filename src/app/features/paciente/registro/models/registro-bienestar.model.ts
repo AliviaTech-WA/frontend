@@ -15,3 +15,8 @@ export interface RegistroBienestarResponse {
   nivelAnsiedad: number;
   estadoAnimo: EstadoAnimo;
 }
+
+// HU10: representa un registro anterior con su comentario.
+export interface RegistroBienestarDetalle extends RegistroBienestarResponse {
+  comentario: string | null;
+}

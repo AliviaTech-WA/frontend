@@ -6,99 +6,184 @@
     <p>Un espacio breve y voluntario para registrar cómo te sientes.</p>
   </header>
 
-  <section class="tarjeta-registro">
+  <!-- HU09 y HU10: distribuye el formulario y el historial en dos columnas. -->
+  <div class="contenido-registro">
+    <section class="tarjeta-registro">
 
-    <span class="etiqueta">REGISTRO DE BIENESTAR</span>
+      <span class="etiqueta">REGISTRO DE BIENESTAR</span>
 
-    <h2>¿Cómo te sientes hoy?</h2>
+      <h2>¿Cómo te sientes hoy?</h2>
 
-    <p class="descripcion">
-      No es obligatorio. Puedes completarlo solo cuando te resulte útil.
-    </p>
-
-    <!-- HU09: selección obligatoria del nivel de ansiedad. -->
-    <div class="campo">
-      <h3 id="titulo-ansiedad">Nivel de ansiedad percibido</h3>
-
-      <div class="escala-ansiedad" role="group" aria-labelledby="titulo-ansiedad">
-        @for (nivel of nivelesAnsiedad; track nivel) {
-          <button
-            type="button"
-            class="nivel"
-            [class.seleccionado]="nivelAnsiedad() === nivel"
-            [attr.aria-pressed]="nivelAnsiedad() === nivel"
-            [disabled]="guardando()"
-            (click)="seleccionarNivel(nivel)"
-          >
-            {{ nivel }}
-          </button>
-        }
-      </div>
-
-      @if (intentoGuardar() && nivelAnsiedad() === null) {
-        <p class="mensaje-error" role="alert">
-          Selecciona tu nivel de ansiedad.
-        </p>
-      }
-    </div>
-
-    <!-- HU09: selección obligatoria del estado de ánimo. -->
-    <div class="campo">
-      <h3 id="titulo-animo">Estado de ánimo</h3>
-
-      <div class="opciones-animo" role="group" aria-labelledby="titulo-animo">
-        @for (opcion of estadosAnimo; track opcion.valor) {
-          <button
-            type="button"
-            class="opcion-animo"
-            [class.seleccionado]="estadoAnimo() === opcion.valor"
-            [attr.aria-pressed]="estadoAnimo() === opcion.valor"
-            [disabled]="guardando()"
-            (click)="seleccionarEstado(opcion.valor)"
-          >
-            {{ opcion.etiqueta }}
-          </button>
-        }
-      </div>
-
-      @if (intentoGuardar() && estadoAnimo() === null) {
-        <p class="mensaje-error" role="alert">
-          Selecciona tu estado de ánimo.
-        </p>
-      }
-    </div>
-
-    <!-- HU09: comentario opcional del paciente. -->
-    <div class="campo">
-      <label for="comentario">Comentario opcional</label>
-
-      <textarea
-        id="comentario"
-        rows="5"
-        [value]="comentario()"
-        [disabled]="guardando()"
-        (input)="comentario.set($any($event.target).value)"
-        placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
-      ></textarea>
-    </div>
-
-    @if (errorGuardado()) {
-      <p class="mensaje-error" role="alert">
-        {{ errorGuardado() }}
+      <p class="descripcion">
+        No es obligatorio. Puedes completarlo solo cuando te resulte útil.
       </p>
-    }
 
-    <!-- HU09: registra la información en PostgreSQL mediante END08. -->
-    <button
-      type="button"
-      class="boton-guardar"
-      [disabled]="guardando()"
-      (click)="guardarRegistro()"
-    >
-      {{ guardando() ? 'Guardando...' : 'Guardar registro' }}
-    </button>
+      <!-- HU09: selección obligatoria del nivel de ansiedad. -->
+      <div class="campo">
+        <h3 id="titulo-ansiedad">Nivel de ansiedad percibido</h3>
 
-  </section>
+        <div class="escala-ansiedad" role="group" aria-labelledby="titulo-ansiedad">
+          @for (nivel of nivelesAnsiedad; track nivel) {
+            <button
+              type="button"
+              class="nivel"
+              [class.seleccionado]="nivelAnsiedad() === nivel"
+              [attr.aria-pressed]="nivelAnsiedad() === nivel"
+              [disabled]="guardando()"
+              (click)="seleccionarNivel(nivel)"
+            >
+              {{ nivel }}
+            </button>
+          }
+        </div>
+
+        @if (intentoGuardar() && nivelAnsiedad() === null) {
+          <p class="mensaje-error" role="alert">
+            Selecciona tu nivel de ansiedad.
+          </p>
+        }
+      </div>
+
+      <!-- HU09: selección obligatoria del estado de ánimo. -->
+      <div class="campo">
+        <h3 id="titulo-animo">Estado de ánimo</h3>
+
+        <div class="opciones-animo" role="group" aria-labelledby="titulo-animo">
+          @for (opcion of estadosAnimo; track opcion.valor) {
+            <button
+              type="button"
+              class="opcion-animo"
+              [class.seleccionado]="estadoAnimo() === opcion.valor"
+              [attr.aria-pressed]="estadoAnimo() === opcion.valor"
+              [disabled]="guardando()"
+              (click)="seleccionarEstado(opcion.valor)"
+            >
+              {{ opcion.etiqueta }}
+            </button>
+          }
+        </div>
+
+        @if (intentoGuardar() && estadoAnimo() === null) {
+          <p class="mensaje-error" role="alert">
+            Selecciona tu estado de ánimo.
+          </p>
+        }
+      </div>
+
+      <!-- HU09: comentario opcional del paciente. -->
+      <div class="campo">
+        <label for="comentario">Comentario opcional</label>
+
+        <textarea
+          id="comentario"
+          rows="5"
+          [value]="comentario()"
+          [disabled]="guardando()"
+          (input)="comentario.set($any($event.target).value)"
+          placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
+        ></textarea>
+      </div>
+
+      @if (errorGuardado()) {
+        <p class="mensaje-error" role="alert">
+          {{ errorGuardado() }}
+        </p>
+      }
+
+      <!-- HU09: registra la información en PostgreSQL mediante END08. -->
+      <button
+        type="button"
+        class="boton-guardar"
+        [disabled]="guardando()"
+        (click)="guardarRegistro()"
+      >
+        {{ guardando() ? 'Guardando...' : 'Guardar registro' }}
+      </button>
+
+    </section>
+
+
+    <!-- HU10: historial de bienestar del paciente. -->
+    <aside class="tarjeta-historial" aria-labelledby="titulo-historial">
+
+      <h2 id="titulo-historial">Mis registros de bienestar</h2>
+
+      <p class="historial-descripcion">
+        Consulta cómo te has sentido en tus registros anteriores.
+      </p>
+
+      <!-- HU10: muestra el estado de carga. -->
+      @if (cargandoRegistros()) {
+        <p class="historial-mensaje" role="status">
+          Cargando registros...
+        </p>
+      }
+
+      <!-- HU10: permite reintentar si falla la consulta. -->
+      @else if (errorRegistros()) {
+        <p class="mensaje-error" role="alert">
+          {{ errorRegistros() }}
+        </p>
+
+        <button
+          type="button"
+          class="boton-reintentar"
+          (click)="cargarRegistros()"
+        >
+          Reintentar
+        </button>
+      }
+
+      <!-- HU10: estado vacío cuando todavía no existen registros. -->
+      @else if (registros().length === 0) {
+        <p class="historial-mensaje">
+          Todavía no tienes registros de bienestar.
+          Cuando realices uno, aparecerá aquí.
+        </p>
+      }
+
+      <!-- HU10: registros reales ordenados del más reciente al más antiguo. -->
+      @else {
+        <div class="lista-registros">
+
+          @for (registro of registros(); track registro.registroId) {
+
+            <article class="item-registro">
+
+              <div class="registro-superior">
+
+                <time [attr.datetime]="registro.fechaHora">
+                  {{ formatearFecha(registro.fechaHora) }}
+                </time>
+
+                <div class="registro-etiquetas">
+              <span class="etiqueta-ansiedad">
+                Ansiedad: {{ registro.nivelAnsiedad }}/10
+              </span>
+
+                  <span class="etiqueta-animo">
+                {{ mostrarEstado(registro.estadoAnimo) }}
+              </span>
+                </div>
+
+              </div>
+
+              <!-- Muestra el comentario únicamente cuando existe. -->
+              <p
+                class="registro-comentario"
+                [class.sin-comentario]="!registro.comentario?.trim()"
+              >
+                {{ registro.comentario?.trim() || 'Sin comentario' }}
+              </p>
+
+            </article>
+
+          }
+
+        </div>
+      }
+    </aside>
+  </div>
 
 </main>
 

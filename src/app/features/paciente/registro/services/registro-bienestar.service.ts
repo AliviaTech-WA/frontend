@@ -6,6 +6,7 @@ import { environment } from '../../../../../environments/environment';
 
 import {
   RegistrarBienestarRequest,
+  RegistroBienestarDetalle,
   RegistroBienestarResponse,
 } from '../models/registro-bienestar.model';
 
@@ -26,6 +27,13 @@ export class RegistroBienestarService {
     return this.http.post<RegistroBienestarResponse>(
       `${this.baseUrl}/${pacienteId}/registros-bienestar`,
       solicitud,
+    );
+  }
+
+  // HU10: consulta los registros anteriores del paciente autenticado.
+  consultar(pacienteId: number): Observable<RegistroBienestarDetalle[]> {
+    return this.http.get<RegistroBienestarDetalle[]>(
+      `${this.baseUrl}/${pacienteId}/registros-bienestar`,
     );
   }
 }
