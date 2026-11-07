@@ -1,0 +1,257 @@
+<section class="pagina-reportes">
+  <h1>Reportes</h1>
+  <p>Indicadores generales del seguimiento durante el periodo seleccionado.</p>
+
+  <div class="filtros-periodo" role="group" aria-label="Periodo del reporte">
+    <button
+      mat-button
+      type="button"
+      [attr.aria-pressed]="!periodoPersonalizado() && !panelAbierto()"
+      [disabled]="cargando()"
+      (click)="usarUltimos30Dias()"
+    >
+      Últimos 30 días
+    </button>
+
+    <button
+      mat-button
+      type="button"
+      cdkOverlayOrigin
+      #botonPeriodo="cdkOverlayOrigin"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="panelAbierto()"
+      [class.seleccionado]="periodoPersonalizado() || panelAbierto()"
+      [disabled]="cargando()"
+      (click)="abrirPanel()"
+    >
+      Periodo personalizado
+    </button>
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="botonPeriodo"
+    [cdkConnectedOverlayOpen]="panelAbierto()"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    (backdropClick)="cerrarPanel()"
+    (detach)="cerrarPanel()"
+    (overlayKeydown)="$event.key === 'Escape' && cerrarPanel()"
+  >
+    <form
+      class="panel-rango"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-rango"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      [formGroup]="periodoForm"
+      (ngSubmit)="aplicarPeriodo()"
+    >
+      <div class="cabecera-rango">
+        <h2 id="titulo-rango">Seleccionar rango</h2>
+        <button mat-button type="button" aria-label="Cerrar" (click)="cerrarPanel()">
+          ×
+        </button>
+      </div>
+
+      <div class="atajos-rango" role="group" aria-label="Opciones de rango">
+        <button mat-button type="button"
+                [attr.aria-pressed]="opcionRango() === 'mes'"
+                (click)="elegirAtajo('mes')">
+          Último mes
+        </button>
+        <button mat-button type="button"
+                [attr.aria-pressed]="opcionRango() === 'trimestre'"
+                (click)="elegirAtajo('trimestre')">
+          Trimestre
+        </button>
+        <button mat-button type="button"
+                [attr.aria-pressed]="opcionRango() === 'personalizado'"
+                (click)="opcionRango.set('personalizado')">
+          Personalizado
+        </button>
+      </div>
+
+      <div class="fechas-rango">
+        <mat-form-field appearance="outline">
+          <mat-label>Desde</mat-label>
+          <input matInput [matDatepicker]="calendarioDesde" formControlName="desde"
+                 (dateChange)="opcionRango.set('personalizado')">
+          <mat-datepicker-toggle matIconSuffix [for]="calendarioDesde"></mat-datepicker-toggle>
+          <mat-datepicker #calendarioDesde></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hasta</mat-label>
+          <input matInput [matDatepicker]="calendarioHasta" formControlName="hasta"
+                 (dateChange)="opcionRango.set('personalizado')">
+          <mat-datepicker-toggle matIconSuffix [for]="calendarioHasta"></mat-datepicker-toggle>
+          <mat-datepicker #calendarioHasta></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      @if (errorPeriodo()) {
+        <p class="error-rango" role="alert">{{ errorPeriodo() }}</p>
+      }
+
+      <div class="acciones-rango">
+        <button mat-button type="button" (click)="cerrarPanel()">Cancelar</button>
+        <button mat-raised-button type="submit" class="aplicar-rango">Aplicar filtro</button>
+      </div>
+    </form>
+  </ng-template>
+
+  @if (cargando()) {
+    <p role="status">Cargando reporte...</p>
+  } @else if (mensajeError()) {
+    <p role="alert">{{ mensajeError() }}</p>
+  } @else if (reporte(); as datos) {
+    <div class="indicadores-reportes">
+      <mat-card>
+        <mat-card-content>
+          <span>Pacientes activos</span>
+          <strong>{{ datos.pacientesActivos }} {{ datos.pacientesActivos === 1 ? 'paciente' : 'pacientes' }}</strong>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content>
+          <span>Registros recibidos</span>
+          <strong>{{ datos.registrosRecibidos }} {{ datos.registrosRecibidos === 1 ? 'registro' : 'registros' }}</strong>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content>
+          <span>Episodios confirmados</span>
+          <strong>{{ datos.episodiosConfirmados }} {{ datos.episodiosConfirmados === 1 ? 'episodio' : 'episodios' }}</strong>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content>
+          <span>Promedio por paciente</span>
+          <strong>
+            {{ datos.promedioRegistrosPorPaciente | number:'1.0-2' }}
+            {{ datos.promedioRegistrosPorPaciente === 1 ? 'registro' : 'registros' }}
+          </strong>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="detalle-reportes">
+      <div class="columna-reporte">
+        <mat-card>
+          <mat-card-content>
+            <h2>Actividad registrada por semana</h2>
+            <p class="texto-reporte">Registros manuales y episodios confirmados durante el periodo.</p>
+
+            <div class="grafico-semanal">
+              @for (semana of datos.actividadSemanal; track semana.semana) {
+                <div class="semana-reporte">
+                  <div class="escala-semanal">
+                    <div class="barra-semanal"
+                         [style.height.%]="semana.registros / maximoRegistros() * 100"
+                         aria-hidden="true"></div>
+                  </div>
+                  <strong>Sem. {{ semana.semana }}</strong>
+                  <span>{{ semana.registros }} reg.</span>
+                  <span class="episodios-semana">{{ semana.episodios }} ep.</span>
+                </div>
+              } @empty {
+                <p class="texto-reporte">No hay actividad semanal para este periodo.</p>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-content>
+            <h2>Pacientes con mayor actividad</h2>
+
+            <ul class="lista-actividad">
+              @for (paciente of datos.pacientesMayorActividad; track paciente.pacienteId) {
+                <li>
+                  <strong>{{ paciente.nombreCompleto }}</strong>
+                  <span>{{ paciente.registros }} reg. · {{ paciente.episodios }} ep.</span>
+                </li>
+              } @empty {
+                <li>No hay pacientes para mostrar en este periodo.</li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="columna-reporte columna-lateral-reporte">
+        <mat-card>
+          <mat-card-content class="contenido-cobertura">
+            <h2>Cobertura del seguimiento</h2>
+            <p class="texto-reporte">
+              Pacientes con registros o episodios confirmados durante el periodo.
+            </p>
+
+            <div class="resumen-cobertura">
+              <div>
+                <strong class="cifra-reporte">
+                  {{ datos.cobertura.porcentaje | number:'1.0-1' }}%
+                </strong>
+
+                <div class="barra-cobertura" aria-hidden="true">
+                  <div [style.width.%]="datos.cobertura.porcentaje"></div>
+                </div>
+
+                <div class="desglose-cobertura">
+                  <span>{{ datos.cobertura.pacientesConActividad }} con actividad</span>
+                  <span>
+              {{ datos.cobertura.pacientesActivos - datos.cobertura.pacientesConActividad }}
+                    sin actividad
+            </span>
+                </div>
+              </div>
+
+              <div class="recuadro-cobertura">
+                <span>Cobertura</span>
+                <strong>
+                  {{ datos.cobertura.pacientesConActividad }} de {{ datos.cobertura.pacientesActivos }}
+                </strong>
+              </div>
+            </div>
+
+            <p class="texto-reporte nota-cobertura">
+              La cobertura indica qué proporción de tus pacientes activos aportó información al reporte.
+            </p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-content>
+            <h2 class="etiqueta-lateral etiqueta-episodios">Pacientes con episodios</h2>
+
+            <strong class="cifra-reporte">
+              {{ datos.pacientesConEpisodios }}
+              {{ datos.pacientesConEpisodios === 1 ? 'paciente' : 'pacientes' }}
+            </strong>
+
+            <p class="texto-reporte">
+              @if (datos.pacientesActivos > 0) {
+                El {{ (datos.pacientesConEpisodios / datos.pacientesActivos * 100) | number:'1.0-1' }}%
+                  de los pacientes activos tuvo al menos un episodio confirmado en el periodo.
+              } @else {
+                No hay pacientes activos para este periodo.
+              }
+            </p>
+          </mat-card-content>
+        </mat-card>
+
+        <section class="nota-reporte-general">
+          <h2 class="etiqueta-lateral">Reporte general</h2>
+          <p class="texto-reporte">
+            Incluye únicamente información de seguimiento y actividad registrada en AliviaTech.
+          </p>
+        </section>
+      </div>
+    </div>
+  }
+</section>
