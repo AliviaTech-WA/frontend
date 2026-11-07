@@ -34,6 +34,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/paciente/eventos/eventos').then((component) => component.Eventos),
       },
+      {
+        path: 'sesiones',
+        loadComponent: () =>
+          import('./features/paciente/sesiones/sesiones').then((component) => component.Sesiones),
+      },
     ],
   },
   {
