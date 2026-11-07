@@ -1,0 +1,326 @@
+
+<main class="sesiones-pagina">
+
+  <!-- ENCABEZADO -->
+  <header class="sesiones-header">
+    <h1>Mis sesiones</h1>
+    <p>
+      Consulta únicamente información de sesiones
+      que ya ocurrieron.
+    </p>
+  </header>
+
+  <div class="sesiones-grid">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="sesiones-principal">
+
+      @if (cargando()) {
+        <section class="sesiones-card estado-carga">
+          Cargando tus sesiones...
+        </section>
+
+      } @else if (errorCarga()) {
+        <section class="sesiones-card estado-vacio">
+          <h2>No pudimos consultar tus sesiones</h2>
+
+          <p role="alert">
+            {{ errorCarga() }}
+          </p>
+
+          <button
+            type="button"
+            class="boton-reintentar"
+            (click)="cargarSesiones()"
+          >
+            Reintentar
+          </button>
+        </section>
+
+      } @else if (sesionReciente(); as reciente) {
+
+        <!-- HU19: SESIÓN MÁS RECIENTE -->
+        <section class="sesiones-card sesion-reciente">
+
+          <div class="reciente-header">
+            <h2>
+              {{
+                reciente.fechaSesion
+                  | date:"d 'de' MMMM 'de' yyyy"
+              }}
+            </h2>
+
+            <span class="etiqueta-reciente">
+              Más reciente
+            </span>
+          </div>
+
+          <p class="reciente-subtitulo">
+            Sesión de seguimiento
+          </p>
+
+          <div class="reciente-bloque">
+            <h3>RESUMEN COMPARTIDO</h3>
+
+            <p>
+              {{
+                reciente.resumenCompartido
+                || 'Todavía no hay un resumen compartido.'
+              }}
+            </p>
+          </div>
+
+          <div class="reciente-bloque">
+            <h3>RECOMENDACIÓN</h3>
+
+            <p>
+              {{
+                reciente.recomendacionCompartida
+                || 'No hay recomendaciones compartidas.'
+              }}
+            </p>
+          </div>
+        </section>
+
+        <!-- HU19: SESIONES ANTERIORES -->
+        <section class="sesiones-card sesiones-historial">
+
+          <h2>Sesiones anteriores</h2>
+
+          <div class="historial-lista">
+
+            @for (
+              sesion of sesionesAnteriores();
+              track sesion.sesionId
+            ) {
+
+              <article class="historial-item">
+
+                <div class="historial-texto">
+                  <h3>
+                    {{
+                      sesion.fechaSesion
+                        | date:'d MMM yyyy'
+                    }}
+                  </h3>
+
+                  <p>
+                    {{
+                      sesion.resumenCompartido
+                        ? 'Resumen compartido'
+                        : 'Sin resumen compartido'
+                    }}
+                    ·
+                    {{
+                      sesion.recomendacionCompartida
+                        ? 'Recomendación disponible'
+                        : 'Sin recomendación'
+                    }}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  class="boton-ver-detalle"
+                  (click)="verDetalle(sesion.sesionId)"
+                >
+                  Ver detalle
+                </button>
+
+              </article>
+
+            }
+
+            <div class="historial-fin">
+              — No hay más sesiones registradas —
+            </div>
+
+          </div>
+        </section>
+
+      } @else {
+
+        <!-- HU19: SIN SESIONES -->
+        <section class="sesiones-card estado-vacio">
+
+          <h2>Aún no tienes sesiones registradas</h2>
+
+          <p>
+            Cuando tu psicólogo registre una sesión,
+            podrás consultar aquí el resumen y las
+            recomendaciones que haya compartido contigo.
+          </p>
+
+        </section>
+      }
+
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <aside class="sesiones-lateral">
+
+      <section class="lateral-alcance">
+        <span class="lateral-etiqueta">
+          ESTE APARTADO
+        </span>
+
+        <h2>No gestiona citas</h2>
+
+        <p>
+          Aquí solo consultas resúmenes y recomendaciones
+          de sesiones que ya se realizaron.
+          No existen opciones para reservar, cancelar
+          o reprogramar.
+        </p>
+      </section>
+
+      <section class="sesiones-card lateral-profesional">
+        <span class="lateral-etiqueta lateral-gris">
+          PSICÓLOGO RESPONSABLE
+        </span>
+
+        <h2>Tu profesional de seguimiento</h2>
+
+        <p>
+          La información compartida en esta sección
+          corresponde a tus sesiones de seguimiento.
+        </p>
+      </section>
+
+      <section class="sesiones-card lateral-recomendacion">
+        <span class="lateral-etiqueta">
+          ÚLTIMA RECOMENDACIÓN
+        </span>
+
+        <p>
+          {{
+            ultimaRecomendacion()
+            || 'Las recomendaciones compartidas por tu psicólogo aparecerán aquí después de una sesión.'
+          }}
+        </p>
+      </section>
+
+    </aside>
+  </div>
+
+  <!-- HU20: MODAL DE DETALLE -->
+  @if (detalleAbierto()) {
+
+    <div
+      class="modal-overlay"
+      (click)="cerrarDetalle()"
+    >
+
+      <section
+        class="modal-sesion"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-detalle"
+        (click)="$event.stopPropagation()"
+      >
+
+        <header class="modal-header">
+
+          <div>
+            <span class="modal-etiqueta">
+              DETALLE DE SESIÓN
+            </span>
+
+            <h2 id="titulo-detalle">
+              @if (detalle(); as sesion) {
+                {{
+                  sesion.fechaSesion
+                    | date:"d 'de' MMMM 'de' yyyy"
+                }}
+              } @else {
+                Resumen compartido
+              }
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            class="modal-cerrar"
+            aria-label="Cerrar detalle"
+            (click)="cerrarDetalle()"
+          >
+            ×
+          </button>
+
+        </header>
+
+        <div class="modal-cuerpo">
+
+          @if (cargandoDetalle()) {
+            <p class="modal-estado">
+              Cargando detalle de la sesión...
+            </p>
+
+          } @else if (errorDetalle()) {
+            <p class="mensaje-error" role="alert">
+              {{ errorDetalle() }}
+            </p>
+
+          } @else if (detalle(); as sesion) {
+
+            <div class="modal-info">
+              Información compartida contigo
+            </div>
+
+            <section class="modal-bloque">
+
+              <h3>
+                RESUMEN COMPARTIDO DE LA PSICÓLOGA
+              </h3>
+
+              <p>
+                {{
+                  sesion.resumenCompartido
+                  || 'No se compartió un resumen.'
+                }}
+              </p>
+
+            </section>
+
+            <section class="modal-bloque">
+
+              <h3>RECOMENDACIONES ACORDADAS</h3>
+
+              <p>
+                {{
+                  sesion.recomendacionCompartida
+                  || 'No se compartieron recomendaciones.'
+                }}
+              </p>
+
+            </section>
+
+          }
+        </div>
+
+        <footer class="modal-footer">
+
+          <button
+            type="button"
+            class="boton-pdf"
+            disabled
+            title="La descarga de PDF aún no está disponible"
+          >
+            Descargar informe en PDF
+          </button>
+
+          <button
+            type="button"
+            class="boton-cerrar-detalle"
+            (click)="cerrarDetalle()"
+          >
+            Cerrar detalle
+          </button>
+
+        </footer>
+
+      </section>
+    </div>
+  }
+
+</main>

@@ -2,11 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { DashboardPacienteModel } from './models/dashboard-paciente.model';
 import { DashboardPacienteService } from './services/dashboard-paciente.service';
+import { NotificacionesPaciente } from
+  '../notificaciones/notificaciones';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, NotificacionesPaciente],
   selector: 'app-inicio',
   styleUrl: './inicio.css',
   templateUrl: './inicio.html',
