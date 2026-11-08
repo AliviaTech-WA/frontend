@@ -1,0 +1,328 @@
+:host {
+  display: block;
+  font-family: Inter, Arial, sans-serif;
+  color: #1a2825;
+}
+
+.pagina-resumen {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 0 34px;
+}
+
+.ruta-paciente {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: #6e7d78;
+}
+
+.ruta-paciente a {
+  color: #087766;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid #e0e8e5;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 9px #1c4b3810;
+}
+
+.tarjeta h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.subtitulo,
+.estado-vacio,
+.estado-ayuda {
+  margin: 0;
+  color: #6e7d78;
+  font-size: 12px;
+}
+
+/* HU24: cabecera del paciente */
+.cabecera-paciente {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 18px;
+  margin-bottom: 18px;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e6f5ef;
+  color: #0f5f52;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.nombre-estado {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nombre-estado h1 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.insignia-estado,
+.insignia-total {
+  border-radius: 14px;
+  background: #e3f5ef;
+  color: #087766;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cabecera-paciente p {
+  margin: 6px 0 0;
+  color: #6e7d78;
+  font-size: 12px;
+}
+
+.cabecera-paciente .ultima-revision {
+  color: #0f5f52;
+  font-weight: 600;
+}
+
+/* Pestañas del paciente */
+.pestanas-paciente {
+  display: flex;
+  gap: 6px;
+  padding: 7px;
+  margin-bottom: 18px;
+  background: #fff;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.pestanas-paciente span,
+.pestanas-paciente a {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 9px;
+  color: #64766e;
+  font-size: 12px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pestanas-paciente .pestana-activa {
+  background: #e3f5ef;
+  color: #087766;
+  font-weight: 600;
+}
+
+.cuadricula {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 18px;
+  align-items: start;
+}
+
+.columna-principal,
+.columna-lateral {
+  display: grid;
+  gap: 16px;
+}
+
+.cabecera-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+/* HU24: contadores de novedades */
+.contadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.contador {
+  background: #f1f8f5;
+  border-radius: 12px;
+  padding: 14px 12px 26px;
+}
+
+.contador strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.contador span {
+  color: #6e7d78;
+  font-size: 11px;
+}
+
+/* HU24: últimos registros */
+.fila-registro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: #f1f8f5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+
+.fila-registro div {
+  display: grid;
+  gap: 3px;
+}
+
+.fila-registro .fecha,
+.fila-registro .comentario {
+  color: #6e7d78;
+  font-size: 10px;
+}
+
+.fila-registro strong {
+  font-size: 12px;
+}
+
+.etiqueta-registro {
+  border-radius: 14px;
+  background: #e3f5ef;
+  color: #087766;
+  padding: 5px 10px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* HU24: gráficos del periodo */
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.grafico {
+  border: 1px solid #e0e8e5;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f8fbfa;
+}
+
+.cabecera-grafico {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.promedio {
+  border-radius: 12px;
+  background: #e3f5ef;
+  color: #087766;
+  padding: 4px 10px;
+  font-size: 10px;
+}
+
+.barras {
+  display: flex;
+  justify-content: space-around;
+  height: 90px;
+  margin: 16px 0 8px;
+}
+
+.columna-barra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #6e7d78;
+}
+
+.fondo-barra {
+  flex: 1;
+  width: 12px;
+  border-radius: 6px;
+  background: #e3f0eb;
+  display: flex;
+  align-items: flex-end;
+}
+
+.relleno-barra {
+  width: 100%;
+  border-radius: 6px;
+  background: #11806e;
+}
+
+.nota {
+  margin: 0;
+  color: #8a9894;
+  font-size: 10px;
+}
+
+/* HU24: columna lateral */
+.insignia-confirmado {
+  border-radius: 14px;
+  background: #fde4e1;
+  color: #c0392b;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.texto-lateral {
+  margin: 0;
+  color: #3d4b47;
+  font-size: 12px;
+}
+
+.etiqueta {
+  margin: 0 0 10px;
+  color: #6e7d78;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.enlace {
+  display: inline-block;
+  margin-top: 10px;
+  color: #087766;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.boton-secundario {
+  border: 1px solid #dfe8e4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .cuadricula,
+  .graficos {
+    grid-template-columns: 1fr;
+  }
+
+  .contadores {
+    grid-template-columns: 1fr;
+  }
+}
