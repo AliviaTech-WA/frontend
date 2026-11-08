@@ -1,0 +1,145 @@
+<section class="pagina-registros">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  <div class="ruta-paciente">
+    <a routerLink="/psicologo/pacientes">Pacientes</a>
+    <span>/</span>
+    <span>{{ paciente() ? paciente()!.nombres + ' ' + paciente()!.apellidos : 'Registros' }}</span>
+  </div>
+
+  <!-- Cabecera del paciente -->
+  <article class="tarjeta cabecera-paciente">
+    @if (paciente(); as datos) {
+      <div class="avatar" aria-hidden="true">{{ datos.nombres.charAt(0) }}{{ datos.apellidos.charAt(0) }}</div>
+      <div>
+        <h1>{{ datos.nombres }} {{ datos.apellidos }}</h1>
+        <p>DNI {{ datos.dni }}</p>
+      </div>
+    } @else {
+      <h1>Paciente #{{ pacienteId }}</h1>
+    }
+  </article>
+
+  <!-- Pestañas del paciente -->
+  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
+    <span class="pestana-activa" aria-current="page">Registros</span>
+    <span>Wearable</span>
+    <span>Episodios</span>
+    <span>Analizar con IA</span>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'sesiones']">Sesiones</a>
+  </nav>
+
+  <div class="cuadricula">
+
+    <div class="columna-principal">
+
+      @if (errorCarga()) {
+        <div class="tarjeta estado-ayuda" role="alert">
+          <p>{{ errorCarga() }}</p>
+          <button type="button" class="boton-secundario" (click)="cargarRegistros()">Reintentar</button>
+        </div>
+      }
+
+      <!-- ================================== -->
+      <!-- HU25: INDICADORES DEL PERIODO      -->
+      <!-- ================================== -->
+      <div class="indicadores">
+        <article class="tarjeta indicador">
+          <p class="etiqueta">REGISTROS</p>
+          <strong>{{ registros().length }}</strong>
+          <span>{{ periodoDias() ? 'Últimos ' + periodoDias() + ' días' : 'Periodo personalizado' }}</span>
+        </article>
+        <article class="tarjeta indicador">
+          <p class="etiqueta">ANSIEDAD PROMEDIO</p>
+          <strong>{{ promedioAnsiedad() !== null ? (promedioAnsiedad() | number: '1.0-1') : '—' }}</strong>
+          <span>Escala 1 a 10</span>
+        </article>
+        <article class="tarjeta indicador">
+          <p class="etiqueta">CON COMENTARIO</p>
+          <strong>{{ conComentario() }}</strong>
+          <span>Información adicional</span>
+        </article>
+      </div>
+
+      <!-- EVOLUCIÓN DE ANSIEDAD -->
+      <article class="tarjeta">
+        <h2>Evolución de ansiedad</h2>
+        <p class="subtitulo">{{ registros().length }} registros · Escala percibida de ansiedad (1–10)</p>
+
+        @if (cargando()) {
+          <p class="estado-ayuda" role="status">Cargando registros...</p>
+        } @else if (puntosGrafico().length) {
+          <svg class="grafico" viewBox="-10 -10 620 140" preserveAspectRatio="none" role="img"
+               aria-label="Evolución del nivel de ansiedad">
+            <polyline [attr.points]="lineaGrafico()" class="linea" />
+            @for (punto of puntosGrafico(); track punto.registro.registroId) {
+              <circle [attr.cx]="punto.x" [attr.cy]="punto.y" r="4" class="punto">
+                <title>{{ punto.registro.fechaHora | date: 'dd/MM HH:mm' }} · {{ punto.registro.nivelAnsiedad }}/10</title>
+              </circle>
+            }
+          </svg>
+        } @else {
+          <p class="estado-vacio">No hay registros en el periodo seleccionado.</p>
+        }
+      </article>
+
+      <!-- HISTORIAL -->
+      <article class="tarjeta">
+        <h2>Historial reciente</h2>
+
+        @for (registro of registros(); track registro.registroId) {
+          <div class="fila-registro">
+            <span class="fecha">{{ registro.fechaHora | date: 'dd/MM · HH:mm' }}</span>
+            <strong class="nivel">{{ registro.nivelAnsiedad }}/10</strong>
+            <span class="animo">{{ registro.estadoAnimo }}</span>
+            <span class="comentario">{{ registro.comentario || 'Sin comentario' }}</span>
+          </div>
+        } @empty {
+          @if (!cargando()) {
+            <p class="estado-vacio">Sin registros para mostrar.</p>
+          }
+        }
+      </article>
+
+    </div>
+
+    <!-- COLUMNA LATERAL: FILTROS -->
+    <aside class="columna-lateral">
+      <article class="tarjeta">
+        <h2>Filtrar registros</h2>
+        <p class="etiqueta-filtro">Periodo</p>
+
+        <div class="periodos">
+          @for (dias of [7, 30, 90]; track dias) {
+            <button type="button" class="chip" [class.chip-activo]="periodoDias() === dias"
+                    (click)="seleccionarPeriodo(dias)">
+              Últimos {{ dias }} días
+            </button>
+          }
+        </div>
+
+        <p class="etiqueta-filtro">Periodo personalizado</p>
+        <div class="rango">
+          <label>
+            Desde
+            <input type="date" name="fechaDesde" [(ngModel)]="fechaDesde" />
+          </label>
+          <label>
+            Hasta
+            <input type="date" name="fechaHasta" [(ngModel)]="fechaHasta" />
+          </label>
+        </div>
+        <button type="button" class="boton-primario" (click)="aplicarRangoPersonalizado()">Aplicar</button>
+      </article>
+
+      <article class="tarjeta origen">
+        <p class="etiqueta">ORIGEN DE INFORMACIÓN</p>
+        <h2>Ingresado por el paciente</h2>
+        <p class="subtitulo">Incluye nivel de ansiedad percibido, estado de ánimo y comentario opcional.</p>
+      </article>
+    </aside>
+
+  </div>
+
+</section>
