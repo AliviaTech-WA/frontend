@@ -83,6 +83,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'pacientes/:pacienteId/registros',
+        loadComponent: () =>
+          import('./features/psicologo/registros-paciente/registros-paciente').then(
+            (component) => component.RegistrosPacienteComponent,
+          ),
+      },
+      {
         path: 'pacientes/:pacienteId/sesiones',
         loadComponent: () =>
           import('./features/psicologo/sesiones/sesiones').then((component) => component.Sesiones),
