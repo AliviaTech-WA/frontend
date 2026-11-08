@@ -1,0 +1,188 @@
+<section class="pagina-resumen">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  <div class="ruta-paciente">
+    <a routerLink="/psicologo/pacientes">Pacientes</a>
+    <span>/</span>
+    <span>{{ resumen()?.nombreCompleto ?? 'Resumen' }}</span>
+  </div>
+
+  @if (cargando()) {
+
+    <p class="estado-ayuda" role="status">Cargando el resumen del paciente...</p>
+
+  } @else if (errorCarga()) {
+
+    <div class="tarjeta estado-ayuda" role="alert">
+      <p>{{ errorCarga() }}</p>
+      <button type="button" class="boton-secundario" (click)="cargarResumen()">Reintentar</button>
+    </div>
+
+  } @else if (resumen(); as datos) {
+
+    <!-- ================================== -->
+    <!-- HU24: CABECERA DEL PACIENTE        -->
+    <!-- ================================== -->
+    <article class="tarjeta cabecera-paciente">
+      <div class="avatar" aria-hidden="true">{{ iniciales() }}</div>
+
+      <div>
+        <div class="nombre-estado">
+          <h1>{{ datos.nombreCompleto }}</h1>
+          <span class="insignia-estado">{{ datos.estadoSeguimiento === 'ACTIVO' ? 'Activa' : datos.estadoSeguimiento }}</span>
+        </div>
+        <p>
+          @if (edad() !== null) { {{ edad() }} años · }
+          DNI {{ datos.dni }} · Seguimiento desde {{ datos.fechaInicioSeguimiento | date: 'dd/MM/yyyy' }}
+        </p>
+        <p class="ultima-revision">
+          Última revisión:
+          {{ datos.fechaUltimaRevision ? (datos.fechaUltimaRevision | date: 'dd/MM/yyyy · HH:mm') : 'primera revisión' }}
+        </p>
+      </div>
+    </article>
+
+    <!-- Pestañas del paciente -->
+    <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+      <span class="pestana-activa" aria-current="page">Resumen</span>
+      <span>Registros</span>
+      <span>Wearable</span>
+      <span>Episodios</span>
+      <span>Analizar con IA</span>
+      <a [routerLink]="['/psicologo/pacientes', datos.pacienteId, 'sesiones']">Sesiones</a>
+    </nav>
+
+    <div class="cuadricula">
+
+      <div class="columna-principal">
+
+        <!-- DESDE LA ÚLTIMA REVISIÓN -->
+        <article class="tarjeta">
+          <div class="cabecera-seccion">
+            <h2>Desde tu última revisión</h2>
+            <span class="insignia-total">{{ totalNovedades() }} novedades</span>
+          </div>
+
+          <div class="contadores">
+            <div class="contador">
+              <strong>{{ datos.novedades.registros }}</strong>
+              <span>Registros</span>
+            </div>
+            <div class="contador">
+              <strong>{{ datos.novedades.lecturasRelevantes }}</strong>
+              <span>Lecturas relevantes</span>
+            </div>
+            <div class="contador">
+              <strong>{{ datos.novedades.episodiosConfirmados }}</strong>
+              <span>Episodios confirmados</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ÚLTIMOS REGISTROS -->
+        <article class="tarjeta">
+          <h2>Últimos registros del paciente</h2>
+          <p class="subtitulo">Vista rápida de los registros manuales más recientes.</p>
+
+          @for (registro of datos.ultimosRegistros.slice(0, 3); track registro.fechaHora) {
+
+            <div class="fila-registro">
+              <div>
+                <span class="fecha">{{ registro.fechaHora | date: 'dd/MM · HH:mm' }}</span>
+                <strong>Ansiedad {{ registro.nivelAnsiedad }}/10 · ánimo {{ registro.estadoAnimo | lowercase }}</strong>
+                <span class="comentario">{{ registro.comentario ? '"' + registro.comentario + '"' : 'Sin comentario' }}</span>
+              </div>
+              <span class="etiqueta-registro">Registro manual</span>
+            </div>
+
+          } @empty {
+
+            <p class="estado-vacio">No hay registros en los últimos 7 días.</p>
+
+          }
+        </article>
+
+        <!-- RESUMEN DEL PERIODO -->
+        <article class="tarjeta">
+          <h2>Resumen del periodo</h2>
+          <p class="subtitulo">Últimos 7 días · cada fuente se muestra con su propia escala.</p>
+
+          <div class="graficos">
+            <div class="grafico">
+              <div class="cabecera-grafico">
+                <strong>Ansiedad registrada</strong>
+                <span class="promedio">
+                  Prom. {{ datos.resumenPeriodo.ansiedadPromedio !== null ? (datos.resumenPeriodo.ansiedadPromedio | number: '1.0-1') + ' / 10' : '—' }}
+                </span>
+              </div>
+
+              <div class="barras">
+                @for (dia of datos.resumenPeriodo.dias; track dia.fecha) {
+                  <div class="columna-barra">
+                    <div class="fondo-barra">
+                      <div class="relleno-barra" [style.height.%]="alturaAnsiedad(dia.ansiedadPromedio)"></div>
+                    </div>
+                    <span>{{ nombreDia(dia.fecha) }}</span>
+                  </div>
+                } @empty {
+                  <p class="estado-vacio">Sin registros en el periodo.</p>
+                }
+              </div>
+              <p class="nota">Escala del registro voluntario: 1–10</p>
+            </div>
+
+            <div class="grafico">
+              <div class="cabecera-grafico">
+                <strong>Sueño registrado</strong>
+                <span class="promedio">
+                  Prom. {{ datos.resumenPeriodo.horasSuenoPromedio !== null ? (datos.resumenPeriodo.horasSuenoPromedio | number: '1.0-1') + ' h' : '—' }}
+                </span>
+              </div>
+
+              <div class="barras">
+                @for (dia of datos.resumenPeriodo.dias; track dia.fecha) {
+                  <div class="columna-barra">
+                    <div class="fondo-barra">
+                      <div class="relleno-barra" [style.height.%]="alturaSueno(dia.horasSueno)"></div>
+                    </div>
+                    <span>{{ nombreDia(dia.fecha) }}</span>
+                  </div>
+                } @empty {
+                  <p class="estado-vacio">Sin datos del wearable en el periodo.</p>
+                }
+              </div>
+              <p class="nota">Duración estimada por el wearable</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- COLUMNA LATERAL -->
+      <aside class="columna-lateral">
+        <article class="tarjeta">
+          <div class="cabecera-seccion">
+            <h2>Último episodio</h2>
+            @if (datos.ultimoEpisodio) {
+              <span class="insignia-confirmado">Confirmado</span>
+            }
+          </div>
+          <p class="texto-lateral">
+            {{ datos.ultimoEpisodio ? (datos.ultimoEpisodio | date: 'dd/MM/yyyy · HH:mm') : 'Sin episodios confirmados.' }}
+          </p>
+        </article>
+
+        <article class="tarjeta">
+          <p class="etiqueta">ÚLTIMA SESIÓN</p>
+          <h2>{{ datos.ultimaSesion ? (datos.ultimaSesion | date: 'dd/MM/yyyy') : 'Sin sesiones' }}</h2>
+          <a class="enlace" [routerLink]="['/psicologo/pacientes', datos.pacienteId, 'sesiones']">
+            Registrar información post sesión
+          </a>
+        </article>
+      </aside>
+
+    </div>
+
+  }
+
+</section>
