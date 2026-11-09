@@ -97,6 +97,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'pacientes/:pacienteId/episodios',
+        loadComponent: () =>
+          import('./features/psicologo/episodios-paciente/episodios-paciente').then(
+            (component) => component.EpisodiosPacienteComponent,
+          ),
+      },
+      {
         path: 'pacientes/:pacienteId/sesiones',
         loadComponent: () =>
           import('./features/psicologo/sesiones/sesiones').then((component) => component.Sesiones),
