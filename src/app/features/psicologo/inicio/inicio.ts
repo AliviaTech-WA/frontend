@@ -54,6 +54,41 @@ export class InicioPsicologo implements OnInit {
     (this.dashboard()?.actividadUltimos7Dias ?? []).reduce((suma, dia) => suma + dia.episodiosConfirmados, 0),
   );
 
+  // HU22: segmentos del donut del estado de revisión (circunferencia de radio 40)
+  segmentosDonut = computed(() => {
+    const datos = this.dashboard();
+    if (!datos) return [];
+    const distribucion = datos.distribucionNovedades;
+    const total = Math.max(1, datos.pacientesActivos);
+    const circunferencia = 2 * Math.PI * 40;
+    const valores = [
+      { clase: 'episodios', valor: distribucion.conNuevosEpisodios },
+      { clase: 'pendientes', valor: distribucion.conNuevosRegistros },
+      { clase: 'registros', valor: distribucion.sinNovedades },
+    ];
+    let acumulado = 0;
+    return valores.map((segmento) => {
+      const largo = (segmento.valor / total) * circunferencia;
+      const resultado = {
+        clase: segmento.clase,
+        trazo: `${largo} ${circunferencia - largo}`,
+        desplazamiento: -acumulado,
+      };
+      acumulado += largo;
+      return resultado;
+    });
+  });
+
+  pacientesConNovedad = computed(() => {
+    const distribucion = this.dashboard()?.distribucionNovedades;
+    return distribucion ? distribucion.conNuevosEpisodios + distribucion.conNuevosRegistros : 0;
+  });
+
+  porcentaje(valor: number): number {
+    const total = this.dashboard()?.pacientesActivos ?? 0;
+    return total ? Math.round((valor / total) * 100) : 0;
+  }
+
   ngOnInit(): void {
     this.cargarNombre();
     this.cargarDashboard();
