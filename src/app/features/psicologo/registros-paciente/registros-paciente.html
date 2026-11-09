@@ -24,7 +24,7 @@
   <nav class="pestanas-paciente" aria-label="Secciones del paciente">
     <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
     <span class="pestana-activa" aria-current="page">Registros</span>
-    <span>Wearable</span>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'wearable']">Wearable</a>
     <span>Episodios</span>
     <span>Analizar con IA</span>
     <a [routerLink]="['/psicologo/pacientes', pacienteId, 'sesiones']">Sesiones</a>
