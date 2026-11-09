@@ -1,0 +1,55 @@
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content>
+    <header class="cabecera-edicion">
+      <div>
+        <h2>Cambiar contraseña</h2>
+        <p>Ingresa tu contraseña actual y confirma la nueva.</p>
+      </div>
+
+      <button type="button" mat-dialog-close class="cerrar-edicion"
+              aria-label="Cerrar cambio de contraseña" [disabled]="guardando()">
+        ×
+      </button>
+    </header>
+
+    <div class="campos-edicion">
+      <div class="campo-edicion">
+        <label for="contrasena-actual">Contraseña actual</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="contrasena-actual" type="password"
+                 formControlName="contrasenaActual" autocomplete="current-password">
+        </mat-form-field>
+      </div>
+
+      <div class="campo-edicion">
+        <label for="contrasena-nueva">Nueva contraseña</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="contrasena-nueva" type="password"
+                 formControlName="nuevaContrasena" autocomplete="new-password">
+        </mat-form-field>
+      </div>
+
+      <div class="campo-edicion">
+        <label for="contrasena-confirmacion">Confirmar nueva contraseña</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="contrasena-confirmacion" type="password"
+                 formControlName="confirmarContrasena" autocomplete="new-password">
+        </mat-form-field>
+      </div>
+    </div>
+
+    @if (mensajeError()) {
+      <p class="error-guardado" role="alert">{{ mensajeError() }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-stroked-button type="button" mat-dialog-close [disabled]="guardando()">
+      Cancelar
+    </button>
+
+    <button mat-flat-button type="submit" class="boton-guardar" [disabled]="guardando()">
+      {{ guardando() ? 'Actualizando…' : 'Actualizar contraseña' }}
+    </button>
+  </mat-dialog-actions>
+</form>
