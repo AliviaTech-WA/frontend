@@ -268,3 +268,43 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* HU25: ejes del gráfico de evolución */
+.contenedor-grafico {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.contenedor-grafico .grafico {
+  margin-top: 0;
+}
+
+.eje-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 150px;
+  color: #8a9894;
+  font-size: 10px;
+  text-align: right;
+}
+
+.area-grafico {
+  min-width: 0;
+}
+
+.eje-x {
+  position: relative;
+  height: 18px;
+  margin-top: 6px;
+}
+
+.eje-x span {
+  position: absolute;
+  transform: translateX(-50%);
+  color: #8a9894;
+  font-size: 10px;
+  white-space: nowrap;
+}
