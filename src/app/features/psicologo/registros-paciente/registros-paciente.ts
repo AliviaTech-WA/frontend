@@ -61,6 +61,21 @@ export class RegistrosPacienteComponent implements OnInit, OnDestroy {
 
   lineaGrafico = computed(() => this.puntosGrafico().map((punto) => `${punto.x},${punto.y}`).join(' '));
 
+  // Marcas del eje vertical (escala de ansiedad 1-10)
+  marcasEjeY = [10, 8, 6, 4, 2, 0];
+
+  // Hasta 6 fechas repartidas en el eje horizontal, con su posición en porcentaje
+  etiquetasEjeX = computed(() => {
+    const puntos = this.puntosGrafico();
+    if (!puntos.length) return [];
+    const cantidad = Math.min(6, puntos.length);
+    const paso = cantidad > 1 ? (puntos.length - 1) / (cantidad - 1) : 0;
+    return Array.from({ length: cantidad }, (_, indice) => {
+      const punto = puntos[Math.round(indice * paso)];
+      return { posicion: (punto.x / 600) * 100, fecha: punto.registro.fechaHora };
+    });
+  });
+
   ngOnInit(): void {
     this.cambiosRuta = this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('pacienteId'));

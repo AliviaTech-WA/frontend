@@ -60,6 +60,14 @@
         @if (cargando()) {
           <p class="estado-ayuda" role="status">Cargando registros...</p>
         } @else if (puntosGrafico().length) {
+          <div class="contenedor-grafico">
+          <div class="eje-y" aria-hidden="true">
+            @for (marca of marcasEjeY; track marca) {
+              <span>{{ marca }}</span>
+            }
+          </div>
+
+          <div class="area-grafico">
           <svg class="grafico" viewBox="-10 -10 620 140" preserveAspectRatio="none" role="img"
                aria-label="Evolución del nivel de ansiedad">
             <polyline [attr.points]="lineaGrafico()" class="linea" />
@@ -69,6 +77,14 @@
               </circle>
             }
           </svg>
+
+          <div class="eje-x" aria-hidden="true">
+            @for (etiqueta of etiquetasEjeX(); track $index) {
+              <span [style.left.%]="etiqueta.posicion">{{ etiqueta.fecha | date: 'dd/MM' }}</span>
+            }
+          </div>
+          </div>
+          </div>
         } @else {
           <p class="estado-vacio">No hay registros en el periodo seleccionado.</p>
         }
