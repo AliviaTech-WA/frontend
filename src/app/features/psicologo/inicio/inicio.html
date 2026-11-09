@@ -2,7 +2,7 @@
 
   <!-- ENCABEZADO -->
   <header class="encabezado">
-    <h1>Inicio</h1>
+    <h1>{{ saludo() }}</h1>
     <p>{{ hoy | date: 'dd/MM/yyyy' }} · Información de seguimiento pendiente</p>
   </header>
 
@@ -121,23 +121,55 @@
           <h2>Estado de revisión</h2>
           <p class="subtitulo">{{ datos.pacientesActivos }} pacientes activos · no indica gravedad clínica</p>
 
-          <ul class="distribucion">
-            <li>
-              <i class="punto episodios"></i>
-              <span>Pacientes con nuevos episodios</span>
-              <strong>{{ datos.distribucionNovedades.conNuevosEpisodios }}</strong>
-            </li>
-            <li>
-              <i class="punto pendientes"></i>
-              <span>Pacientes con nuevos registros</span>
-              <strong>{{ datos.distribucionNovedades.conNuevosRegistros }}</strong>
-            </li>
-            <li>
-              <i class="punto registros"></i>
-              <span>Pacientes sin novedades</span>
-              <strong>{{ datos.distribucionNovedades.sinNovedades }}</strong>
-            </li>
-          </ul>
+          <div class="contenido-donut">
+            <svg class="donut" viewBox="0 0 100 100" role="img" aria-label="Distribución de pacientes por novedad">
+              <circle cx="50" cy="50" r="40" class="pista" />
+              @for (segmento of segmentosDonut(); track segmento.clase) {
+                <circle cx="50" cy="50" r="40" [attr.class]="'segmento ' + segmento.clase"
+                        [attr.stroke-dasharray]="segmento.trazo" [attr.stroke-dashoffset]="segmento.desplazamiento" />
+              }
+              <text x="50" y="49" class="total-donut">{{ datos.pacientesActivos }}</text>
+              <text x="50" y="62" class="texto-donut">activos</text>
+            </svg>
+
+            <ul class="distribucion">
+              <li>
+                <i class="punto episodios"></i>
+                <span>Pacientes con nuevos episodios</span>
+                <strong>{{ datos.distribucionNovedades.conNuevosEpisodios }}</strong>
+                <small>{{ porcentaje(datos.distribucionNovedades.conNuevosEpisodios) }}%</small>
+              </li>
+              <li>
+                <i class="punto pendientes"></i>
+                <span>Pacientes con nuevos registros</span>
+                <strong>{{ datos.distribucionNovedades.conNuevosRegistros }}</strong>
+                <small>{{ porcentaje(datos.distribucionNovedades.conNuevosRegistros) }}%</small>
+              </li>
+              <li>
+                <i class="punto registros"></i>
+                <span>Pacientes sin novedades</span>
+                <strong>{{ datos.distribucionNovedades.sinNovedades }}</strong>
+                <small>{{ porcentaje(datos.distribucionNovedades.sinNovedades) }}%</small>
+              </li>
+            </ul>
+          </div>
+
+          @if (pacientesConNovedad() > 0) {
+            <div class="aviso-novedad">
+              <strong>{{ pacientesConNovedad() }} {{ pacientesConNovedad() === 1 ? 'paciente' : 'pacientes' }} con información nueva</strong>
+              @if (datos.distribucionNovedades.conNuevosEpisodios > 0) {
+                <span><i class="punto episodios"></i> Priorizar primero los pacientes con episodios confirmados</span>
+              }
+            </div>
+          }
+        </article>
+
+        <!-- HU22: ACCESO A LA INFORMACIÓN NUEVA -->
+        <article class="tarjeta">
+          <p class="etiqueta">INFORMACIÓN PENDIENTE</p>
+          <h2>{{ pacientesConNovedad() }} {{ pacientesConNovedad() === 1 ? 'paciente' : 'pacientes' }} por revisar</h2>
+          <p class="subtitulo">Tiempo medio desde la última revisión: {{ datos.tiempoMedioDesdeRevisionDias }} días.</p>
+          <a routerLink="/psicologo/pacientes" class="boton-primario">Revisar información nueva</a>
         </article>
 
         <article class="tarjeta alcance">
