@@ -5,15 +5,6 @@ import { Component, computed, inject, OnInit, signal, TemplateRef} from '@angula
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-  MatDatepickerToggleIcon,
-} from '@angular/material/datepicker';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { finalize } from 'rxjs';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { ReporteGeneral } from './models/reporte-general.model';
@@ -32,18 +23,9 @@ type Rango = { desde: Date; hasta: Date };
     MatButton,
     MatCard,
     MatCardContent,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatDatepickerToggleIcon,
     DatePipe,
-    MatButton,
     MatDialogModule,
   ],
-  providers: [provideNativeDateAdapter()],
   templateUrl: './reportes.html',
   styleUrl: './reportes.css',
 })
@@ -134,6 +116,17 @@ export class Reportes implements OnInit {
     });
 
     this.opcionRango.set(atajo);
+    this.errorPeriodo.set('');
+  }
+  fechaParaCampo(campo: 'desde' | 'hasta'): string {
+    const fecha = this.periodoForm.controls[campo].value;
+    return fecha ? this.formatearFecha(fecha) : '';
+  }
+
+  cambiarFecha(campo: 'desde' | 'hasta', valor: string): void {
+    const fecha = valor ? new Date(`${valor}T00:00:00`) : null;
+    this.periodoForm.controls[campo].setValue(fecha);
+    this.opcionRango.set('personalizado');
     this.errorPeriodo.set('');
   }
 
