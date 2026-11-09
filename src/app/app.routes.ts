@@ -90,6 +90,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'pacientes/:pacienteId/wearable',
+        loadComponent: () =>
+          import('./features/psicologo/wearable-paciente/wearable-paciente').then(
+            (component) => component.WearablePacienteComponent,
+          ),
+      },
+      {
         path: 'pacientes/:pacienteId/sesiones',
         loadComponent: () =>
           import('./features/psicologo/sesiones/sesiones').then((component) => component.Sesiones),

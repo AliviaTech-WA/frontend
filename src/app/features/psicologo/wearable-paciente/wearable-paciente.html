@@ -1,0 +1,152 @@
+<section class="pagina-wearable">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  <div class="ruta-paciente">
+    <a routerLink="/psicologo/pacientes">Pacientes</a>
+    <span>/</span>
+    <span>{{ paciente() ? paciente()!.nombres + ' ' + paciente()!.apellidos : 'Wearable' }}</span>
+  </div>
+
+  <!-- Cabecera del paciente -->
+  <article class="tarjeta cabecera-paciente">
+    @if (paciente(); as datosPaciente) {
+      <div class="avatar" aria-hidden="true">{{ datosPaciente.nombres.charAt(0) }}{{ datosPaciente.apellidos.charAt(0) }}</div>
+      <div>
+        <h1>{{ datosPaciente.nombres }} {{ datosPaciente.apellidos }}</h1>
+        <p>DNI {{ datosPaciente.dni }}</p>
+      </div>
+    } @else {
+      <h1>Paciente #{{ pacienteId }}</h1>
+    }
+  </article>
+
+  <!-- Pestañas del paciente -->
+  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'registros']">Registros</a>
+    <span class="pestana-activa" aria-current="page">Wearable</span>
+    <span>Episodios</span>
+    <span>Analizar con IA</span>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'sesiones']">Sesiones</a>
+  </nav>
+
+  <div class="cuadricula">
+
+    <div class="columna-principal">
+
+      @if (cargando()) {
+
+        <p class="estado-ayuda" role="status">Cargando datos del wearable...</p>
+
+      } @else if (errorCarga()) {
+
+        <div class="tarjeta estado-ayuda" role="alert">
+          <p>{{ errorCarga() }}</p>
+          <button type="button" class="boton-secundario" (click)="cargarDatos()">Reintentar</button>
+        </div>
+
+      } @else if (datos(); as wearable) {
+
+        <!-- ================================== -->
+        <!-- HU26: PROMEDIOS DE 7 DÍAS          -->
+        <!-- ================================== -->
+        <div class="indicadores">
+          <article class="tarjeta indicador">
+            <p class="etiqueta">FRECUENCIA CARDIACA</p>
+            <strong>{{ wearable.frecuenciaCardiacaPromedio !== null ? (wearable.frecuenciaCardiacaPromedio | number: '1.0-0') + ' bpm' : '—' }}</strong>
+            <span>Promedio 7 días</span>
+          </article>
+          <article class="tarjeta indicador">
+            <p class="etiqueta">SUEÑO</p>
+            <strong>{{ wearable.horasSuenoPromedio !== null ? (wearable.horasSuenoPromedio | number: '1.0-1') + ' h' : '—' }}</strong>
+            <span>Promedio 7 días</span>
+          </article>
+          <article class="tarjeta indicador">
+            <p class="etiqueta">PASOS</p>
+            <strong>{{ wearable.pasosPromedio !== null ? (wearable.pasosPromedio | number: '1.0-0') : '—' }}</strong>
+            <span>Promedio diario</span>
+          </article>
+        </div>
+
+        <!-- EVOLUCIÓN DE 7 DÍAS -->
+        <article class="tarjeta">
+          <h2>Evolución del wearable</h2>
+          <p class="subtitulo">Promedios diarios de los últimos 7 días. Cada métrica mantiene su propia unidad.</p>
+
+          @for (metrica of metricas; track metrica.clave) {
+            <div class="fila-metrica">
+              <div class="nombre-metrica">
+                <strong>{{ metrica.titulo }}</strong>
+                <span>Medido en: {{ metrica.unidad }}</span>
+              </div>
+
+              <div class="dias">
+                @for (dia of wearable.evolucionUltimos7Dias; track dia.fecha) {
+                  <div class="dia">
+                    <span class="valor">{{ etiquetaValor(dia, metrica.clave) }}</span>
+                    <div class="fondo-barra">
+                      <div class="relleno-barra" [class.oscura]="metrica.clave === 'frecuencia'"
+                           [style.width.%]="alturaBarra(dia, metrica.clave)"></div>
+                    </div>
+                    <span class="nombre-dia">{{ nombreDia(dia.fecha) }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </article>
+
+        <!-- LECTURAS RECIENTES -->
+        <article class="tarjeta">
+          <h2>Lecturas recientes</h2>
+
+          <div class="cabecera-tabla">
+            <span>Fecha y hora</span>
+            <span>Frecuencia cardiaca</span>
+          </div>
+
+          @for (lectura of wearable.lecturasRecientes.slice(0, 10); track lectura.fechaHora) {
+            <div class="fila-lectura">
+              <span>{{ lectura.fechaHora | date: 'dd/MM · HH:mm' }}</span>
+              <strong>{{ lectura.frecuenciaCardiaca }} bpm</strong>
+            </div>
+          } @empty {
+            <p class="estado-vacio">No hay lecturas en los últimos 7 días.</p>
+          }
+        </article>
+
+      }
+
+    </div>
+
+    <!-- COLUMNA LATERAL -->
+    <aside class="columna-lateral">
+      <article class="tarjeta">
+        <p class="etiqueta etiqueta-verde">DISPOSITIVO ASIGNADO</p>
+
+        @if (dispositivo(); as equipo) {
+          <h2>{{ equipo.alias || equipo.modelo }}</h2>
+          <p class="subtitulo">{{ equipo.modelo }} · {{ equipo.codigoDispositivo }}</p>
+          <p class="subtitulo">
+            Última sincronización:
+            {{ equipo.fechaUltimaSincronizacion ? (equipo.fechaUltimaSincronizacion | date: 'dd/MM/yyyy HH:mm') : 'sin datos' }}
+          </p>
+          <span class="insignia">{{ equipo.estado === 'ACTIVO' ? 'Activa' : equipo.estado }}</span>
+        } @else {
+          <p class="subtitulo">Sin dispositivo asignado.</p>
+        }
+      </article>
+
+      <article class="tarjeta interpretacion">
+        <p class="etiqueta etiqueta-verde">INTERPRETACIÓN</p>
+        <h2>Datos complementarios</h2>
+        <p class="subtitulo">
+          Las variaciones del wearable no se interpretan por sí solas como episodios. Se utilizan como
+          información complementaria y pueden generar eventos para confirmación del paciente.
+        </p>
+      </article>
+    </aside>
+
+  </div>
+
+</section>
