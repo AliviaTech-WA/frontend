@@ -1,0 +1,269 @@
+:host {
+  display: block;
+  font-family: Inter, Arial, sans-serif;
+  color: #1a2825;
+}
+
+.pagina-wearable {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 0 34px;
+}
+
+.ruta-paciente {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: #6e7d78;
+}
+
+.ruta-paciente a {
+  color: #087766;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid #e0e8e5;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 9px #1c4b3810;
+}
+
+.tarjeta h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.subtitulo,
+.estado-vacio,
+.estado-ayuda {
+  margin: 0 0 6px;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cabecera-paciente {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 18px;
+  margin-bottom: 18px;
+}
+
+.cabecera-paciente h1 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.cabecera-paciente p {
+  margin: 6px 0 0;
+  color: #6e7d78;
+  font-size: 12px;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e6f5ef;
+  color: #0f5f52;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Pestañas del paciente */
+.pestanas-paciente {
+  display: flex;
+  gap: 6px;
+  padding: 7px;
+  margin-bottom: 18px;
+  background: #fff;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.pestanas-paciente span,
+.pestanas-paciente a {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 9px;
+  color: #64766e;
+  font-size: 12px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pestanas-paciente .pestana-activa {
+  background: #e3f5ef;
+  color: #087766;
+  font-weight: 600;
+}
+
+.cuadricula {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+.columna-principal,
+.columna-lateral {
+  display: grid;
+  gap: 16px;
+}
+
+/* HU26: indicadores */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.etiqueta {
+  margin: 0 0 10px;
+  color: #6e7d78;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.etiqueta-verde {
+  color: #087766;
+  font-weight: 700;
+}
+
+.indicador strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.indicador span {
+  color: #6e7d78;
+  font-size: 11px;
+}
+
+/* HU26: evolución por métrica */
+.fila-metrica {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.nombre-metrica {
+  display: grid;
+  gap: 4px;
+}
+
+.nombre-metrica strong {
+  font-size: 12px;
+}
+
+.nombre-metrica span {
+  color: #6e7d78;
+  font-size: 10px;
+}
+
+.dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dia {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
+.valor {
+  font-size: 10px;
+  color: #3d4b47;
+}
+
+.nombre-dia {
+  font-size: 9px;
+  color: #8a9894;
+}
+
+.fondo-barra {
+  width: 100%;
+  height: 14px;
+  border-radius: 6px;
+  background: #eef6f3;
+  overflow: hidden;
+}
+
+.relleno-barra {
+  height: 100%;
+  border-radius: 6px;
+  background: #4dbaa6;
+}
+
+.relleno-barra.oscura {
+  background: #11806e;
+}
+
+/* HU26: lecturas recientes */
+.cabecera-tabla {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 10px 6px;
+  color: #6e7d78;
+  font-size: 10px;
+}
+
+.fila-lectura {
+  display: flex;
+  justify-content: space-between;
+  background: #f1f8f5;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.fila-lectura span {
+  color: #6e7d78;
+}
+
+/* HU26: columna lateral */
+.insignia {
+  display: inline-block;
+  margin-top: 8px;
+  border-radius: 14px;
+  background: #e3f5ef;
+  color: #087766;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.interpretacion {
+  background: #f1f8f5;
+}
+
+.boton-secundario {
+  border: 1px solid #dfe8e4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .cuadricula,
+  .indicadores,
+  .fila-metrica {
+    grid-template-columns: 1fr;
+  }
+}
