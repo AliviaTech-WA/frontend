@@ -172,38 +172,26 @@
 .campo-fecha {
   display: grid;
   gap: 6px;
+  min-width: 0;
+  color: #6e7d78;
+  font-size: 12px;
 }
 
-.campo-fecha label {
-  color: #4e635e;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.fechas-rango mat-form-field {
-  --mat-form-field-container-height: 44px;
-  --mat-form-field-container-vertical-padding: 10px;
-  --mat-form-field-outlined-container-shape: 12px;
-  --mat-form-field-outlined-outline-color: transparent;
-  --mat-form-field-outlined-hover-outline-color: #c4d5e8;
-  --mat-form-field-outlined-focus-outline-color: #087766;
-
+.campo-fecha input {
   width: 100%;
-  border-radius: 12px;
-  background: #eff4ff;
+  min-width: 0;
+  min-height: 34px;
+  padding: 8px 10px;
+  border: 1px solid #e0e8e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a2825;
+  font: inherit;
 }
 
-.fechas-rango input[readonly] {
-  color: #0b1c30;
-  cursor: pointer;
-}
-
-.fechas-rango mat-datepicker-toggle {
-  --mat-datepicker-toggle-icon-color: #005b51;
-}
-
-.fechas-rango .icono-calendario {
-  color: #005b51;
+.campo-fecha input:focus-visible {
+  outline: 2px solid #087766;
+  outline-offset: 1px;
 }
 
 .error-rango {
