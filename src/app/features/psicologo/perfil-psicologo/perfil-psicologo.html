@@ -46,7 +46,7 @@
         <button
           type="button"
           class="btn-editar"
-          (click)="abrirEdicion()"
+          (click)="abrirEdicion(confirmacionPerfil)"
           [disabled]="cargando || !!mensajeError"
         >
           Editar perfil
@@ -113,7 +113,11 @@
           </div>
         </div>
 
-        <button type="button" class="btn-secundario" disabled>
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="abrirCambioContrasena(confirmacionPerfil)"
+        >
           Cambiar contraseña
         </button>
       </section>
@@ -132,5 +136,16 @@
 
   </div>
 </div>
+<ng-template #confirmacionPerfil let-datos>
+  <div class="confirmacion-perfil">
+    <div class="confirmacion-perfil-cabecera">
+      <span aria-hidden="true">✓</span>
+      <h2>{{ datos?.titulo ?? 'Perfil actualizado correctamente' }}</h2>
+    </div>
 
+    <button mat-flat-button mat-dialog-close type="button">
+      Entendido
+    </button>
+  </div>
+</ng-template>
 
