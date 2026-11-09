@@ -1,29 +1,42 @@
-<h2 mat-dialog-title>Editar perfil profesional</h2>
-
 <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
   <mat-dialog-content>
-    <p>Actualiza únicamente los datos permitidos del perfil.</p>
+    <header class="cabecera-edicion">
+      <div>
+        <h2 mat-dialog-title>Editar perfil profesional</h2>
+        <p>Actualiza únicamente los datos permitidos del perfil.</p>
+      </div>
+
+      <button type="button" mat-dialog-close class="cerrar-edicion"
+              aria-label="Cerrar edición de perfil" [disabled]="guardando">
+        ×
+      </button>
+    </header>
 
     <div class="campos-edicion">
-      <mat-form-field appearance="outline">
-        <mat-label>Especialidad</mat-label>
-        <input matInput formControlName="especialidad">
-        <mat-error>Ingresa una especialidad de hasta 100 caracteres.</mat-error>
-      </mat-form-field>
+      <div class="campo-edicion campo-especialidad">
+        <label for="editar-especialidad">Especialidad</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="editar-especialidad" formControlName="especialidad">
+          <mat-error>Ingresa una especialidad de hasta 100 caracteres.</mat-error>
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Correo</mat-label>
-        <input matInput type="email" formControlName="correo" autocomplete="email">
-        <mat-error>Ingresa un correo válido de hasta 254 caracteres.</mat-error>
-      </mat-form-field>
+      <div class="campo-edicion">
+        <label for="editar-correo">Correo</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="editar-correo" type="email" formControlName="correo" autocomplete="email">
+          <mat-error>Ingresa un correo válido de hasta 254 caracteres.</mat-error>
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Teléfono</mat-label>
-        <input matInput type="tel" formControlName="telefono" autocomplete="tel">
-        <mat-error>Ingresa un teléfono de hasta 20 caracteres.</mat-error>
-      </mat-form-field>
+      <div class="campo-edicion">
+        <label for="editar-telefono">Teléfono</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input matInput id="editar-telefono" type="tel" formControlName="telefono" autocomplete="tel">
+          <mat-error>Ingresa un teléfono de hasta 20 caracteres.</mat-error>
+        </mat-form-field>
+      </div>
     </div>
-
     <div class="datos-protegidos">
       <strong>Datos protegidos</strong>
       <p>Nombres, apellidos, DNI y número de colegiatura permanecen bloqueados.</p>

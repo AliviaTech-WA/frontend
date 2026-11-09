@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, inject, OnInit, TemplateRef } from '@angular/core';
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { EditarPerfil } from './components/editar-perfil/editar-perfil';
 import { PerfilPsicologoService } from './services/perfil-psicologo-service';
 import { Router } from '@angular/router';
+import { MatButton } from '@angular/material/button';
+import { MatDialog, MatDialogClose } from '@angular/material/dialog';
+import { CambiarContrasena } from './components/cambiar-contrasena/cambiar-contrasena';
 
 @Component({
-  imports: [],
+  imports: [MatButton, MatDialogClose],
   selector: 'app-perfil-psicologo',
   styleUrl: './perfil-psicologo.css',
   templateUrl: './perfil-psicologo.html',
@@ -79,7 +81,7 @@ export class PerfilPsicologo implements OnInit {
     });
   }
 
-  abrirEdicion() {
+  abrirEdicion(confirmacion: TemplateRef<unknown>): void {
     const sesion = this.autenticacionService.sesion();
 
     if (!sesion || sesion.rol !== 'PSICOLOGO') {
@@ -89,6 +91,7 @@ export class PerfilPsicologo implements OnInit {
 
     const dialogRef = this.dialog.open(EditarPerfil, {
       width: '480px',
+      maxWidth: 'calc(100vw - 32px)',
       data: {
         psicologoId: sesion.usuarioId,
         correo: this.psicologo.correo,
@@ -98,14 +101,36 @@ export class PerfilPsicologo implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((perfilActualizado) => {
-      if (!perfilActualizado) {
-        return;
-      }
+      if (!perfilActualizado) return;
 
       this.psicologo.correo = perfilActualizado.correo;
       this.psicologo.telefono = perfilActualizado.telefono;
       this.psicologo.especialidad = perfilActualizado.especialidad;
       this.cdr.markForCheck();
+
+      this.dialog.open(confirmacion, {
+        width: '380px',
+        maxWidth: 'calc(100vw - 32px)',
+        ariaLabel: 'Perfil actualizado correctamente',
+      });
+    });
+  }
+  abrirCambioContrasena(confirmacion: TemplateRef<unknown>): void {
+    const dialogRef = this.dialog.open<CambiarContrasena, void, boolean>(CambiarContrasena, {
+      width: '480px',
+      maxWidth: 'calc(100vw - 32px)',
+      ariaLabel: 'Cambiar contraseña',
+    });
+
+    dialogRef.afterClosed().subscribe((actualizada) => {
+      if (!actualizada) return;
+
+      this.dialog.open(confirmacion, {
+        width: '380px',
+        maxWidth: 'calc(100vw - 32px)',
+        ariaLabel: 'Contraseña actualizada',
+        data: { titulo: 'Contraseña actualizada' },
+      });
     });
   }
 }
