@@ -9,7 +9,7 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatError, MatFormField} from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { PsicologoPerfil } from '../../models/psicologo-perfil.model';
 import { PerfilPsicologoService } from '../../services/perfil-psicologo-service';
@@ -24,7 +24,6 @@ import { PerfilPsicologoService } from '../../services/perfil-psicologo-service'
     MatDialogClose,
     MatButton,
     MatFormField,
-    MatLabel,
     MatInput,
     MatError,
   ],
