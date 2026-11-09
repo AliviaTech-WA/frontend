@@ -1,0 +1,139 @@
+<section class="pagina-episodios">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  <div class="ruta-paciente">
+    <a routerLink="/psicologo/pacientes">Pacientes</a>
+    <span>/</span>
+    <span>{{ paciente() ? paciente()!.nombres + ' ' + paciente()!.apellidos : 'Episodios' }}</span>
+  </div>
+
+  <!-- Cabecera del paciente -->
+  <article class="tarjeta cabecera-paciente">
+    @if (paciente(); as datosPaciente) {
+      <div class="avatar" aria-hidden="true">{{ datosPaciente.nombres.charAt(0) }}{{ datosPaciente.apellidos.charAt(0) }}</div>
+      <div>
+        <h1>{{ datosPaciente.nombres }} {{ datosPaciente.apellidos }}</h1>
+        <p>DNI {{ datosPaciente.dni }}</p>
+      </div>
+    } @else {
+      <h1>Paciente #{{ pacienteId }}</h1>
+    }
+  </article>
+
+  <!-- Pestañas del paciente -->
+  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'registros']">Registros</a>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'wearable']">Wearable</a>
+    <span class="pestana-activa" aria-current="page">Episodios</span>
+    <span>Analizar con IA</span>
+    <a [routerLink]="['/psicologo/pacientes', pacienteId, 'sesiones']">Sesiones</a>
+  </nav>
+
+  <div class="cuadricula">
+
+    <div class="columna-principal">
+
+      <!-- ================================== -->
+      <!-- HU27: EPISODIOS CONFIRMADOS        -->
+      <!-- ================================== -->
+      <article class="tarjeta">
+        <div class="cabecera-seccion">
+          <h2>Episodios confirmados</h2>
+          <span class="insignia-roja">{{ ultimos30Dias().length }} en 30 días</span>
+        </div>
+        <p class="subtitulo">
+          Aquí solo aparecen eventos que el paciente confirmó como momentos de ansiedad o malestar.
+        </p>
+      </article>
+
+      @if (cargando()) {
+
+        <p class="estado-ayuda" role="status">Cargando episodios...</p>
+
+      } @else if (errorCarga()) {
+
+        <div class="tarjeta estado-ayuda" role="alert">
+          <p>{{ errorCarga() }}</p>
+          <button type="button" class="boton-secundario" (click)="cargarEpisodios()">Reintentar</button>
+        </div>
+
+      } @else {
+
+        @for (episodio of episodios(); track episodio.eventoId) {
+
+          <article class="tarjeta episodio">
+            <div class="cabecera-seccion">
+              <h3>{{ episodio.fechaHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</h3>
+              <span class="insignia-roja">Confirmado</span>
+            </div>
+
+            <div class="datos-episodio">
+              <div class="dato">
+                <span>DURACIÓN</span>
+                <strong>{{ episodio.duracionMinutos }} min</strong>
+              </div>
+              <div class="dato">
+                <span>FC MÁXIMA</span>
+                <strong>{{ episodio.frecuenciaCardiacaMaxima !== null ? episodio.frecuenciaCardiacaMaxima + ' bpm' : 'Sin lecturas' }}</strong>
+              </div>
+              <div class="dato">
+                <span>HORAS DE SUEÑO</span>
+                <strong>
+                  {{ episodio.horasSuenoPrevio !== null ? (episodio.horasSuenoPrevio | number: '1.0-1') + ' horas en la última noche' : 'Sin dato' }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="dato contexto">
+              <span>CONTEXTO REPORTADO</span>
+              <strong>{{ episodio.contextoPaciente || 'Sin comentario' }}</strong>
+            </div>
+          </article>
+
+        } @empty {
+
+          <article class="tarjeta">
+            <p class="estado-vacio">El paciente no tiene episodios confirmados.</p>
+          </article>
+
+        }
+
+      }
+
+    </div>
+
+    <!-- COLUMNA LATERAL -->
+    <aside class="columna-lateral">
+      <article class="tarjeta">
+        <p class="etiqueta">ÚLTIMOS 30 DÍAS</p>
+        <h2 class="total">{{ ultimos30Dias().length }} {{ ultimos30Dias().length === 1 ? 'episodio' : 'episodios' }}</h2>
+        <p class="subtitulo">Todos fueron confirmados por el paciente antes de aparecer en esta vista.</p>
+
+        <div class="resumen-lateral">
+          <div class="dato">
+            <span>DURACIÓN PROM.</span>
+            <strong>{{ duracionPromedio() !== null ? (duracionPromedio() | number: '1.0-0') + ' min' : '—' }}</strong>
+          </div>
+          <div class="dato">
+            <span>FC MÁX. REGISTRADA</span>
+            <strong>{{ frecuenciaMaxima() !== null ? frecuenciaMaxima() + ' bpm' : '—' }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="tarjeta flujo">
+        <p class="etiqueta etiqueta-verde">FLUJO</p>
+        <h2>Confirmación del paciente</h2>
+        <ol>
+          <li>El sistema registra una variación.</li>
+          <li>El paciente recibe un evento pendiente.</li>
+          <li>El paciente confirma, descarta o indica que no está seguro.</li>
+          <li>Solo los confirmados aparecen aquí como episodios.</li>
+        </ol>
+      </article>
+    </aside>
+
+  </div>
+
+</section>
