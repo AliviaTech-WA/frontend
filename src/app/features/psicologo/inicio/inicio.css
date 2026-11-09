@@ -294,3 +294,97 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* HU22: donut del estado de revisión */
+.contenido-donut {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.donut {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.donut .pista,
+.donut .segmento {
+  fill: none;
+  stroke-width: 16;
+}
+
+.donut .pista {
+  stroke: #eef3f1;
+}
+
+.donut .segmento.episodios {
+  stroke: #e2604f;
+}
+
+.donut .segmento.pendientes {
+  stroke: #f0a530;
+}
+
+.donut .segmento.registros {
+  stroke: #2f9e78;
+}
+
+.donut text {
+  transform: rotate(90deg);
+  transform-origin: 50px 50px;
+  text-anchor: middle;
+}
+
+.total-donut {
+  font-size: 18px;
+  font-weight: 700;
+  fill: #1a2825;
+}
+
+.texto-donut {
+  font-size: 8px;
+  fill: #6e7d78;
+}
+
+.contenido-donut .distribucion {
+  margin: 0;
+  flex: 1;
+}
+
+.distribucion small {
+  color: #8a9894;
+  font-size: 10px;
+  min-width: 28px;
+  text-align: right;
+}
+
+.aviso-novedad {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  background: #f1f8f5;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 11px;
+}
+
+.aviso-novedad span {
+  color: #087766;
+}
+
+/* HU22: botón de información nueva */
+.boton-primario {
+  display: block;
+  margin-top: 16px;
+  border-radius: 12px;
+  background: #128573;
+  color: #fff;
+  padding: 13px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
