@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { CabeceraPaciente } from '../cabecera-paciente/cabecera-paciente';
 import { ConsultaDispositivoAsignado } from '../../paciente/dispositivos/models/dispositivo.model';
 import { DispositivoService } from '../../paciente/dispositivos/services/dispositivo.service';
 import { PacienteSeguimiento } from '../pacientes/models/paciente-seguimiento.model';
@@ -16,7 +17,7 @@ type Metrica = 'frecuencia' | 'sueno' | 'pasos';
 
 @Component({
   selector: 'app-wearable-paciente',
-  imports: [DatePipe, DecimalPipe, RouterLink],
+  imports: [DatePipe, DecimalPipe, CabeceraPaciente, RouterLink],
   templateUrl: './wearable-paciente.html',
   styleUrl: './wearable-paciente.css',
 })

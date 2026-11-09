@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { ResumenPaciente } from './models/resumen-paciente.model';
+import { ResumenActualService } from './services/resumen-actual.service';
 import { ResumenPacienteService } from './services/resumen-paciente.service';
 
 @Component({
@@ -16,6 +17,7 @@ import { ResumenPacienteService } from './services/resumen-paciente.service';
 export class ResumenPacienteComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly resumenService = inject(ResumenPacienteService);
+  private readonly resumenActual = inject(ResumenActualService);
   private cambiosRuta?: Subscription;
 
   // HU24: estado de la pantalla
@@ -78,7 +80,10 @@ export class ResumenPacienteComponent implements OnInit, OnDestroy {
       .consultar(this.pacienteId)
       .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
-        next: (respuesta) => this.resumen.set(respuesta),
+        next: (respuesta) => {
+          this.resumen.set(respuesta);
+          this.resumenActual.guardar(respuesta);
+        },
         error: (error: HttpErrorResponse) => {
           this.resumen.set(null);
           this.errorCarga.set(

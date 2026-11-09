@@ -8,17 +8,7 @@
   </div>
 
   <!-- Cabecera del paciente -->
-  <article class="tarjeta cabecera-paciente">
-    @if (paciente(); as datos) {
-      <div class="avatar" aria-hidden="true">{{ datos.nombres.charAt(0) }}{{ datos.apellidos.charAt(0) }}</div>
-      <div>
-        <h1>{{ datos.nombres }} {{ datos.apellidos }}</h1>
-        <p>DNI {{ datos.dni }}</p>
-      </div>
-    } @else {
-      <h1>Paciente #{{ pacienteId }}</h1>
-    }
-  </article>
+  <app-cabecera-paciente [pacienteId]="pacienteId" />
 
   <!-- Pestañas del paciente -->
   <nav class="pestanas-paciente" aria-label="Secciones del paciente">
