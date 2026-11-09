@@ -104,6 +104,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'pacientes/:pacienteId/analisis-ia',
+        loadComponent: () =>
+          import('./features/psicologo/analisis-ia/analisis-ia').then(
+            (component) => component.AnalisisIa,
+          ),
+      },
+      {
         path: 'pacientes/:pacienteId/sesiones',
         loadComponent: () =>
           import('./features/psicologo/sesiones/sesiones').then((component) => component.Sesiones),
