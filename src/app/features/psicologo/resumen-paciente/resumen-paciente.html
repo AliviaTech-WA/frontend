@@ -81,8 +81,15 @@
 
         <!-- ÚLTIMOS REGISTROS -->
         <article class="tarjeta">
-          <h2>Últimos registros del paciente</h2>
-          <p class="subtitulo">Vista rápida de los registros manuales más recientes.</p>
+          <div class="cabecera-seccion cabecera-compacta">
+            <div>
+              <h2>Últimos registros del paciente</h2>
+              <p class="subtitulo">Vista rápida de los registros manuales más recientes.</p>
+            </div>
+            <a class="boton-enlace" [routerLink]="['/psicologo/pacientes', datos.pacienteId, 'registros']">
+              Ver historial →
+            </a>
+          </div>
 
           @for (registro of datos.ultimosRegistros.slice(0, 3); track registro.fechaHora) {
 
@@ -170,6 +177,10 @@
           <p class="texto-lateral">
             {{ datos.ultimoEpisodio ? (datos.ultimoEpisodio | date: 'dd/MM/yyyy · HH:mm') : 'Sin episodios confirmados.' }}
           </p>
+          @if (datos.ultimoEpisodio) {
+            <p class="texto-lateral">Confirmado por el paciente como momento de ansiedad o malestar.</p>
+            <a class="enlace" [routerLink]="['/psicologo/pacientes', datos.pacienteId, 'episodios']">Ver episodio</a>
+          }
         </article>
 
         <article class="tarjeta">
@@ -178,6 +189,14 @@
           <a class="enlace" [routerLink]="['/psicologo/pacientes', datos.pacienteId, 'sesiones']">
             Registrar información post sesión
           </a>
+        </article>
+
+        <!-- HU24: ANÁLISIS ASISTIDO -->
+        <article class="tarjeta analisis">
+          <p class="etiqueta etiqueta-verde">ANÁLISIS ASISTIDO</p>
+          <p class="texto-lateral">
+            Puedes comparar registros del paciente y datos del wearable en un solo análisis.
+          </p>
         </article>
       </aside>
 
