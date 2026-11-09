@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { CabeceraPaciente } from '../cabecera-paciente/cabecera-paciente';
 import { PacienteSeguimiento } from '../pacientes/models/paciente-seguimiento.model';
 import { PacientesService } from '../pacientes/services/pacientes.service';
 import { EpisodioPaciente } from './models/episodio-paciente.model';
@@ -12,7 +13,7 @@ import { EpisodiosPacienteService } from './services/episodios-paciente.service'
 
 @Component({
   selector: 'app-episodios-paciente',
-  imports: [DatePipe, DecimalPipe, RouterLink],
+  imports: [DatePipe, DecimalPipe, CabeceraPaciente, RouterLink],
   templateUrl: './episodios-paciente.html',
   styleUrl: './episodios-paciente.css',
 })
