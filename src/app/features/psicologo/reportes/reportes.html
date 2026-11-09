@@ -125,44 +125,25 @@
       </div>
 
       <div class="fechas-rango">
-        <mat-form-field appearance="outline" subscriptSizing="dynamic" hideRequiredMarker>
-          <mat-label>Desde</mat-label>
+        <label class="campo-fecha">
+          Desde
           <input
-            matInput
-            readonly
-            [matDatepicker]="calendarioDesde"
-            formControlName="desde"
-            (click)="calendarioDesde.open()"
-            (dateChange)="opcionRango.set('personalizado')"
-          >
-          <mat-datepicker-toggle matIconSuffix [for]="calendarioDesde">
-            <svg matDatepickerToggleIcon class="icono-calendario" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="5" width="16" height="16" rx="2" />
-              <path d="M8 3v4m8-4v4M4 10h16" />
-            </svg>
-          </mat-datepicker-toggle>
-          <mat-datepicker #calendarioDesde></mat-datepicker>
-        </mat-form-field>
+            #fechaDesdeReporte
+            type="date"
+            [value]="fechaParaCampo('desde')"
+            (change)="cambiarFecha('desde', fechaDesdeReporte.value)"
+          />
+        </label>
 
-        <mat-form-field appearance="outline" subscriptSizing="dynamic" hideRequiredMarker>
-          <mat-label>Hasta</mat-label>
+        <label class="campo-fecha">
+          Hasta
           <input
-            matInput
-            readonly
-            [matDatepicker]="calendarioHasta"
-            formControlName="hasta"
-            (click)="calendarioHasta.open()"
-            (dateChange)="opcionRango.set('personalizado')"
-          >
-          <mat-datepicker-toggle matIconSuffix [for]="calendarioHasta">
-            <svg matDatepickerToggleIcon class="icono-calendario" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="5" width="16" height="16" rx="2" />
-              <path d="M8 3v4m8-4v4M4 10h16" />
-              <circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
-            </svg>
-          </mat-datepicker-toggle>
-          <mat-datepicker #calendarioHasta></mat-datepicker>
-        </mat-form-field>
+            #fechaHastaReporte
+            type="date"
+            [value]="fechaParaCampo('hasta')"
+            (change)="cambiarFecha('hasta', fechaHastaReporte.value)"
+          />
+        </label>
       </div>
 
       @if (errorPeriodo()) {
