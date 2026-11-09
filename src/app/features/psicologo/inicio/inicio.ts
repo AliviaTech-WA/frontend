@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { PerfilPsicologoService } from '../perfil-psicologo/services/perfil-psicologo-service';
 import { DashboardPsicologo, TipoNovedad } from './models/dashboard-psicologo.model';
 import { DashboardPsicologoService } from './services/dashboard-psicologo.service';
 
@@ -17,12 +18,21 @@ import { DashboardPsicologoService } from './services/dashboard-psicologo.servic
 export class InicioPsicologo implements OnInit {
   private readonly autenticacion = inject(AutenticacionService);
   private readonly dashboardService = inject(DashboardPsicologoService);
+  private readonly perfilService = inject(PerfilPsicologoService);
 
   // HU22: estado del dashboard
   dashboard = signal<DashboardPsicologo | null>(null);
   cargando = signal(false);
   errorCarga = signal('');
   hoy = new Date();
+  nombrePsicologo = signal('');
+
+  // Saludo según la hora del día
+  saludo = computed(() => {
+    const hora = this.hoy.getHours();
+    const texto = hora < 12 ? 'Buenos días' : hora < 19 ? 'Buenas tardes' : 'Buenas noches';
+    return this.nombrePsicologo() ? `${texto}, ${this.nombrePsicologo()}` : texto;
+  });
 
   etiquetasNovedad: Record<TipoNovedad, string> = {
     NUEVOS_EPISODIOS: 'Nuevos episodios',
@@ -45,7 +55,19 @@ export class InicioPsicologo implements OnInit {
   );
 
   ngOnInit(): void {
+    this.cargarNombre();
     this.cargarDashboard();
+  }
+
+  // HU22: nombre del psicólogo para el saludo
+  cargarNombre(): void {
+    const sesion = this.autenticacion.sesion();
+    if (!sesion || sesion.rol !== 'PSICOLOGO') return;
+
+    this.perfilService.obtenerPerfil(sesion.usuarioId).subscribe({
+      next: (perfil) => this.nombrePsicologo.set(perfil.nombres.split(' ')[0]),
+      error: () => this.nombrePsicologo.set(''),
+    });
   }
 
   cargarDashboard(): void {
