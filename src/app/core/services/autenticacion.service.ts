@@ -32,6 +32,16 @@ export class AutenticacionService {
       }),
     );
   }
+  cambiarContrasena(
+    usuarioId: number,
+    contrasenaActual: string,
+    nuevaContrasena: string,
+  ): Observable<{ mensaje: string }> {
+    return this.http.put<{ mensaje: string }>(
+      `${environment.apiUrl}/v1/usuarios/${usuarioId}/contrasena`,
+      { contrasenaActual, nuevaContrasena },
+    );
+  }
 
   cerrarSesionLocal(): void {
     sessionStorage.removeItem(this.claveSesion);
