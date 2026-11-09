@@ -1,44 +1,27 @@
 <section class="pagina-sesiones">
 
   <!-- Ubicación dentro del seguimiento del paciente -->
-  <div class="ruta-paciente">
-    <span>Pacientes</span>
-    <span>/</span>
-    <span>Sesiones</span>
-  </div>
-
   @if (pacienteId !== null) {
-    <mat-card class="tarjeta-paciente">
-      <mat-card-content>
-        @if (pacienteSeleccionado(); as paciente) {
-          <div class="encabezado-paciente">
-            <div class="avatar-paciente" aria-hidden="true">
-              {{ paciente.nombres.charAt(0) }}{{ paciente.apellidos.charAt(0) }}
-            </div>
+    <div class="ruta-paciente">
+      <a routerLink="/psicologo/pacientes">Pacientes</a>
+      <span>/</span>
+      <span>{{ resumenActual.obtener(pacienteId)?.nombreCompleto ?? 'Sesiones' }}</span>
+    </div>
 
-            <div class="datos-paciente">
-              <div class="nombre-estado">
-                <h1>{{ paciente.nombres }} {{ paciente.apellidos }}</h1>
-              </div>
-              <p>DNI {{ paciente.dni }}</p>
-            </div>
-          </div>
-        } @else {
-          <h1>Paciente #{{ pacienteId }}</h1>
-        }
-      </mat-card-content>
-    </mat-card>
+    <app-cabecera-paciente [pacienteId]="pacienteId" />
   }
 
   <!-- Pestañas visuales: la navegación se conectará después -->
-  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
-    <span>Resumen</span>
-    <span>Registros</span>
-    <span>Wearable</span>
-    <span>Episodios</span>
-    <span>Analizar con IA</span>
-    <span class="pestana-activa" aria-current="page">Sesiones</span>
-  </nav>
+  @if (pacienteId !== null) {
+    <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'registros']">Registros</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'wearable']">Wearable</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'episodios']">Episodios</a>
+      <span>Analizar con IA</span>
+      <span class="pestana-activa" aria-current="page">Sesiones</span>
+    </nav>
+  }
 
   <div class="columnas-sesiones">
 
@@ -53,42 +36,42 @@
 
           <form
             [formGroup]="sesionForm"
-            (ngSubmit)="guardarInformacion()"
+            (ngSubmit)="guardarInformacion(confirmacionSesion)"
             class="formulario-sesion">
 
             <p class="texto-secundario">
               Sesión realizada: {{ fechaMostrada() | date:'dd/MM/yyyy' }}
             </p>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Nota interna</mat-label>
+            <div class="campo-sesion">
+              <label for="nota-interna">Nota interna</label>
               <textarea
-                matInput
+                id="nota-interna"
                 formControlName="notaInterna"
-                rows="5"
-                placeholder="Solo visible para ti. Puedes registrar observaciones profesionales de la sesión.">
-              </textarea>
-            </mat-form-field>
+                rows="3"
+                placeholder="Solo visible para ti. Puedes registrar observaciones profesionales de la sesión."
+              ></textarea>
+            </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Resumen compartido</mat-label>
+            <div class="campo-sesion">
+              <label for="resumen-compartido">Resumen compartido</label>
               <textarea
-                matInput
+                id="resumen-compartido"
                 formControlName="resumenCompartido"
-                rows="4"
-                placeholder="Información que deseas que el paciente pueda consultar posteriormente en Mis sesiones.">
-              </textarea>
-            </mat-form-field>
+                rows="3"
+                placeholder="Información que deseas que el paciente pueda consultar posteriormente en Mis sesiones."
+              ></textarea>
+            </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Recomendación</mat-label>
+            <div class="campo-sesion">
+              <label for="recomendacion">Recomendación</label>
               <textarea
-                matInput
+                id="recomendacion"
                 formControlName="recomendacionCompartida"
-                rows="4"
-                placeholder="Recomendación breve que quedará visible para el paciente.">
-              </textarea>
-            </mat-form-field>
+                rows="2"
+                placeholder="Recomendación breve que quedará visible para el paciente."
+              ></textarea>
+            </div>
 
             <button
               mat-raised-button
@@ -98,10 +81,6 @@
             >
               {{ guardando() ? 'Guardando…' : 'Guardar información de sesión' }}
             </button>
-
-            @if (mensaje()) {
-              <p class="mensaje-formulario" role="status">{{ mensaje() }}</p>
-            }
 
             @if (errorGuardado()) {
               <p class="error-campo" role="alert">{{ errorGuardado() }}</p>
@@ -165,29 +144,26 @@
       <mat-card class="tarjeta-ultima-sesion">
         <mat-card-content>
           <span class="etiqueta-seccion">ÚLTIMA SESIÓN</span>
-          <h2>Información de la última sesión</h2>
 
-          <p class="texto-secundario">
-            @if (cargandoHistorial()) {
-              <p class="texto-secundario">Cargando última sesión…</p>
-            } @else if (errorHistorial()) {
-              <p class="texto-secundario">No se pudo consultar la última sesión.</p>
-            } @else if (historial()[0]; as ultimaSesion) {
-              <p><strong>{{ ultimaSesion.fechaSesion | date:'dd/MM/yyyy' }}</strong></p>
+          @if (cargandoHistorial()) {
+            <p class="texto-secundario" role="status">Cargando última sesión…</p>
+          } @else if (errorHistorial()) {
+            <p class="texto-secundario">No se pudo consultar la última sesión.</p>
+          } @else if (historial()[0]; as ultimaSesion) {
+            <h2>{{ ultimaSesion.fechaSesion | date:"d 'de' MMMM":undefined:'es' }}</h2>
 
+            <p class="resumen-ultima-sesion">
+              {{ ultimaSesion.resumenCompartido?.trim() || 'Sin resumen compartido' }}
+            </p>
+
+            @if (ultimaSesion.recomendacionCompartida?.trim(); as recomendacion) {
               <p class="texto-secundario">
-                {{ ultimaSesion.resumenCompartido || 'Sin resumen compartido' }}
+                <strong>Recomendación compartida:</strong> {{ recomendacion }}
               </p>
-
-              @if (ultimaSesion.recomendacionCompartida) {
-                <p class="texto-secundario">
-                  <strong>Recomendación:</strong> {{ ultimaSesion.recomendacionCompartida }}
-                </p>
-              }
-            } @else {
-              <p class="texto-secundario">Aún no hay una sesión registrada.</p>
             }
-          </p>
+          } @else {
+            <p class="texto-secundario">Aún no hay una sesión registrada.</p>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -206,3 +182,17 @@
 
   </div>
 </section>
+<ng-template #confirmacionSesion>
+  <div class="confirmacion-sesion">
+    <div class="confirmacion-cabecera">
+      <span class="confirmacion-icono" aria-hidden="true">✓</span>
+      <h2>Información guardada</h2>
+    </div>
+
+    <p>La información ingresada quedó registrada en la sesión.</p>
+
+    <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
+      Entendido
+    </button>
+  </div>
+</ng-template>
