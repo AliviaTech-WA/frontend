@@ -52,6 +52,13 @@ export class Reportes implements OnInit {
   }
 
   readonly reporte = signal<ReporteGeneral | null>(null);
+  readonly sinActividad = computed(() => {
+    const datos = this.reporte();
+
+    return datos !== null &&
+      datos.registrosRecibidos === 0 &&
+      datos.episodiosConfirmados === 0;
+  });
   readonly maximoRegistros = computed(() => {
     const semanas = this.reporte()?.actividadSemanal ?? [];
     const maximo = Math.max(1, ...semanas.map((semana) => semana.registros));
@@ -124,10 +131,17 @@ export class Reportes implements OnInit {
   }
 
   cambiarFecha(campo: 'desde' | 'hasta', valor: string): void {
-    const fecha = valor ? new Date(`${valor}T00:00:00`) : null;
-    this.periodoForm.controls[campo].setValue(fecha);
+    const fecha = new Date(`${valor}T00:00:00`);
+    const fechaValida =
+      /^\d{4}-\d{2}-\d{2}$/.test(valor) &&
+      !Number.isNaN(fecha.getTime()) &&
+      fecha.getFullYear() >= 1000;
+
+    this.periodoForm.controls[campo].setValue(fechaValida ? fecha : null);
     this.opcionRango.set('personalizado');
-    this.errorPeriodo.set('');
+    this.errorPeriodo.set(
+      fechaValida ? '' : 'Completa la fecha con un año de cuatro dígitos.',
+    );
   }
 
   aplicarPeriodo(): void {
@@ -198,7 +212,7 @@ export class Reportes implements OnInit {
     ) {
       return;
     }
-
+    this.errorExportacion.set('');
     this.exportandoPdf.set(true);
 
     this.reportesService
@@ -226,7 +240,7 @@ export class Reportes implements OnInit {
           setTimeout(() => URL.revokeObjectURL(url), 1000);
         },
         error: () =>
-          this.errorExportacion.set('No se pudo exportar el reporte. Intenta nuevamente.'),
+          this.errorExportacion.set( 'No se pudo generar el informe PDF. Intenta nuevamente en unos momentos.',),
       });
   }
 
