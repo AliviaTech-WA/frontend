@@ -5,12 +5,12 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { SesionResumen } from './models/sesion-resumen.model';
+import { Subscription, takeUntil } from 'rxjs';
+import { SesionResumen, SesionDetalle } from './models/sesion-resumen.model';
 import { SesionesService } from './services/sesiones.service';
 import { CabeceraPaciente } from '../cabecera-paciente/cabecera-paciente';
 import { ResumenActualService } from '../resumen-paciente/services/resumen-actual.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 registerLocaleData(localeEs);
 @Component({
   imports: [
@@ -36,6 +36,149 @@ export class Sesiones implements OnInit, OnDestroy {
   private consultaHistorial?: Subscription;
   private guardado?: Subscription;
   private readonly dialogo = inject(MatDialog);
+  private dialogoDetalle?: MatDialogRef<unknown>;
+
+  readonly detalleSesion = signal<SesionDetalle | null>(null);
+  readonly cargandoDetalle = signal(false);
+  readonly errorDetalle = signal('');
+  readonly descargandoSesion = signal(false);
+  readonly errorDescargaSesion = signal('');
+
+  nombrePacienteDetalle = '';
+
+  abrirDetalle(sesionId: number, plantilla: TemplateRef<unknown>): void {
+    if (this.dialogoDetalle) return;
+
+    this.detalleSesion.set(null);
+    this.errorDetalle.set('');
+    this.errorDescargaSesion.set('');
+    this.cargandoDetalle.set(true);
+
+    this.nombrePacienteDetalle =
+      this.resumenActual.obtener(this.pacienteId)?.nombreCompleto ??
+      `Paciente #${this.pacienteId}`;
+
+    const referencia = this.dialogo.open(plantilla, {
+      width: '680px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: '90vh',
+      ariaLabelledBy: 'titulo-detalle-sesion',
+    });
+
+    this.dialogoDetalle = referencia;
+
+    referencia.afterClosed().subscribe(() => {
+      this.dialogoDetalle = undefined;
+      this.detalleSesion.set(null);
+      this.cargandoDetalle.set(false);
+    });
+
+    this.sesionesService.obtenerDetalle(sesionId)
+      .pipe(takeUntil(referencia.afterClosed()))
+      .subscribe({
+        next: (detalle) => {
+          this.detalleSesion.set(detalle);
+          this.cargandoDetalle.set(false);
+        },
+        error: () => {
+          this.errorDetalle.set('No se pudo cargar el detalle. Cierra e intenta nuevamente.');
+          this.cargandoDetalle.set(false);
+        },
+      });
+  }
+
+  async descargarInformeSesion(confirmacion: TemplateRef<unknown>): Promise<void> {
+    const sesion = this.detalleSesion();
+    if (!sesion || this.descargandoSesion()) return;
+
+    const paciente = this.nombrePacienteDetalle;
+    this.descargandoSesion.set(true);
+    this.errorDescargaSesion.set('');
+
+    try {
+      const { jsPDF } = await import('jspdf');
+      const pdf = new jsPDF();
+      const fecha = new Intl.DateTimeFormat('es-PE', {
+        dateStyle: 'long',
+      }).format(new Date(sesion.fechaSesion));
+
+      pdf.setFillColor('#128573');
+      pdf.rect(0, 0, 210, 34, 'F');
+      pdf.setTextColor('#ffffff');
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(18);
+      pdf.text('AliviaTech', 18, 15);
+      pdf.setFontSize(11);
+      pdf.text('Informe de sesión', 18, 25);
+
+      pdf.setTextColor('#1a2825');
+      pdf.setFontSize(12);
+      const nombre: string[] = pdf.splitTextToSize(paciente, 174);
+      pdf.text(nombre, 18, 46);
+
+      let y = 46 + nombre.length * 6;
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(10);
+      pdf.text(fecha, 18, y);
+      y += 12;
+
+      const apartados = [
+        { titulo: 'Nota interna · Solo psicólogo', texto: sesion.notaInterna },
+        { titulo: 'Resumen compartido', texto: sesion.resumenCompartido },
+        { titulo: 'Recomendación compartida', texto: sesion.recomendacionCompartida },
+      ];
+
+      for (const apartado of apartados) {
+        if (y > 255) {
+          pdf.addPage();
+          y = 20;
+        }
+
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(11);
+        pdf.setTextColor('#087766');
+        pdf.text(apartado.titulo, 18, y);
+        y += 7;
+
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        pdf.setTextColor('#1a2825');
+
+        const lineas: string[] = pdf.splitTextToSize(
+          apartado.texto?.trim() || 'Sin información registrada.',
+          174,
+        );
+
+        for (const linea of lineas) {
+          if (y > 275) {
+            pdf.addPage();
+            y = 20;
+          }
+          pdf.text(linea, 18, y);
+          y += 5;
+        }
+
+        y += 10;
+      }
+
+      pdf.save(`informe-sesion-${sesion.sesionId}.pdf`);
+      this.dialogo.open(confirmacion, {
+        width: '380px',
+        maxWidth: 'calc(100vw - 32px)',
+        ariaLabel: 'Informe descargado',
+        data: {
+          titulo: 'Informe descargado',
+          mensaje: 'Se generó el PDF y se inició la descarga en tu navegador.',
+        },
+      });
+    } catch {
+      this.errorDescargaSesion.set(
+        'No se pudo generar el PDF. Intenta nuevamente.',
+      );
+    } finally {
+      this.descargandoSesion.set(false);
+    }
+  }
 
   pacienteId: number | null = null;
   fechaMostrada = signal(new Date());
@@ -60,7 +203,7 @@ export class Sesiones implements OnInit, OnDestroy {
       this.sesionForm.reset();
       this.errorGuardado.set('');
       this.fechaMostrada.set(new Date());
-
+      this.dialogoDetalle?.close();
       this.pacienteId = Number.isSafeInteger(id) && id > 0 ? id : null;
       this.cargarHistorial();
     });
@@ -70,6 +213,7 @@ export class Sesiones implements OnInit, OnDestroy {
     this.cambiosRuta?.unsubscribe();
     this.consultaHistorial?.unsubscribe();
     this.guardado?.unsubscribe();
+    this.dialogoDetalle?.close();
   }
 
   cargarHistorial(): void {

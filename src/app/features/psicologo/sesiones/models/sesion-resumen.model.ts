@@ -17,3 +17,7 @@ export interface SesionCreada {
   fechaSesion: string;
   fechaRegistro: string;
 }
+
+export interface SesionDetalle extends SesionResumen {
+  notaInterna: string | null;
+}

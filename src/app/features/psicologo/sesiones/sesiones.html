@@ -95,25 +95,40 @@
         <mat-card-content>
           <h2>Sesiones anteriores</h2>
 
-          <p class="texto-secundario">
-            @if (cargandoHistorial()) {
-              <p class="texto-secundario" role="status">Cargando sesiones…</p>
-            } @else if (errorHistorial()) {
-              <p class="error-campo" role="alert">{{ errorHistorial() }}</p>
-              <button mat-button type="button" (click)="cargarHistorial()">Reintentar</button>
-            } @else {
+          @if (cargandoHistorial()) {
+            <p class="texto-secundario" role="status">Cargando sesiones…</p>
+          } @else if (errorHistorial()) {
+            <p class="texto-secundario" role="alert">{{ errorHistorial() }}</p>
+            <button mat-button type="button" (click)="cargarHistorial()">
+              Reintentar
+            </button>
+          } @else {
+            <div class="lista-sesiones">
               @for (sesion of historial(); track sesion.sesionId) {
-                <article>
-                  <h3>{{ sesion.fechaSesion | date:'dd/MM/yyyy' }}</h3>
-                  <p class="texto-secundario">
-                    {{ sesion.resumenCompartido || 'Sin resumen compartido' }}
-                  </p>
+                <article class="fila-sesion">
+                  <div>
+                    <h3>{{ sesion.fechaSesion | date:'d MMM yyyy':undefined:'es' }}</h3>
+                    <p>
+                      {{ sesion.resumenCompartido?.trim() ? 'Resumen compartido' : 'Sin resumen compartido' }}
+                      ·
+                      {{ sesion.recomendacionCompartida?.trim() ? 'Recomendación disponible' : 'Sin recomendación' }}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="ver-sesion"
+                    [attr.aria-label]="'Ver sesión del ' + (sesion.fechaSesion | date:'dd/MM/yyyy')"
+                    (click)="abrirDetalle(sesion.sesionId, modalDetalleSesion)"
+                  >
+                    Ver <span aria-hidden="true">→</span>
+                  </button>
                 </article>
               } @empty {
                 <p class="texto-secundario">Este paciente aún no tiene sesiones registradas.</p>
               }
-            }
-          </p>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -182,17 +197,93 @@
 
   </div>
 </section>
-<ng-template #confirmacionSesion>
+<ng-template #confirmacionSesion let-datos>
   <div class="confirmacion-sesion">
     <div class="confirmacion-cabecera">
       <span class="confirmacion-icono" aria-hidden="true">✓</span>
-      <h2>Información guardada</h2>
+      <h2>{{ datos?.titulo ?? 'Información guardada' }}</h2>
     </div>
 
-    <p>La información ingresada quedó registrada en la sesión.</p>
+    <p>
+      {{ datos?.mensaje ?? 'La información ingresada quedó registrada en la sesión.' }}
+    </p>
 
     <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
       Entendido
     </button>
+  </div>
+</ng-template>
+
+<ng-template #modalDetalleSesion>
+  <div class="detalle-sesion-modal">
+    <header class="detalle-sesion-cabecera">
+      <div>
+        <h2 id="titulo-detalle-sesion">Detalle de sesión</h2>
+
+        @if (detalleSesion(); as sesion) {
+          <p>
+            {{ sesion.fechaSesion | date:"d 'de' MMMM 'de' yyyy":undefined:'es' }}
+            · {{ nombrePacienteDetalle }}
+          </p>
+        }
+      </div>
+
+      <button type="button" class="cerrar-detalle"
+              mat-dialog-close aria-label="Cerrar detalle">×</button>
+    </header>
+
+    <div class="detalle-sesion-contenido">
+      @if (cargandoDetalle()) {
+        <p class="texto-secundario" role="status">Cargando detalle de sesión…</p>
+      } @else if (errorDetalle()) {
+        <p role="alert">{{ errorDetalle() }}</p>
+      } @else if (detalleSesion(); as sesion) {
+        <section class="bloque-detalle bloque-interno">
+          <h3>Nota interna · Solo psicólogo</h3>
+          <p>{{ sesion.notaInterna?.trim() || 'Sin nota interna registrada.' }}</p>
+        </section>
+
+        <section class="bloque-detalle">
+          <h3>Resumen compartido</h3>
+          <p>{{ sesion.resumenCompartido?.trim() || 'Sin resumen compartido.' }}</p>
+        </section>
+
+        <section class="bloque-detalle">
+          <h3>Recomendación compartida</h3>
+          <p>{{ sesion.recomendacionCompartida?.trim() || 'Sin recomendación compartida.' }}</p>
+        </section>
+
+        <div class="descarga-informe">
+          <span class="documento-pdf" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+              <path d="M14 2v6h6M8 13h8M8 17h5" />
+            </svg>
+          </span>
+
+          <div class="descripcion-pdf">
+            <strong>Informe de sesión <span class="insignia-pdf">PDF</span></strong>
+            <p>Incluye la nota interna y la información compartida.</p>
+          </div>
+
+          <button type="button" class="descargar-sesion"
+                  [disabled]="descargandoSesion()" (click)="descargarInformeSesion(confirmacionSesion)">
+            <span aria-hidden="true">↓</span>
+            {{ descargandoSesion() ? 'Generando…' : 'Descargar PDF' }}
+          </button>
+        </div>
+
+        @if (errorDescargaSesion()) {
+          <p role="alert">{{ errorDescargaSesion() }}</p>
+        }
+      }
+    </div>
+
+    <footer class="detalle-sesion-pie">
+      <button type="button" mat-dialog-close class="boton-cerrar-detalle">
+        Cerrar detalle
+      </button>
+    </footer>
   </div>
 </ng-template>
