@@ -35,7 +35,34 @@
   </header>
 
   @if (errorExportacion()) {
-    <p class="error-rango" role="alert">{{ errorExportacion() }}</p>
+    <aside class="aviso-error-pdf" role="alert">
+      <div class="cabecera-error-pdf">
+        <strong>
+          <span aria-hidden="true">⚠</span>
+          Error al generar el archivo
+        </strong>
+
+        <button
+          type="button"
+          class="cerrar-error-pdf"
+          aria-label="Cerrar aviso"
+          (click)="errorExportacion.set('')"
+        >
+          ×
+        </button>
+      </div>
+
+      <p>{{ errorExportacion() }}</p>
+
+      <button
+        type="button"
+        class="reintentar-pdf"
+        [disabled]="!accionesDisponibles() || exportandoPdf()"
+        (click)="exportarPdf(confirmacionReporte)"
+      >
+        Reintentar
+      </button>
+    </aside>
   }
 
   <div class="filtros-periodo" role="group" aria-label="Periodo del reporte">
@@ -198,64 +225,103 @@
     </div>
 
     <div class="detalle-reportes">
-      <div class="columna-reporte">
-        <mat-card>
+      @if (sinActividad()) {
+        <mat-card class="reporte-sin-actividad">
           <mat-card-content>
-            <div class="cabecera-actividad">
-              <div>
-                <h2>Actividad registrada por semana</h2>
-                <p class="texto-reporte">
-                  Registros manuales por semana. Cada etiqueta coral indica episodios confirmados.
-                </p>
-              </div>
-
-              <div class="leyenda-actividad" aria-label="Leyenda del gráfico">
-                <span><i class="punto-registros" aria-hidden="true"></i> Registros</span>
-                <span><i class="punto-episodios" aria-hidden="true"></i> Episodios</span>
-              </div>
-            </div>
-
-            @if (datos.actividadSemanal.length > 0) {
-              <div class="grafico-con-eje">
-                <div class="eje-registros" aria-hidden="true">
-                  @for (nivel of [4, 3, 2, 1, 0]; track nivel) {
-                    <span [style.top.%]="(4 - nivel) * 25">
-              {{ maximoRegistros() * nivel / 4 }}
+            <span class="icono-periodo-vacio" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="5" width="16" height="16" rx="2" />
+                <path d="M8 3v4m8-4v4M4 10h16m-10 4 4 4m0-4-4 4" />
+              </svg>
             </span>
-                  }
-                </div>
 
-                <div class="grafico-semanal">
-                  @for (semana of datos.actividadSemanal; track semana.semana) {
-                    <div class="semana-reporte">
-                      <div class="escala-semanal">
-                        <div
-                          class="barra-semanal"
-                          [style.height.%]="semana.registros / maximoRegistros() * 100"
-                        >
-                          <strong class="valor-semanal">{{ semana.registros }}</strong>
-                        </div>
-                      </div>
+            <h2>Sin información en este periodo</h2>
 
-                      <span class="episodios-semana">{{ semana.episodios }} ep.</span>
-                      <span class="nombre-semana">Sem {{ semana.semana }}</span>
-                    </div>
-                  }
-                </div>
-              </div>
-            } @else {
-              <p class="texto-reporte">No hay actividad semanal para este periodo.</p>
-            }
-
-            <p class="texto-reporte total-actividad">
-              Total del periodo: {{ datos.registrosRecibidos }}
-              {{ datos.registrosRecibidos === 1 ? 'registro manual' : 'registros manuales' }}
-              · {{ datos.episodiosConfirmados }}
-              {{ datos.episodiosConfirmados === 1 ? 'episodio confirmado' : 'episodios confirmados' }}
+            <p>
+              No se encontraron registros de bienestar ni episodios confirmados
+              @if (periodoImpresion; as periodo) {
+                entre el {{ periodo.desde | date:'dd/MM/yyyy' }}
+                y el {{ periodo.hasta | date:'dd/MM/yyyy' }}.
+              } @else {
+                en las fechas seleccionadas.
+              }
+              Prueba con otro rango de fechas.
             </p>
+
+            <div class="acciones-periodo-vacio">
+              <button mat-flat-button type="button"
+                      class="cambiar-periodo-vacio" (click)="abrirPanel()">
+                Cambiar rango de fechas
+              </button>
+
+              <button mat-button type="button"
+                      class="restablecer-periodo-vacio" (click)="usarUltimos30Dias()">
+                Restablecer a últimos 30 días
+              </button>
+            </div>
           </mat-card-content>
         </mat-card>
+      }
+      <div class="columna-reporte">
+        @if (!sinActividad()) {
+          <mat-card>
+            <mat-card-content>
+              <div class="cabecera-actividad">
+                <div>
+                  <h2>Actividad registrada por semana</h2>
+                  <p class="texto-reporte">
+                    Registros manuales por semana. Cada etiqueta coral indica episodios confirmados.
+                  </p>
+                </div>
 
+                <div class="leyenda-actividad" aria-label="Leyenda del gráfico">
+                  <span><i class="punto-registros" aria-hidden="true"></i> Registros</span>
+                  <span><i class="punto-episodios" aria-hidden="true"></i> Episodios</span>
+                </div>
+              </div>
+
+              @if (datos.actividadSemanal.length > 0) {
+                <div class="grafico-con-eje">
+                  <div class="eje-registros" aria-hidden="true">
+                    @for (nivel of [4, 3, 2, 1, 0]; track nivel) {
+                      <span [style.top.%]="(4 - nivel) * 25">
+                {{ maximoRegistros() * nivel / 4 }}
+              </span>
+                    }
+                  </div>
+
+                  <div class="grafico-semanal">
+                    @for (semana of datos.actividadSemanal; track semana.semana) {
+                      <div class="semana-reporte">
+                        <div class="escala-semanal">
+                          <div
+                            class="barra-semanal"
+                            [style.height.%]="semana.registros / maximoRegistros() * 100"
+                          >
+                            <strong class="valor-semanal">{{ semana.registros }}</strong>
+                          </div>
+                        </div>
+
+                        <span class="episodios-semana">{{ semana.episodios }} ep.</span>
+                        <span class="nombre-semana">Sem {{ semana.semana }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <p class="texto-reporte">No hay actividad semanal para este periodo.</p>
+              }
+
+              <p class="texto-reporte total-actividad">
+                Total del periodo: {{ datos.registrosRecibidos }}
+                {{ datos.registrosRecibidos === 1 ? 'registro manual' : 'registros manuales' }}
+                · {{ datos.episodiosConfirmados }}
+                {{ datos.episodiosConfirmados === 1 ? 'episodio confirmado' : 'episodios confirmados' }}
+              </p>
+            </mat-card-content>
+          </mat-card>
+        }
 
         <mat-card>
           <mat-card-content>
@@ -267,14 +333,14 @@
                   <strong>{{ paciente.nombreCompleto }}</strong>
 
                   <span>
-        {{ paciente.registros }}
+                    {{ paciente.registros }}
                     {{ paciente.registros === 1 ? 'registro' : 'registros' }}
-      </span>
+                  </span>
 
                   <span>
-        {{ paciente.episodios }}
+                    {{ paciente.episodios }}
                     {{ paciente.episodios === 1 ? 'episodio' : 'episodios' }}
-      </span>
+                  </span>
                 </li>
               } @empty {
                 <li class="actividad-vacia">No hay pacientes para mostrar en este periodo.</li>
@@ -285,46 +351,47 @@
       </div>
 
       <div class="columna-reporte columna-lateral-reporte">
-        <mat-card>
-          <mat-card-content class="contenido-cobertura">
-            <h2>Cobertura del seguimiento</h2>
-            <p class="texto-reporte">
-              Pacientes con registros o episodios confirmados durante el periodo.
-            </p>
+        @if (!sinActividad()) {
+          <mat-card>
+            <mat-card-content class="contenido-cobertura">
+              <h2>Cobertura del seguimiento</h2>
+              <p class="texto-reporte">
+                Pacientes con registros o episodios confirmados durante el periodo.
+              </p>
 
-            <div class="resumen-cobertura">
-              <div>
-                <strong class="cifra-reporte">
-                  {{ datos.cobertura.porcentaje | number:'1.0-1' }}%
-                </strong>
+              <div class="resumen-cobertura">
+                <div>
+                  <strong class="cifra-reporte">
+                    {{ datos.cobertura.porcentaje | number:'1.0-1' }}%
+                  </strong>
 
-                <div class="barra-cobertura" aria-hidden="true">
-                  <div [style.width.%]="datos.cobertura.porcentaje"></div>
+                  <div class="barra-cobertura" aria-hidden="true">
+                    <div [style.width.%]="datos.cobertura.porcentaje"></div>
+                  </div>
+
+                  <div class="desglose-cobertura">
+                    <span>{{ datos.cobertura.pacientesConActividad }} con actividad</span>
+                    <span>
+                {{ datos.cobertura.pacientesActivos - datos.cobertura.pacientesConActividad }}
+                      sin actividad
+              </span>
+                  </div>
                 </div>
 
-                <div class="desglose-cobertura">
-                  <span>{{ datos.cobertura.pacientesConActividad }} con actividad</span>
-                  <span>
-              {{ datos.cobertura.pacientesActivos - datos.cobertura.pacientesConActividad }}
-                    sin actividad
-            </span>
+                <div class="recuadro-cobertura">
+                  <span>Cobertura</span>
+                  <strong>
+                    {{ datos.cobertura.pacientesConActividad }} de {{ datos.cobertura.pacientesActivos }}
+                  </strong>
                 </div>
               </div>
 
-              <div class="recuadro-cobertura">
-                <span>Cobertura</span>
-                <strong>
-                  {{ datos.cobertura.pacientesConActividad }} de {{ datos.cobertura.pacientesActivos }}
-                </strong>
-              </div>
-            </div>
-
-            <p class="texto-reporte nota-cobertura">
-              La cobertura indica qué proporción de tus pacientes activos aportó información al reporte.
-            </p>
-          </mat-card-content>
-        </mat-card>
-
+              <p class="texto-reporte nota-cobertura">
+                La cobertura indica qué proporción de tus pacientes activos aportó información al reporte.
+              </p>
+            </mat-card-content>
+          </mat-card>
+        }
         <mat-card>
           <mat-card-content>
             <h2 class="etiqueta-lateral etiqueta-episodios">Pacientes con episodios</h2>
@@ -335,7 +402,9 @@
             </strong>
 
             <p class="texto-reporte">
-              @if (datos.pacientesActivos > 0) {
+              @if (sinActividad()) {
+                Aún no hay actividad registrada para mostrar.
+              } @else if (datos.pacientesActivos > 0) {
                 El {{ (datos.pacientesConEpisodios / datos.pacientesActivos * 100) | number:'1.0-1' }}%
                   de los pacientes activos tuvo al menos un episodio confirmado en el periodo.
               } @else {

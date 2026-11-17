@@ -652,3 +652,136 @@
   color: #fff;
   font-weight: 600;
 }
+.reporte-sin-actividad {
+  grid-column: 1 / -1;
+}
+
+.pagina-reportes .reporte-sin-actividad mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.icono-periodo-vacio {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f5ef;
+  color: #087766;
+}
+
+.icono-periodo-vacio svg {
+  width: 25px;
+  height: 25px;
+}
+
+.reporte-sin-actividad h2 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+
+.reporte-sin-actividad p {
+  max-width: 480px;
+  margin: 0;
+  color: #6e7d78;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.acciones-periodo-vacio {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.acciones-periodo-vacio button {
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.acciones-periodo-vacio .cambiar-periodo-vacio {
+  background: #128573;
+  color: #fff;
+}
+
+.acciones-periodo-vacio .restablecer-periodo-vacio {
+  background: #eef2fb;
+  color: #005b51;
+}
+
+@media print {
+  .acciones-periodo-vacio {
+    display: none;
+  }
+}
+.aviso-error-pdf {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1000;
+  width: min(380px, calc(100vw - 32px));
+  padding: 18px;
+  border-radius: 16px;
+  background: #e2604f;
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(45 30 25 / 18%);
+  font-family: inherit;
+}
+
+.cabecera-error-pdf {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cabecera-error-pdf strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.cerrar-error-pdf {
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.aviso-error-pdf p {
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.reintentar-pdf {
+  min-height: 34px;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #a63123;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media print {
+  .aviso-error-pdf {
+    display: none;
+  }
+}
