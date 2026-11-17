@@ -6,6 +6,7 @@ import {
   RegistrarSesionRequest,
   SesionCreada,
   SesionResumen,
+  SesionDetalle,
 } from '../models/sesion-resumen.model';
 
 @Injectable({ providedIn: 'root' })
@@ -19,5 +20,11 @@ export class SesionesService {
 
   registrarSesion(pacienteId: number, datos: RegistrarSesionRequest): Observable<SesionCreada> {
     return this.http.post<SesionCreada>(`${this.url}/${pacienteId}/sesiones`, datos);
+  }
+
+  obtenerDetalle(sesionId: number): Observable<SesionDetalle> {
+    return this.http.get<SesionDetalle>(
+      `${environment.apiUrl}/v1/sesiones/${sesionId}`,
+    );
   }
 }
