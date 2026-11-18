@@ -73,6 +73,51 @@ input.invalido {
   border-color: #c73535;
 }
 
+.control-contrasena {
+  position: relative;
+}
+
+.control-contrasena input {
+  padding-right: 48px;
+}
+
+.boton-visibilidad {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  color: #6e7d78;
+  background: transparent;
+  cursor: pointer;
+}
+
+.boton-visibilidad:hover {
+  color: #128573;
+  background: rgb(18 133 115 / 7%);
+}
+
+.boton-visibilidad:focus-visible {
+  outline: 2px solid #128573;
+  outline-offset: -2px;
+}
+
+.boton-visibilidad svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .error-campo {
   display: block;
   margin: 4px 2px 0;

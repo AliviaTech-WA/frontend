@@ -20,6 +20,7 @@ export class Login {
   protected cargando = false;
   protected intentoEnvio = false;
   protected mensajeError = '';
+  protected contrasenaVisible = false;
 
   protected readonly formulario = new FormGroup({
     correo: new FormControl('', {
@@ -35,6 +36,10 @@ export class Login {
   protected campoInvalido(nombre: keyof Login['formulario']['controls']): boolean {
     const control = this.formulario.controls[nombre];
     return control.invalid && (control.touched || this.intentoEnvio);
+  }
+
+  protected alternarVisibilidadContrasena(): void {
+    this.contrasenaVisible = !this.contrasenaVisible;
   }
 
   protected ingresar(): void {
