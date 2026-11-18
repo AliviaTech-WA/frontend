@@ -63,6 +63,18 @@
   border-color: #df2929;
 }
 
+.opcion-checkbox a {
+  color: #0d675b;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.opcion-checkbox a:hover,
+.opcion-checkbox a:focus-visible {
+  color: #148c79;
+}
+
 .error-checkbox {
   margin-left: 24px;
 }
