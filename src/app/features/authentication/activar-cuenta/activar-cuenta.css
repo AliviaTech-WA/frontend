@@ -98,14 +98,13 @@ input::placeholder {
   background: #f2fbf9;
 }
 
-.consentimiento label {
+.opcion-consentimiento {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   color: #30403c;
   font-size: 10px;
   line-height: 1.45;
-  cursor: pointer;
 }
 
 .consentimiento input {
@@ -114,6 +113,18 @@ input::placeholder {
   flex: 0 0 20px;
   margin: 0;
   accent-color: #128573;
+}
+
+.texto-consentimiento a {
+  color: #0c5c50;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.texto-consentimiento a:hover,
+.texto-consentimiento a:focus-visible {
+  color: #128573;
 }
 
 .error-consentimiento {

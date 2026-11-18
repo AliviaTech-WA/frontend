@@ -253,14 +253,31 @@
 
           <div class="confirmaciones">
             <div>
-              <label class="opcion-checkbox">
+              <div class="opcion-checkbox">
                 <input
+                  id="acepta-documentos-legales"
                   type="checkbox"
                   formControlName="aceptaTerminos"
                   [class.invalido]="campoProfesionalInvalido('aceptaTerminos')"
+                  aria-labelledby="texto-documentos-legales"
                 />
-                <span>Acepto los Términos de uso y la Política de privacidad.</span>
-              </label>
+                <span id="texto-documentos-legales">
+                  Acepto los
+                  <a
+                    href="/legal/terminos-uso-v1.0.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Términos de uso</a
+                  >
+                  y la
+                  <a
+                    href="/legal/politica-privacidad-v1.0.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Política de privacidad</a
+                  >.
+                </span>
+              </div>
               @if (campoProfesionalInvalido('aceptaTerminos')) {
                 <span class="mensaje-error error-checkbox">Debes aceptar los términos.</span>
               }
