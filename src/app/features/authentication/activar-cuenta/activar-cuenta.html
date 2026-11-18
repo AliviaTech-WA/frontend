@@ -113,13 +113,30 @@
         </div>
 
         <div class="consentimiento" [class.invalido]="campoInvalido('aceptaTratamientoDatos')">
-          <label>
-            <input type="checkbox" formControlName="aceptaTratamientoDatos" />
-            <span>
+          <div class="opcion-consentimiento">
+            <input
+              id="acepta-tratamiento-datos"
+              type="checkbox"
+              formControlName="aceptaTratamientoDatos"
+              aria-labelledby="texto-tratamiento-datos"
+            />
+            <span id="texto-tratamiento-datos" class="texto-consentimiento">
               He leído y acepto el tratamiento de mis datos personales y de salud para las
-              finalidades de seguimiento descritas.
+              finalidades de seguimiento descritas en la
+              <a
+                href="/legal/politica-privacidad-v1.0.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Política de privacidad</a
+              >. También puedo consultar los
+              <a
+                href="/legal/terminos-uso-v1.0.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Términos de uso</a
+              >.
             </span>
-          </label>
+          </div>
           @if (campoInvalido('aceptaTratamientoDatos')) {
             <span class="error-campo error-consentimiento">
               Debes aceptar el tratamiento de datos para activar la cuenta.
