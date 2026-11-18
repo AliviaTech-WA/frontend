@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { autenticacionPorRolGuard } from './core/guards/autenticacion.guard';
-import { ActivarCuenta } from './features/autenticacion/activar-cuenta/activar-cuenta';
-import { Login } from './features/autenticacion/login/login';
-import { RecuperarContrasena } from './features/autenticacion/recuperar-contrasena/recuperar-contrasena';
+import { ActivarCuenta } from './features/authentication/activar-cuenta/activar-cuenta';
+import { Login } from './features/authentication/login/login';
+import { RecuperarContrasena } from './features/authentication/recuperar-contrasena/recuperar-contrasena';
 import { PacienteLayout } from './layouts/paciente-layout/paciente-layout';
 import { PsicologoLayout } from './layouts/psicologo-layout/psicologo-layout';
 
