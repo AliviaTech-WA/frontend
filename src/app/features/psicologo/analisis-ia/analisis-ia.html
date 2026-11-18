@@ -1,0 +1,158 @@
+@if (pacienteId(); as id) {
+  <div class="ruta-paciente">
+    <a routerLink="/psicologo/pacientes">Pacientes</a>
+    <span>/</span>
+    <span>{{ resumenActual.obtener(id)?.nombreCompleto ?? 'Analizar con IA' }}</span>
+  </div>
+
+  <app-cabecera-paciente [pacienteId]="id" />
+
+  <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+    <a [routerLink]="['/psicologo/pacientes', id, 'resumen']">Resumen</a>
+    <a [routerLink]="['/psicologo/pacientes', id, 'registros']">Registros</a>
+    <a [routerLink]="['/psicologo/pacientes', id, 'wearable']">Wearable</a>
+    <a [routerLink]="['/psicologo/pacientes', id, 'episodios']">Episodios</a>
+    <span class="activo" aria-current="page">Analizar con IA</span>
+    <a [routerLink]="['/psicologo/pacientes', id, 'sesiones']">Sesiones</a>
+  </nav>
+
+  <div class="cuadricula">
+    <div class="columna">
+      <section class="tarjeta">
+        <span class="etiqueta">Configuración</span>
+        <h2>Preparar análisis</h2>
+        <p class="ayuda">Selecciona qué información quieres revisar y el periodo.</p>
+
+        <fieldset [disabled]="cargando()">
+          <legend>Fuente</legend>
+          <div class="fuentes">
+            @for (opcion of fuentes; track opcion.valor) {
+              <button type="button" class="chip"
+                      [attr.aria-pressed]="fuente() === opcion.valor"
+                      (click)="elegirFuente(opcion.valor)">
+                {{ opcion.texto }}
+              </button>
+            }
+          </div>
+        </fieldset>
+
+        <p class="rotulo">Periodo</p>
+        <button type="button" class="chip activo" aria-haspopup="dialog"
+                [disabled]="cargando()" (click)="abrirPeriodo(selectorPeriodo)">
+          {{ periodo().etiqueta }}
+        </button>
+
+        <button type="button" class="primario generar" [disabled]="cargando()" (click)="generar()">
+          {{ cargando() ? 'Generando análisis…' : 'Generar análisis' }}
+        </button>
+      </section>
+
+      <section class="tarjeta suave">
+        <span class="etiqueta">Uso responsable</span>
+        <h2>Apoyo, no diagnóstico</h2>
+        <p class="ayuda">
+          El análisis organiza información como apoyo a la revisión del psicólogo.
+          No diagnostica, no predice crisis ni reemplaza el criterio profesional.
+        </p>
+      </section>
+    </div>
+
+    <div class="columna">
+      <section class="tarjeta">
+        <div class="cabecera-resultado">
+          <h2>Análisis integrado</h2>
+          <span class="chip activo">
+            {{ periodo().desde | date:'dd/MM/yyyy' }} – {{ periodo().hasta | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        @if (cargando()) {
+          <p class="ayuda" role="status">Generando el análisis del periodo seleccionado…</p>
+        } @else if (error(); as fallo) {
+          @if (fallo.sinDatos) {
+            <div class="estado-sin-datos" role="status">
+              <span class="icono-sin-datos" aria-hidden="true">ⓘ</span>
+
+              <div>
+                <h3>No hay datos suficientes para generar el análisis</h3>
+
+                @if (fuente() === 'INTEGRADO') {
+                  <p>La vista integrada necesita registros del paciente y datos del wearable en el mismo periodo. Prueba con otro periodo o selecciona otra fuente.</p>
+                } @else {
+                  <p>Para la fuente y el periodo seleccionados, faltan datos. Prueba con otro periodo o selecciona otra fuente.</p>
+                }
+              </div>
+            </div>
+          } @else {
+            <p class="error" role="alert">{{ fallo.mensaje }}</p>
+          }
+        } @else if (resultado(); as datos) {
+          <div class="bloque-resultado suave">
+            <h3 class="etiqueta">Resumen</h3>
+            <p>{{ datos.resumen }}</p>
+          </div>
+          <div class="bloque-resultado suave">
+            <h3 class="etiqueta">Coincidencias temporales</h3>
+            <p>{{ datos.coincidencias }}</p>
+          </div>
+          <div class="bloque-resultado suave">
+            <h3 class="etiqueta">Puntos para revisar</h3>
+            <p>{{ datos.puntosRevision }}</p>
+          </div>
+        } @else {
+          <p class="ayuda">Selecciona una fuente y un periodo para generar el análisis.</p>
+        }
+      </section>
+
+      <section class="tarjeta">
+        <h2>¿Qué aporta la vista integrada?</h2>
+        <p class="ayuda">
+          Permite revisar juntos los registros del paciente y los datos del wearable
+          para identificar coincidencias en el periodo.
+        </p>
+      </section>
+    </div>
+  </div>
+} @else {
+  <p role="alert">No se encontró un paciente válido.</p>
+}
+
+<ng-template #selectorPeriodo>
+  <form class="panel-periodo" (ngSubmit)="aplicarPeriodo()">
+    <div class="cabecera-resultado">
+      <h2>Seleccionar periodo</h2>
+      <button type="button" class="chip" mat-dialog-close aria-label="Cerrar selector">×</button>
+    </div>
+
+    <div class="atajos">
+      <button type="button" class="chip" [attr.aria-pressed]="borrador.etiqueta === 'Último mes'"
+              (click)="elegirAtajo(1)">Último mes</button>
+      <button type="button" class="chip" [attr.aria-pressed]="borrador.etiqueta === 'Trimestre'"
+              (click)="elegirAtajo(3)">Trimestre</button>
+      <button type="button" class="chip" [attr.aria-pressed]="borrador.etiqueta === 'Últimos 30 días'"
+              (click)="elegirAtajo(0)">Últimos 30 días</button>
+    </div>
+
+    <div class="rango">
+      <label>
+        Desde
+        <input type="date" name="desde" required [(ngModel)]="borrador.desde"
+               (ngModelChange)="borrador.etiqueta = 'Personalizado'" />
+      </label>
+      <label>
+        Hasta
+        <input type="date" name="hasta" required [(ngModel)]="borrador.hasta"
+               (ngModelChange)="borrador.etiqueta = 'Personalizado'" />
+      </label>
+    </div>
+
+    @if (errorPeriodo) {
+      <p class="error" role="alert">{{ errorPeriodo }}</p>
+    }
+
+    <div class="acciones">
+      <button type="button" class="chip" mat-dialog-close>Cancelar</button>
+      <button type="submit" class="primario">✓ Aplicar filtro</button>
+    </div>
+  </form>
+</ng-template>

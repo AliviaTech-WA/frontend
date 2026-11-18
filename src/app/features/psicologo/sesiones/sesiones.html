@@ -1,0 +1,289 @@
+<section class="pagina-sesiones">
+
+  <!-- Ubicación dentro del seguimiento del paciente -->
+  @if (pacienteId !== null) {
+    <div class="ruta-paciente">
+      <a routerLink="/psicologo/pacientes">Pacientes</a>
+      <span>/</span>
+      <span>{{ resumenActual.obtener(pacienteId)?.nombreCompleto ?? 'Sesiones' }}</span>
+    </div>
+
+    <app-cabecera-paciente [pacienteId]="pacienteId" />
+  }
+
+  <!-- Pestañas visuales: la navegación se conectará después -->
+  @if (pacienteId !== null) {
+    <nav class="pestanas-paciente" aria-label="Secciones del paciente">
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'resumen']">Resumen</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'registros']">Registros</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'wearable']">Wearable</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'episodios']">Episodios</a>
+      <a [routerLink]="['/psicologo/pacientes', pacienteId, 'analisis-ia']">Analizar con IA</a>
+      <span class="pestana-activa" aria-current="page">Sesiones</span>
+    </nav>
+  }
+
+  <div class="columnas-sesiones">
+
+    <div class="columna-principal">
+
+      <!-- HU28: registro de información de una sesión realizada -->
+      <mat-card class="tarjeta-formulario">
+        <mat-card-content>
+          <span class="etiqueta-seccion">POST SESIÓN</span>
+
+          <h2>Registrar información de la sesión</h2>
+
+          <form
+            [formGroup]="sesionForm"
+            (ngSubmit)="guardarInformacion(confirmacionSesion)"
+            class="formulario-sesion">
+
+            <p class="texto-secundario">
+              Sesión realizada: {{ fechaMostrada() | date:'dd/MM/yyyy' }}
+            </p>
+
+            <div class="campo-sesion">
+              <label for="nota-interna">Nota interna</label>
+              <textarea
+                id="nota-interna"
+                formControlName="notaInterna"
+                rows="3"
+                placeholder="Solo visible para ti. Puedes registrar observaciones profesionales de la sesión."
+              ></textarea>
+            </div>
+
+            <div class="campo-sesion">
+              <label for="resumen-compartido">Resumen compartido</label>
+              <textarea
+                id="resumen-compartido"
+                formControlName="resumenCompartido"
+                rows="3"
+                placeholder="Información que deseas que el paciente pueda consultar posteriormente en Mis sesiones."
+              ></textarea>
+            </div>
+
+            <div class="campo-sesion">
+              <label for="recomendacion">Recomendación</label>
+              <textarea
+                id="recomendacion"
+                formControlName="recomendacionCompartida"
+                rows="2"
+                placeholder="Recomendación breve que quedará visible para el paciente."
+              ></textarea>
+            </div>
+
+            <button
+              mat-raised-button
+              type="submit"
+              class="boton-guardar"
+              [disabled]="guardando() || pacienteId === null"
+            >
+              {{ guardando() ? 'Guardando…' : 'Guardar información de sesión' }}
+            </button>
+
+            @if (errorGuardado()) {
+              <p class="error-campo" role="alert">{{ errorGuardado() }}</p>
+            }
+
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- El historial se conectará al trabajar HU29 -->
+      <mat-card class="tarjeta-historial">
+        <mat-card-content>
+          <h2>Sesiones anteriores</h2>
+
+          @if (cargandoHistorial()) {
+            <p class="texto-secundario" role="status">Cargando sesiones…</p>
+          } @else if (errorHistorial()) {
+            <p class="texto-secundario" role="alert">{{ errorHistorial() }}</p>
+            <button mat-button type="button" (click)="cargarHistorial()">
+              Reintentar
+            </button>
+          } @else {
+            <div class="lista-sesiones">
+              @for (sesion of historial(); track sesion.sesionId) {
+                <article class="fila-sesion">
+                  <div>
+                    <h3>{{ sesion.fechaSesion | date:'d MMM yyyy':undefined:'es' }}</h3>
+                    <p>
+                      {{ sesion.resumenCompartido?.trim() ? 'Resumen compartido' : 'Sin resumen compartido' }}
+                      ·
+                      {{ sesion.recomendacionCompartida?.trim() ? 'Recomendación disponible' : 'Sin recomendación' }}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="ver-sesion"
+                    [attr.aria-label]="'Ver sesión del ' + (sesion.fechaSesion | date:'dd/MM/yyyy')"
+                    (click)="abrirDetalle(sesion.sesionId, modalDetalleSesion)"
+                  >
+                    Ver <span aria-hidden="true">→</span>
+                  </button>
+                </article>
+              } @empty {
+                <p class="texto-secundario">Este paciente aún no tiene sesiones registradas.</p>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <aside class="columna-informativa">
+
+      <section class="informacion-separada">
+        <span class="etiqueta-seccion">QUIÉN VE QUÉ</span>
+        <h2>Información separada</h2>
+
+        <div class="detalle-visibilidad">
+          <h3>Nota interna</h3>
+          <p>Solo visible para el psicólogo.</p>
+        </div>
+
+        <div class="detalle-visibilidad">
+          <h3>Resumen compartido</h3>
+          <p>Visible para el paciente en Mis sesiones.</p>
+        </div>
+
+        <div class="detalle-visibilidad">
+          <h3>Recomendación</h3>
+          <p>Visible para el paciente y destacada en su inicio.</p>
+        </div>
+      </section>
+
+      <mat-card class="tarjeta-ultima-sesion">
+        <mat-card-content>
+          <span class="etiqueta-seccion">ÚLTIMA SESIÓN</span>
+
+          @if (cargandoHistorial()) {
+            <p class="texto-secundario" role="status">Cargando última sesión…</p>
+          } @else if (errorHistorial()) {
+            <p class="texto-secundario">No se pudo consultar la última sesión.</p>
+          } @else if (historial()[0]; as ultimaSesion) {
+            <h2>{{ ultimaSesion.fechaSesion | date:"d 'de' MMMM":undefined:'es' }}</h2>
+
+            <p class="resumen-ultima-sesion">
+              {{ ultimaSesion.resumenCompartido?.trim() || 'Sin resumen compartido' }}
+            </p>
+
+            @if (ultimaSesion.recomendacionCompartida?.trim(); as recomendacion) {
+              <p class="texto-secundario">
+                <strong>Recomendación compartida:</strong> {{ recomendacion }}
+              </p>
+            }
+          } @else {
+            <p class="texto-secundario">Aún no hay una sesión registrada.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="tarjeta-alcance">
+        <mat-card-content>
+          <span class="etiqueta-seccion">ALCANCE</span>
+
+          <p class="texto-secundario">
+            Este apartado documenta sesiones ya realizadas.
+            AliviaTech no reserva, cancela ni reprograma citas.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+    </aside>
+
+  </div>
+</section>
+<ng-template #confirmacionSesion let-datos>
+  <div class="confirmacion-sesion">
+    <div class="confirmacion-cabecera">
+      <span class="confirmacion-icono" aria-hidden="true">✓</span>
+      <h2>{{ datos?.titulo ?? 'Información guardada' }}</h2>
+    </div>
+
+    <p>
+      {{ datos?.mensaje ?? 'La información ingresada quedó registrada en la sesión.' }}
+    </p>
+
+    <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
+      Entendido
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #modalDetalleSesion>
+  <div class="detalle-sesion-modal">
+    <header class="detalle-sesion-cabecera">
+      <div>
+        <h2 id="titulo-detalle-sesion">Detalle de sesión</h2>
+
+        @if (detalleSesion(); as sesion) {
+          <p>
+            {{ sesion.fechaSesion | date:"d 'de' MMMM 'de' yyyy":undefined:'es' }}
+            · {{ nombrePacienteDetalle }}
+          </p>
+        }
+      </div>
+
+      <button type="button" class="cerrar-detalle"
+              mat-dialog-close aria-label="Cerrar detalle">×</button>
+    </header>
+
+    <div class="detalle-sesion-contenido">
+      @if (cargandoDetalle()) {
+        <p class="texto-secundario" role="status">Cargando detalle de sesión…</p>
+      } @else if (errorDetalle()) {
+        <p role="alert">{{ errorDetalle() }}</p>
+      } @else if (detalleSesion(); as sesion) {
+        <section class="bloque-detalle bloque-interno">
+          <h3>Nota interna · Solo psicólogo</h3>
+          <p>{{ sesion.notaInterna?.trim() || 'Sin nota interna registrada.' }}</p>
+        </section>
+
+        <section class="bloque-detalle">
+          <h3>Resumen compartido</h3>
+          <p>{{ sesion.resumenCompartido?.trim() || 'Sin resumen compartido.' }}</p>
+        </section>
+
+        <section class="bloque-detalle">
+          <h3>Recomendación compartida</h3>
+          <p>{{ sesion.recomendacionCompartida?.trim() || 'Sin recomendación compartida.' }}</p>
+        </section>
+
+        <div class="descarga-informe">
+          <span class="documento-pdf" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+              <path d="M14 2v6h6M8 13h8M8 17h5" />
+            </svg>
+          </span>
+
+          <div class="descripcion-pdf">
+            <strong>Informe de sesión <span class="insignia-pdf">PDF</span></strong>
+            <p>Incluye la nota interna y la información compartida.</p>
+          </div>
+
+          <button type="button" class="descargar-sesion"
+                  [disabled]="descargandoSesion()" (click)="descargarInformeSesion(confirmacionSesion)">
+            <span aria-hidden="true">↓</span>
+            {{ descargandoSesion() ? 'Generando…' : 'Descargar PDF' }}
+          </button>
+        </div>
+
+        @if (errorDescargaSesion()) {
+          <p role="alert">{{ errorDescargaSesion() }}</p>
+        }
+      }
+    </div>
+
+    <footer class="detalle-sesion-pie">
+      <button type="button" mat-dialog-close class="boton-cerrar-detalle">
+        Cerrar detalle
+      </button>
+    </footer>
+  </div>
+</ng-template>

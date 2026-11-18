@@ -1,0 +1,15 @@
+
+/* Contenedor principal del psicólogo */
+.psicologo-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Área donde se mostrarán las páginas del psicólogo */
+.contenido-psicologo {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 30px;
+  background-color: #f6faf9;
+}

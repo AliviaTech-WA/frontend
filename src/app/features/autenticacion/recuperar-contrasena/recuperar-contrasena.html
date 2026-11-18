@@ -1,0 +1,198 @@
+<app-auth-shell
+  etiqueta="Recuperación de contraseña"
+  titulo="Recupera el acceso de forma segura."
+  descripcion="Sigue los pasos para crear una nueva contraseña sin compartir tus códigos ni datos de acceso."
+>
+  @if (etapa === 'correo') {
+    <section class="tarjeta" aria-labelledby="titulo-recuperacion-correo">
+      <header>
+        <h2 id="titulo-recuperacion-correo">Recuperar contraseña</h2>
+        <p>Ingresa el correo asociado a tu cuenta.</p>
+      </header>
+
+      <form [formGroup]="formularioCorreo" (ngSubmit)="solicitarRecuperacion()" novalidate>
+        <div class="campo">
+          <label for="recuperacion-correo">Correo electrónico</label>
+          <input
+            id="recuperacion-correo"
+            type="email"
+            formControlName="correo"
+            placeholder="nombre@correo.com"
+            autocomplete="email"
+            [class.invalido]="correoInvalido()"
+            [attr.aria-invalid]="correoInvalido()"
+          />
+          @if (correoInvalido()) {
+            <span class="error-campo">
+              @if (formularioCorreo.controls.correo.hasError('required')) {
+                El correo electrónico es obligatorio.
+              } @else {
+                Ingresa un correo electrónico válido.
+              }
+            </span>
+          }
+        </div>
+
+        <aside class="aviso">
+          Si la cuenta permite recuperación, recibirás las instrucciones definidas por el sistema.
+        </aside>
+
+        @if (mensajeError) {
+          <p class="mensaje mensaje-error" role="alert">{{ mensajeError }}</p>
+        }
+
+        <button class="boton boton-principal" type="submit" [disabled]="cargando">
+          {{ cargando ? 'Enviando…' : 'Enviar recuperación' }}
+        </button>
+        <a class="boton boton-secundario" routerLink="/login">Volver al inicio de sesión</a>
+      </form>
+    </section>
+  } @else if (etapa === 'codigo') {
+    <section class="tarjeta" aria-labelledby="titulo-recuperacion-codigo">
+      <header>
+        <h2 id="titulo-recuperacion-codigo">Revisa tu correo</h2>
+        <p>Ingresa el código de seis dígitos asociado a la solicitud.</p>
+      </header>
+
+      <form [formGroup]="formularioCodigo" (ngSubmit)="validarCodigo()" novalidate>
+        <div class="campo">
+          <label for="codigo-recuperacion">Código de verificación</label>
+          <input
+            id="codigo-recuperacion"
+            class="codigo"
+            type="text"
+            formControlName="codigo"
+            placeholder="000000"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            [class.invalido]="codigoInvalido()"
+            [attr.aria-invalid]="codigoInvalido()"
+          />
+          @if (codigoInvalido()) {
+            <span class="error-campo">
+              @if (formularioCodigo.controls.codigo.hasError('required')) {
+                El código de verificación es obligatorio.
+              } @else {
+                El código debe contener exactamente seis dígitos.
+              }
+            </span>
+          }
+        </div>
+
+        @if (mensajeInformativo || textoExpiracion) {
+          <aside class="aviso" role="status">
+            @if (mensajeInformativo) {
+              <span>{{ mensajeInformativo }}</span>
+            }
+            @if (textoExpiracion) {
+              <strong>{{ textoExpiracion }}</strong>
+            }
+          </aside>
+        }
+
+        @if (mensajeError) {
+          <p class="mensaje mensaje-error" role="alert">{{ mensajeError }}</p>
+        }
+
+        <button class="boton boton-principal" type="submit" [disabled]="cargando">
+          {{ cargando ? 'Verificando…' : 'Continuar' }}
+        </button>
+        <button
+          class="boton boton-secundario"
+          type="button"
+          [disabled]="cargando"
+          (click)="reenviarCodigo()"
+        >
+          Reenviar código
+        </button>
+        <button class="enlace-boton" type="button" (click)="volverAlCorreo()">
+          Usar otro correo
+        </button>
+      </form>
+    </section>
+  } @else if (etapa === 'contrasena') {
+    <section class="tarjeta" aria-labelledby="titulo-nueva-contrasena">
+      <header>
+        <h2 id="titulo-nueva-contrasena">Crea una nueva contraseña</h2>
+        <p>Usa una contraseña que puedas recordar y no compartas con otras personas.</p>
+      </header>
+
+      <form [formGroup]="formularioContrasena" (ngSubmit)="restablecerContrasena()" novalidate>
+        <div class="campo">
+          <label for="nueva-contrasena">Nueva contraseña</label>
+          <input
+            id="nueva-contrasena"
+            type="password"
+            formControlName="nuevaContrasena"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.invalido]="contrasenaInvalida()"
+            [attr.aria-invalid]="contrasenaInvalida()"
+          />
+          @if (contrasenaInvalida()) {
+            <span class="error-campo">
+              @if (formularioContrasena.controls.nuevaContrasena.hasError('required')) {
+                La nueva contraseña es obligatoria.
+              } @else {
+                La contraseña debe tener entre 8 y 72 caracteres.
+              }
+            </span>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="confirmar-nueva-contrasena">Confirmar contraseña</label>
+          <input
+            id="confirmar-nueva-contrasena"
+            type="password"
+            formControlName="confirmarContrasena"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.invalido]="confirmacionInvalida()"
+            [attr.aria-invalid]="confirmacionInvalida()"
+          />
+          @if (confirmacionInvalida()) {
+            <span class="error-campo">
+              @if (formularioContrasena.controls.confirmarContrasena.hasError('required')) {
+                Confirma la nueva contraseña.
+              } @else {
+                Las contraseñas no coinciden.
+              }
+            </span>
+          }
+        </div>
+
+        <aside class="aviso seguridad">
+          <strong>Seguridad de la cuenta</strong>
+          <span>La contraseña debe tener entre 8 y 72 caracteres.</span>
+          @if (textoExpiracion) {
+            <span>{{ textoExpiracion }}</span>
+          }
+        </aside>
+
+        @if (mensajeError) {
+          <p class="mensaje mensaje-error" role="alert">{{ mensajeError }}</p>
+        }
+
+        <button class="boton boton-principal" type="submit" [disabled]="cargando">
+          {{ cargando ? 'Actualizando…' : 'Actualizar contraseña' }}
+        </button>
+        @if (tokenInvalido) {
+          <button class="boton boton-secundario" type="button" (click)="reiniciarFlujo()">
+            Iniciar nuevamente
+          </button>
+        } @else {
+          <a class="boton boton-secundario" routerLink="/login">Volver al inicio de sesión</a>
+        }
+      </form>
+    </section>
+  } @else {
+    <section class="tarjeta tarjeta-exito" role="status" aria-live="polite">
+      <div class="icono-exito" aria-hidden="true">✓</div>
+      <h2>Contraseña actualizada</h2>
+      <p>{{ mensajeExito }}</p>
+      <a class="boton boton-principal" routerLink="/login">Volver al inicio de sesión</a>
+    </section>
+  }
+</app-auth-shell>

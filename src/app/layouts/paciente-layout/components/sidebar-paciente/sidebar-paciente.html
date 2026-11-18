@@ -1,0 +1,84 @@
+
+<aside class="sidebar">
+
+  <!-- Logo y nombre -->
+  <div class="marca">
+    <div class="logo">A</div>
+
+    <div>
+      <h3>AliviaTech</h3>
+      <p>Mi bienestar</p>
+    </div>
+  </div>
+
+  <!-- Menú del paciente -->
+
+  <nav class="menu">
+
+    <a routerLink="/paciente/inicio" routerLinkActive="activo">
+      <svg class="icono-menu" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m3 10 9-7 9 7"/>
+        <path d="M5 9v12h14V9"/>
+        <path d="M9 21v-8h6v8"/>
+      </svg>
+      Inicio
+    </a>
+
+    <a routerLink="/paciente/registro" routerLinkActive="activo">
+      <svg class="icono-menu" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="4" y="3" width="16" height="18" rx="2"/>
+        <path d="M8 7h8M8 11h8M8 15h5"/>
+      </svg>
+      Mi registro
+    </a>
+
+    <a routerLink="/paciente/eventos" routerLinkActive="activo">
+      <svg class="icono-menu" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12h4l3-7 4 14 3-7h4"/>
+      </svg>
+      Eventos
+    </a>
+
+    <a routerLink="/paciente/sesiones" routerLinkActive="activo">
+      <svg class="icono-menu" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="16" rx="2"/>
+        <path d="M16 3v4M8 3v4M3 10h18"/>
+      </svg>
+      Mis sesiones
+    </a>
+
+  </nav>
+
+  <!-- Parte inferior -->
+  <div class="parte-inferior">
+
+    <div class="mensaje">
+      <strong>Tu información, a tu ritmo</strong>
+      <p>Puedes registrar cómo te sientes cuando lo necesites. No es obligatorio.</p>
+    </div>
+
+    <!-- Perfil del paciente -->
+    <a routerLink="/paciente/perfil" routerLinkActive="activo" class="perfil">
+
+      <!-- Muestra las iniciales del paciente autenticado. -->
+      <div class="avatar">{{ iniciales }}</div>
+
+      <div class="datos-perfil">
+        <strong>{{ nombreUsuario }}</strong>
+        <span>Paciente</span>
+      </div>
+
+      <!-- Flecha decorativa -->
+      <span class="flecha" aria-hidden="true">›</span>
+
+    </a>
+  </div>
+</aside>

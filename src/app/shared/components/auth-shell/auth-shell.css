@@ -1,0 +1,154 @@
+:host {
+  --auth-verde-oscuro: #0c5c50;
+  --auth-verde: #128573;
+  --auth-fondo: #f6f9f8;
+  display: block;
+  min-height: 100svh;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: minmax(390px, 45.14%) minmax(0, 1fr);
+  min-height: 100svh;
+  color: #1a2825;
+  background: var(--auth-fondo);
+}
+
+.panel-marca {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 58px 62px;
+  color: #fff;
+  background: var(--auth-verde-oscuro);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DM Sans', Inter, 'Segoe UI', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.marca-icono {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 14px;
+  color: var(--auth-verde-oscuro);
+  background: #fff;
+  font-size: 21px;
+}
+
+.presentacion {
+  width: 100%;
+  max-width: 526px;
+}
+
+.etiqueta {
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  padding: 7px 21px;
+  border-radius: 999px;
+  background: #1f6e61;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.presentacion h1 {
+  max-width: 520px;
+  margin: 0;
+  font-family: 'DM Sans', Inter, 'Segoe UI', sans-serif;
+  font-size: clamp(34px, 3vw, 42px);
+  line-height: 1.32;
+  letter-spacing: -1.2px;
+  overflow-wrap: anywhere;
+}
+
+.presentacion p {
+  max-width: 500px;
+  margin: 16px 0 0;
+  color: #dbf0eb;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.alcance {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #add1c9;
+  font-size: 11px;
+}
+
+.alcance strong {
+  color: #bfe0d9;
+  font-size: 12px;
+}
+
+.panel-contenido {
+  display: grid;
+  min-width: 0;
+  min-height: 100svh;
+  padding: 44px 32px;
+  place-items: center;
+  background: var(--auth-fondo);
+}
+
+@media (max-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-marca {
+    min-height: 360px;
+    padding: 34px clamp(24px, 7vw, 62px) 38px;
+  }
+
+  .presentacion h1 {
+    font-size: clamp(30px, 7vw, 40px);
+  }
+
+  .panel-contenido {
+    min-height: auto;
+    padding: 42px 20px 56px;
+  }
+}
+
+@media (max-width: 520px) {
+  .panel-marca {
+    min-height: 310px;
+    padding: 24px 20px 28px;
+  }
+
+  .marca {
+    font-size: 20px;
+  }
+
+  .marca-icono {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    font-size: 18px;
+  }
+
+  .presentacion h1 {
+    font-size: 29px;
+    line-height: 1.2;
+  }
+
+  .presentacion p {
+    font-size: 14px;
+  }
+
+  .alcance {
+    display: none;
+  }
+}

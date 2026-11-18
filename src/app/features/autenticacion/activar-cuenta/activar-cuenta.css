@@ -1,0 +1,232 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(20 36 31 / 7%);
+}
+
+.tarjeta-activacion {
+  min-height: 755px;
+  padding: 30px 42px;
+}
+
+.indicador {
+  color: #0c5c50;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 10px 0 0;
+  color: #1a2825;
+  font-family: 'DM Sans', Inter, 'Segoe UI', sans-serif;
+  font-size: 26px;
+  line-height: 1.3;
+}
+
+header p {
+  margin: 8px 0 0;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.campo {
+  min-height: 74px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 7px;
+  color: #30403c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.campo input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #e0e8e5;
+  border-radius: 12px;
+  outline: none;
+  color: #1a2825;
+  background: #fff;
+  font-size: 12px;
+}
+
+input::placeholder {
+  color: #949e9c;
+  opacity: 1;
+}
+
+.campo input:focus {
+  border-color: #128573;
+  box-shadow: 0 0 0 3px rgb(18 133 115 / 12%);
+}
+
+.campo input.invalido,
+.consentimiento.invalido {
+  border-color: #c73535;
+}
+
+.error-campo {
+  display: block;
+  margin: 4px 2px 0;
+  color: #b42318;
+  font-size: 10px;
+}
+
+.consentimiento {
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #f2fbf9;
+}
+
+.consentimiento label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #30403c;
+  font-size: 10px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.consentimiento input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  margin: 0;
+  accent-color: #128573;
+}
+
+.error-consentimiento {
+  margin-left: 30px;
+}
+
+.mensaje-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #8f1d1d;
+  background: #fff1f0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.boton {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e8e5;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.boton-principal {
+  min-height: 44px;
+  border-color: #128573;
+  color: #fff;
+  background: #128573;
+}
+
+.boton-principal:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.boton-secundario {
+  color: #30403c;
+  background: #fff;
+}
+
+.tarjeta-exito {
+  max-width: 460px;
+  min-height: 500px;
+  padding: 42px 36px;
+  text-align: center;
+}
+
+.icono-exito {
+  display: grid;
+  width: 108px;
+  height: 108px;
+  margin: 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #0c5c50;
+  background: #e6f6f1;
+  font-family: 'DM Sans', Inter, sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.tarjeta-exito h2 {
+  margin-top: 24px;
+}
+
+.descripcion-exito {
+  max-width: 352px;
+  margin: 10px auto 0;
+  color: #6e7d78;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.siguiente-paso {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  text-align: left;
+  background: #f2fbf9;
+}
+
+.siguiente-paso strong {
+  color: #0c5c50;
+  font-size: 12px;
+}
+
+.siguiente-paso p {
+  margin: 8px 0 0;
+  color: #6e7d78;
+  font-size: 12px;
+}
+
+.tarjeta-exito .boton {
+  margin-top: 26px;
+}
+
+@media (max-width: 520px) {
+  .tarjeta-activacion,
+  .tarjeta-exito {
+    min-height: auto;
+    padding: 28px 22px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+}

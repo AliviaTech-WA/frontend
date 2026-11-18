@@ -1,0 +1,428 @@
+
+<!-- ======================================
+     ALIVIATECH - EVENTOS
+     HU16: Responder eventos pendientes
+     HU17: Consultar historial
+====================================== -->
+
+<main class="eventos-pagina">
+
+  <!-- ENCABEZADO -->
+  <header class="eventos-encabezado">
+    <h1>Eventos</h1>
+
+    <p>
+      Revisa variaciones registradas por el sistema y confirma
+      si coincidieron con ansiedad o malestar.
+    </p>
+  </header>
+
+  <div class="eventos-grid">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="eventos-columna-principal">
+
+      <!-- ======================================
+           HU16: EVENTOS PENDIENTES
+      ====================================== -->
+
+      <div class="seccion-titulo">
+        <h2>
+          Eventos pendientes
+          @if (!cargandoPendientes()) {
+            <span class="contador-pendientes">
+              {{ eventosPendientes().length }}
+            </span>
+          }
+        </h2>
+      </div>
+
+      <!-- MENSAJE DE ÉXITO -->
+      @if (mensajeExito()) {
+        <div class="mensaje-exito" role="status">
+          <span>{{ mensajeExito() }}</span>
+
+          <button
+            type="button"
+            (click)="mensajeExito.set('')"
+            aria-label="Cerrar mensaje"
+          >
+            ×
+          </button>
+        </div>
+      }
+
+      <!-- CARGANDO -->
+      @if (cargandoPendientes()) {
+        <section class="eventos-tarjeta estado-general">
+          <p>Cargando eventos pendientes...</p>
+        </section>
+      }
+
+      <!-- ERROR AL CARGAR -->
+      @else if (errorPendientes()) {
+        <section class="eventos-tarjeta estado-general">
+          <p class="mensaje-error" role="alert">
+            {{ errorPendientes() }}
+          </p>
+
+          <button
+            type="button"
+            class="evento-boton"
+            (click)="cargarPendientes()"
+          >
+            Reintentar
+          </button>
+        </section>
+      }
+
+      <!-- TODOS LOS EVENTOS PENDIENTES -->
+      @else if (eventosPendientes().length > 0) {
+
+        @for (
+          evento of eventosPendientes();
+          track evento.eventoId
+        ) {
+
+          <section class="eventos-tarjeta evento-pendiente">
+
+            <!-- CABECERA -->
+            <div class="evento-cabecera">
+
+              <h2>
+                Evento #{{ evento.eventoId }}
+              </h2>
+
+              <span class="evento-estado estado-pendiente">
+                Pendiente
+              </span>
+
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+            <p class="evento-descripcion">
+              Se registró una variación en tus datos
+              obtenidos del dispositivo wearable.
+            </p>
+
+            <!-- MÉTRICAS -->
+            <div class="evento-metricas">
+
+              <div class="evento-metrica">
+                Duración:
+                {{ evento.tiempoVariacion ?? '—' }}
+                min
+              </div>
+
+              <div class="evento-metrica">
+                Wearable
+              </div>
+
+              <div class="evento-metrica">
+                Pendiente de respuesta
+              </div>
+
+            </div>
+
+            <!-- CAMPO DE CONTEXTO -->
+            <div class="evento-formulario">
+
+              <label
+                [for]="'contexto-' + evento.eventoId"
+              >
+                Contexto/Lugar opcional
+              </label>
+
+              <textarea
+                [id]="'contexto-' + evento.eventoId"
+                [name]="'contexto-' + evento.eventoId"
+                rows="4"
+                [ngModel]="contextos()[evento.eventoId] ?? ''"
+                (ngModelChange)="actualizarContexto(
+                  evento.eventoId,
+                  $event
+                )"
+                [disabled]="guardandoEventoId() !== null"
+                placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
+              ></textarea>
+
+            </div>
+
+            <!-- PREGUNTA -->
+            <div class="evento-respuesta">
+
+              <h3>
+                ¿Coincidió con un momento de ansiedad
+                o malestar?
+              </h3>
+
+              <div class="evento-botones">
+
+                <!-- RESPUESTA SI -->
+                <button
+                  type="button"
+                  class="evento-boton boton-si"
+                  [disabled]="guardandoEventoId() !== null"
+                  (click)="responderEvento(
+                    evento.eventoId,
+                    'SI'
+                  )"
+                >
+                  Sí
+                </button>
+
+                <!-- RESPUESTA NO -->
+                <button
+                  type="button"
+                  class="evento-boton boton-no"
+                  [disabled]="guardandoEventoId() !== null"
+                  (click)="responderEvento(
+                    evento.eventoId,
+                    'NO'
+                  )"
+                >
+                  No
+                </button>
+
+                <!-- RESPUESTA INCIERTO -->
+                <button
+                  type="button"
+                  class="evento-boton boton-inseguro"
+                  [disabled]="guardandoEventoId() !== null"
+                  (click)="responderEvento(
+                    evento.eventoId,
+                    'NO_ESTOY_SEGURO'
+                  )"
+                >
+                  No estoy seguro
+                </button>
+
+              </div>
+
+              <!-- GUARDANDO -->
+              @if (
+                guardandoEventoId() === evento.eventoId
+              ) {
+                <p class="mensaje-guardando" role="status">
+                  Guardando tu respuesta...
+                </p>
+              }
+
+              <!-- ERROR INDIVIDUAL -->
+              @if (
+                errorRespuestaId() === evento.eventoId
+                && errorRespuesta()
+              ) {
+                <p class="mensaje-error" role="alert">
+                  {{ errorRespuesta() }}
+                </p>
+              }
+
+            </div>
+
+          </section>
+
+        }
+
+      }
+
+      <!-- SIN EVENTOS PENDIENTES -->
+      @else {
+        <section class="eventos-tarjeta estado-general">
+
+          <h2>No hay eventos pendientes</h2>
+
+          <p>
+            No se detectaron variaciones que requieran tu revision en este momento.
+          </p>
+
+        </section>
+      }
+
+      <!-- ======================================
+           HU17: HISTORIAL
+      ====================================== -->
+
+      <section class="eventos-tarjeta historial">
+
+        <h2>Historial</h2>
+
+        <!-- CARGANDO -->
+        @if (cargandoHistorial()) {
+          <p class="historial-mensaje">
+            Cargando historial...
+          </p>
+        }
+
+        <!-- ERROR -->
+        @else if (errorHistorial()) {
+
+          <p class="mensaje-error" role="alert">
+            {{ errorHistorial() }}
+          </p>
+
+          <button
+            type="button"
+            class="evento-boton"
+            (click)="cargarHistorial()"
+          >
+            Reintentar
+          </button>
+
+        }
+
+        <!-- HISTORIAL VACÍO -->
+        @else if (historial().length === 0) {
+
+          <p class="historial-mensaje">
+            Todavía no tienes eventos respondidos.
+          </p>
+
+        }
+
+        <!-- EVENTOS RESPONDIDOS -->
+        @else {
+
+          <div class="historial-lista">
+
+            @for (
+              evento of historial();
+              track evento.eventoId
+            ) {
+
+              <article class="historial-item">
+
+                <div class="historial-informacion">
+
+                  <h3>
+                    @if (evento.fechaRespuesta) {
+                        {{ evento.fechaRespuesta | date:'dd/MM · HH:mm' }}
+                    } @else {
+                        Evento #{{ evento.eventoId }}
+                    }
+                  </h3>
+
+                  <p>
+                    {{ evento.tiempoVariacion ?? '—' }}
+                    min ·
+                    {{
+                      evento.comentario
+                      || 'Sin comentario'
+                    }}
+                  </p>
+
+                </div>
+
+                <span
+                  class="evento-estado"
+                  [class]="claseEstado(
+                    evento.estadoConfirmacion
+                  )"
+                >
+                  {{
+                    etiquetaEstado(
+                      evento.estadoConfirmacion
+                    )
+                  }}
+                </span>
+
+              </article>
+
+            }
+
+          </div>
+
+        }
+
+      </section>
+
+    </div>
+
+    <!-- ======================================
+         COLUMNA DERECHA
+    ====================================== -->
+
+    <aside class="eventos-columna-lateral">
+
+      <!-- CÓMO FUNCIONA -->
+      <section class="eventos-explicacion">
+
+        <span class="eventos-etiqueta">
+          CÓMO FUNCIONA
+        </span>
+
+        <h2>Primero es un evento</h2>
+
+        <p>
+          AliviaTech no asume que una variación del
+          wearable sea un episodio.
+          Solo después de tu confirmación puede
+          registrarse como episodio confirmado
+          para el psicólogo.
+        </p>
+
+      </section>
+
+      <!-- ESTADOS POSIBLES -->
+      <section class="eventos-tarjeta estados-posibles">
+
+        <h2>Estados posibles</h2>
+
+        <div class="estado-explicacion">
+
+          <span class="evento-estado estado-confirmado">
+            Confirmado
+          </span>
+
+          <p>
+            Coincidió con ansiedad o malestar.
+          </p>
+
+        </div>
+
+        <div class="estado-explicacion">
+
+          <span class="evento-estado estado-descartado">
+            Descartado
+          </span>
+
+          <p>
+            No coincidió con malestar.
+          </p>
+
+        </div>
+
+        <div class="estado-explicacion">
+
+          <span class="evento-estado estado-sin-confirmar">
+            Incierto
+          </span>
+
+          <p>
+            El paciente respondió, pero no puede
+            determinar si coincidió con malestar.
+          </p>
+
+        </div>
+
+      </section>
+
+      <!-- NOTIFICACIONES -->
+      <section class="eventos-tarjeta eventos-notificaciones">
+
+        <span class="eventos-etiqueta">
+          NOTIFICACIONES
+        </span>
+
+        <p>
+          Cuando exista un evento pendiente, aparecerá
+          también en tu campana de notificaciones.
+        </p>
+
+      </section>
+
+    </aside>
+
+  </div>
+
+</main>

@@ -1,0 +1,216 @@
+
+<!-- CAMPANA DE NOTIFICACIONES -->
+<div class="notificaciones-contenedor">
+
+  <button
+    type="button"
+    class="notificaciones-boton"
+    (click)="alternarPanel()"
+    [attr.aria-expanded]="abierto()"
+    aria-label="Abrir notificaciones"
+    aria-haspopup="dialog"
+  >
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="19"
+      height="19"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+      />
+      <path d="M10 21h4" />
+    </svg>
+
+    <span>Notificaciones</span>
+
+    @if (noLeidas() > 0) {
+      <span class="notificaciones-contador">
+        {{ noLeidas() > 99 ? '99+' : noLeidas() }}
+      </span>
+    }
+
+  </button>
+
+</div>
+
+<!-- MODAL FIGMA HU18 -->
+@if (abierto()) {
+
+  <div
+    class="notificaciones-overlay"
+    (click)="cerrarPanel()"
+  >
+
+    <section
+      class="notificaciones-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="notificaciones-titulo"
+      aria-describedby="notificaciones-descripcion"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- CABECERA -->
+      <header class="notificaciones-cabecera">
+
+        <div>
+          <h2 id="notificaciones-titulo">
+            Notificaciones
+          </h2>
+
+          <p id="notificaciones-descripcion">
+            Información nueva relacionada con tu seguimiento.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="notificaciones-cerrar-icono"
+          (click)="cerrarPanel()"
+          aria-label="Cerrar notificaciones"
+        >
+          ×
+        </button>
+
+      </header>
+
+      <!-- CUERPO -->
+      <div class="notificaciones-cuerpo">
+
+        @if (cargando()) {
+
+          <div class="notificaciones-estado">
+            Cargando notificaciones...
+          </div>
+
+        } @else if (errorCarga()) {
+
+          <div class="notificaciones-estado">
+            <p class="notificaciones-error" role="alert">
+              {{ errorCarga() }}
+            </p>
+
+            <button
+              type="button"
+              class="notificaciones-reintentar"
+              (click)="cargarNotificaciones()"
+            >
+              Reintentar
+            </button>
+          </div>
+
+        } @else if (notificacionesOrdenadas().length === 0) {
+
+          <!-- ESCENARIO SIN NOTIFICACIONES -->
+          <div class="notificaciones-vacio">
+            <h3>No tienes notificaciones por ahora</h3>
+
+            <p>
+              Cuando haya alguna novedad, aparecerá aquí
+              para que puedas revisarla.
+            </p>
+          </div>
+
+        } @else {
+
+          <!-- ESCENARIO CON NOTIFICACIONES -->
+          <div class="notificaciones-lista">
+
+            @for (
+              notificacion of notificacionesOrdenadas();
+              track notificacion.id
+            ) {
+
+              <article
+                class="notificaciones-item"
+                [class.notificacion-leida]="notificacion.leido"
+              >
+
+                <div class="notificacion-superior">
+
+                  <div class="notificacion-titulo-contenedor">
+
+                    @if (!notificacion.leido) {
+                      <span
+                        class="notificacion-punto"
+                        aria-label="No leída"
+                      ></span>
+                    }
+
+                    <h3>{{ notificacion.titulo }}</h3>
+
+                  </div>
+
+                  <time
+                    [attr.datetime]="notificacion.fechaCreacion"
+                  >
+                    {{
+                      notificacion.fechaCreacion
+                        | date:'dd MMM · HH:mm'
+                    }}
+                  </time>
+
+                </div>
+
+                <p class="notificacion-mensaje">
+                  {{ notificacion.mensaje }}
+                </p>
+
+                @if (!notificacion.leido) {
+
+                  <button
+                    type="button"
+                    class="notificacion-accion"
+                    [disabled]="marcandoId() !== null"
+                    (click)="marcarComoLeida(notificacion)"
+                  >
+                    {{
+                      marcandoId() === notificacion.id
+                        ? 'Guardando...'
+                        : 'Marcar como leída'
+                    }}
+                  </button>
+
+                }
+
+              </article>
+
+            }
+
+          </div>
+        }
+
+        @if (errorAccion()) {
+          <p class="notificaciones-error" role="alert">
+            {{ errorAccion() }}
+          </p>
+        }
+
+      </div>
+
+      <!-- PIE -->
+      <footer class="notificaciones-pie">
+
+        <button
+          type="button"
+          class="notificaciones-cerrar"
+          (click)="cerrarPanel()"
+        >
+          Cerrar
+        </button>
+
+      </footer>
+
+    </section>
+
+  </div>
+
+}

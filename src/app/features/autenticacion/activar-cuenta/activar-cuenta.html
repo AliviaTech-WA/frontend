@@ -1,0 +1,141 @@
+<app-auth-shell>
+  @if (activacion) {
+    <section class="tarjeta tarjeta-exito" role="status" aria-live="polite">
+      <div class="icono-exito" aria-hidden="true">✓</div>
+      <h2>Cuenta activada</h2>
+      <p class="descripcion-exito">
+        Tu acceso a AliviaTech fue creado correctamente. Ya puedes iniciar sesión con tu correo y
+        contraseña.
+      </p>
+      <aside class="siguiente-paso">
+        <strong>SIGUIENTE PASO</strong>
+        <p>Inicia sesión para acceder al espacio asignado a tu cuenta.</p>
+      </aside>
+      <a class="boton boton-principal" routerLink="/login">Volver al inicio de sesión</a>
+    </section>
+  } @else {
+    <section class="tarjeta tarjeta-activacion" aria-labelledby="titulo-activacion">
+      <header>
+        <span class="indicador">ACTIVACIÓN DE CUENTA</span>
+        <h2 id="titulo-activacion">Crea tu acceso a AliviaTech</h2>
+        <p>Usa el código recibido en tu correo para activar la cuenta creada por tu psicólogo.</p>
+      </header>
+
+      <form [formGroup]="formulario" (ngSubmit)="activarCuenta()" novalidate>
+        <div class="campo">
+          <label for="activacion-correo">Correo electrónico</label>
+          <input
+            id="activacion-correo"
+            type="email"
+            formControlName="correo"
+            placeholder="nombre@correo.com"
+            autocomplete="email"
+            [class.invalido]="campoInvalido('correo')"
+            [attr.aria-invalid]="campoInvalido('correo')"
+          />
+          @if (campoInvalido('correo')) {
+            <span class="error-campo">
+              @if (formulario.controls.correo.hasError('required')) {
+                El correo electrónico es obligatorio.
+              } @else {
+                Ingresa un correo electrónico válido.
+              }
+            </span>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="codigo-activacion">Código único</label>
+          <input
+            id="codigo-activacion"
+            type="text"
+            formControlName="codigoActivacion"
+            placeholder="698943"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            [class.invalido]="campoInvalido('codigoActivacion')"
+            [attr.aria-invalid]="campoInvalido('codigoActivacion')"
+          />
+          @if (campoInvalido('codigoActivacion')) {
+            <span class="error-campo">
+              @if (formulario.controls.codigoActivacion.hasError('required')) {
+                El código de activación es obligatorio.
+              } @else {
+                Ingresa el código numérico de seis dígitos.
+              }
+            </span>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="activacion-contrasena">Nueva contraseña</label>
+          <input
+            id="activacion-contrasena"
+            type="password"
+            formControlName="contrasena"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.invalido]="campoInvalido('contrasena')"
+            [attr.aria-invalid]="campoInvalido('contrasena')"
+          />
+          @if (campoInvalido('contrasena')) {
+            <span class="error-campo">
+              @if (formulario.controls.contrasena.hasError('required')) {
+                La nueva contraseña es obligatoria.
+              } @else {
+                La contraseña debe tener entre 8 y 72 caracteres.
+              }
+            </span>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="activacion-confirmacion">Confirmar contraseña</label>
+          <input
+            id="activacion-confirmacion"
+            type="password"
+            formControlName="confirmarContrasena"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.invalido]="confirmacionInvalida()"
+            [attr.aria-invalid]="confirmacionInvalida()"
+          />
+          @if (confirmacionInvalida()) {
+            <span class="error-campo">
+              @if (formulario.controls.confirmarContrasena.hasError('required')) {
+                Confirma tu nueva contraseña.
+              } @else {
+                Las contraseñas no coinciden.
+              }
+            </span>
+          }
+        </div>
+
+        <div class="consentimiento" [class.invalido]="campoInvalido('aceptaTratamientoDatos')">
+          <label>
+            <input type="checkbox" formControlName="aceptaTratamientoDatos" />
+            <span>
+              He leído y acepto el tratamiento de mis datos personales y de salud para las
+              finalidades de seguimiento descritas.
+            </span>
+          </label>
+          @if (campoInvalido('aceptaTratamientoDatos')) {
+            <span class="error-campo error-consentimiento">
+              Debes aceptar el tratamiento de datos para activar la cuenta.
+            </span>
+          }
+        </div>
+
+        @if (mensajeError) {
+          <p class="mensaje-error" role="alert">{{ mensajeError }}</p>
+        }
+
+        <button class="boton boton-principal" type="submit" [disabled]="cargando">
+          {{ cargando ? 'Activando…' : 'Activar cuenta' }}
+        </button>
+        <a class="boton boton-secundario" routerLink="/login">Volver al inicio de sesión</a>
+      </form>
+    </section>
+  }
+</app-auth-shell>

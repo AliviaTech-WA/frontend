@@ -1,0 +1,33 @@
+<article class="tarjeta-cabecera">
+  @if (nombre()) {
+
+    <div class="avatar" aria-hidden="true">{{ iniciales() }}</div>
+
+    <div>
+      <div class="nombre-estado">
+        <h1>{{ nombre() }}</h1>
+        @if (resumen(); as datos) {
+          <span class="insignia-estado">{{ datos.estadoSeguimiento === 'ACTIVO' ? 'Activa' : datos.estadoSeguimiento }}</span>
+        }
+      </div>
+
+      @if (resumen(); as datos) {
+        <p>
+          @if (edad() !== null) { {{ edad() }} años · }
+          DNI {{ datos.dni }} · Seguimiento desde {{ datos.fechaInicioSeguimiento | date: 'dd/MM/yyyy' }}
+        </p>
+        <p class="ultima-revision">
+          Última revisión:
+          {{ datos.fechaUltimaRevision ? (datos.fechaUltimaRevision | date: 'dd/MM/yyyy · HH:mm') : 'primera revisión' }}
+        </p>
+      } @else if (basico(); as datos) {
+        <p>DNI {{ datos.dni }}</p>
+      }
+    </div>
+
+  } @else {
+
+    <h1>Paciente #{{ pacienteId() }}</h1>
+
+  }
+</article>

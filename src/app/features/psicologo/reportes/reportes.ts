@@ -1,0 +1,254 @@
+import { A11yModule } from '@angular/cdk/a11y';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { DecimalPipe, DatePipe } from '@angular/common';
+import { Component, computed, inject, OnInit, signal, TemplateRef} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { finalize } from 'rxjs';
+import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { ReporteGeneral } from './models/reporte-general.model';
+import { ReportesService } from './services/reportes.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+type Atajo = 'mes' | 'trimestre';
+type Rango = { desde: Date; hasta: Date };
+
+@Component({
+  selector: 'app-reportes',
+  imports: [
+    A11yModule,
+    OverlayModule,
+    DecimalPipe,
+    ReactiveFormsModule,
+    MatButton,
+    MatCard,
+    MatCardContent,
+    DatePipe,
+    MatDialogModule,
+  ],
+  templateUrl: './reportes.html',
+  styleUrl: './reportes.css',
+})
+export class Reportes implements OnInit {
+  private readonly autenticacion = inject(AutenticacionService);
+  private readonly reportesService = inject(ReportesService);
+  private readonly fb = inject(FormBuilder);
+
+  private rangoAplicado?: Rango;
+  get periodoImpresion(): Rango | undefined {
+    return this.rangoAplicado;
+  }
+  private mostrarConfirmacion(
+    plantilla: TemplateRef<unknown>,
+    titulo: string,
+    mensaje: string,
+  ): void {
+    this.dialogo.open(plantilla, {
+      width: '390px',
+      maxWidth: 'calc(100vw - 32px)',
+      ariaLabel: titulo,
+      data: { titulo, mensaje },
+    });
+  }
+
+  readonly reporte = signal<ReporteGeneral | null>(null);
+  readonly sinActividad = computed(() => {
+    const datos = this.reporte();
+
+    return datos !== null &&
+      datos.registrosRecibidos === 0 &&
+      datos.episodiosConfirmados === 0;
+  });
+  readonly maximoRegistros = computed(() => {
+    const semanas = this.reporte()?.actividadSemanal ?? [];
+    const maximo = Math.max(1, ...semanas.map((semana) => semana.registros));
+
+    return Math.ceil(maximo / 4) * 4;
+  });
+  readonly cargando = signal(false);
+  readonly mensajeError = signal('');
+  readonly errorPeriodo = signal('');
+  readonly panelAbierto = signal(false);
+  readonly periodoPersonalizado = signal(false);
+  readonly opcionRango = signal<Atajo | 'personalizado'>('personalizado');
+
+  readonly periodoForm = this.fb.group({
+    desde: this.fb.control<Date | null>(null, Validators.required),
+    hasta: this.fb.control<Date | null>(null, Validators.required),
+  });
+  //exportar reporte
+  readonly exportandoPdf = signal(false);
+  readonly errorExportacion = signal('');
+
+  readonly accionesDisponibles = computed(
+    () => !!this.reporte() && !this.cargando() && !this.mensajeError(),
+  );
+  private readonly dialogo = inject(MatDialog);
+  ngOnInit(): void {
+    this.usarUltimos30Dias();
+  }
+
+  usarUltimos30Dias(): void {
+    const hasta = new Date();
+    hasta.setHours(0, 0, 0, 0);
+
+    const desde = new Date(hasta);
+    desde.setDate(desde.getDate() - 29);
+
+    this.rangoAplicado = { desde, hasta };
+    this.periodoPersonalizado.set(false);
+    this.cargarReporte({ desde, hasta });
+  }
+
+  abrirPanel(): void {
+    this.periodoForm.reset(this.rangoAplicado);
+    this.opcionRango.set('personalizado');
+    this.errorPeriodo.set('');
+    this.panelAbierto.set(true);
+  }
+
+  cerrarPanel(): void {
+    this.panelAbierto.set(false);
+  }
+
+  elegirAtajo(atajo: Atajo): void {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = hoy.getMonth();
+    const meses = atajo === 'mes' ? 1 : 3;
+
+    this.periodoForm.setValue({
+      desde: new Date(anio, mes - meses, 1),
+      hasta: new Date(anio, mes, 0),
+    });
+
+    this.opcionRango.set(atajo);
+    this.errorPeriodo.set('');
+  }
+  fechaParaCampo(campo: 'desde' | 'hasta'): string {
+    const fecha = this.periodoForm.controls[campo].value;
+    return fecha ? this.formatearFecha(fecha) : '';
+  }
+
+  cambiarFecha(campo: 'desde' | 'hasta', valor: string): void {
+    const fecha = new Date(`${valor}T00:00:00`);
+    const fechaValida =
+      /^\d{4}-\d{2}-\d{2}$/.test(valor) &&
+      !Number.isNaN(fecha.getTime()) &&
+      fecha.getFullYear() >= 1000;
+
+    this.periodoForm.controls[campo].setValue(fechaValida ? fecha : null);
+    this.opcionRango.set('personalizado');
+    this.errorPeriodo.set(
+      fechaValida ? '' : 'Completa la fecha con un año de cuatro dígitos.',
+    );
+  }
+
+  aplicarPeriodo(): void {
+    const { desde, hasta } = this.periodoForm.getRawValue();
+
+    if (this.periodoForm.invalid || !desde || !hasta || desde > hasta) {
+      this.periodoForm.markAllAsTouched();
+      this.errorPeriodo.set('Selecciona un rango de fechas válido.');
+      return;
+    }
+
+    this.rangoAplicado = { desde, hasta };
+    this.periodoPersonalizado.set(true);
+    this.cerrarPanel();
+    this.cargarReporte({ desde, hasta });
+  }
+
+  private cargarReporte({ desde, hasta }: Rango): void {
+    const sesion = this.autenticacion.sesion();
+    this.mensajeError.set('');
+    this.errorExportacion.set('');
+
+    if (!sesion || sesion.rol !== 'PSICOLOGO') {
+      this.mensajeError.set('Inicia sesión como psicólogo para consultar tus reportes.');
+      return;
+    }
+
+    this.cargando.set(true);
+
+    this.reportesService
+      .consultar(sesion.usuarioId, this.formatearFecha(desde), this.formatearFecha(hasta))
+      .pipe(finalize(() => this.cargando.set(false)))
+      .subscribe({
+        next: (reporte) => this.reporte.set(reporte),
+        error: () => this.mensajeError.set('No se pudo cargar el reporte general.'),
+      });
+  }
+  //exportar pdf e imprimir
+  imprimir(plantilla: TemplateRef<unknown>): void {
+    if (!this.accionesDisponibles()) {
+      return;
+    }
+
+    window.addEventListener(
+      'afterprint',
+      () =>
+        this.mostrarConfirmacion(
+          plantilla,
+          'Vista de impresión cerrada',
+          'Volviste al reporte después de cerrar la ventana de impresión.',
+        ),
+      { once: true },
+    );
+
+    window.print();
+  }
+
+  exportarPdf(plantilla: TemplateRef<unknown>): void {
+    const sesion = this.autenticacion.sesion();
+    const rango = this.rangoAplicado;
+
+    if (
+      !this.accionesDisponibles() ||
+      this.exportandoPdf() ||
+      !rango ||
+      !sesion ||
+      sesion.rol !== 'PSICOLOGO'
+    ) {
+      return;
+    }
+    this.errorExportacion.set('');
+    this.exportandoPdf.set(true);
+
+    this.reportesService
+      .exportarPdf(
+        sesion.usuarioId,
+        this.formatearFecha(rango.desde),
+        this.formatearFecha(rango.hasta),
+      )
+      .pipe(finalize(() => this.exportandoPdf.set(false)))
+      .subscribe({
+        next: (pdf) => {
+          const url = URL.createObjectURL(pdf);
+          const enlace = document.createElement('a');
+          enlace.href = url;
+          enlace.download = 'reporte-aliviatech.pdf';
+
+          document.body.appendChild(enlace);
+          enlace.click();
+          enlace.remove();
+          this.mostrarConfirmacion(
+            plantilla,
+            'Informe descargado',
+            'Puedes encontrar el informe PDF en las descargas de tu navegador.',
+          );
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        },
+        error: () =>
+          this.errorExportacion.set( 'No se pudo generar el informe PDF. Intenta nuevamente en unos momentos.',),
+      });
+  }
+
+  private formatearFecha(fecha: Date): string {
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+  }
+}
