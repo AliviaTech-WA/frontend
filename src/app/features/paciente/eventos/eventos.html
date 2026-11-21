@@ -82,6 +82,7 @@
         @for (
           evento of eventosPendientes();
           track evento.eventoId
+          
         ) {
 
           <section class="eventos-tarjeta evento-pendiente">
@@ -90,7 +91,7 @@
             <div class="evento-cabecera">
 
               <h2>
-                Evento #{{ evento.eventoId }}
+                Evento #{{ $index + 1 }}
               </h2>
 
               <span class="evento-estado estado-pendiente">
