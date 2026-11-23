@@ -1,0 +1,252 @@
+<section class="pagina-registro-paciente">
+  <header class="encabezado-registro">
+    <div>
+      <h1>Invitar nuevo paciente</h1>
+      <p>Crea el perfil básico y genera una invitación segura para activar su cuenta.</p>
+    </div>
+
+    <a mat-stroked-button routerLink="/psicologo/pacientes" class="boton-cancelar">
+      Cancelar
+    </a>
+  </header>
+
+  <form [formGroup]="formulario" (ngSubmit)="registrarPaciente()" novalidate>
+    <div class="columnas-registro">
+      <div class="columna-principal">
+        <section class="tarjeta tarjeta-datos" aria-labelledby="titulo-datos-paciente">
+          <span class="etiqueta-seccion">DATOS DEL PACIENTE</span>
+          <h2 id="titulo-datos-paciente">Datos personales</h2>
+          <p class="descripcion-seccion">
+            Información necesaria para crear su perfil e identificarlo correctamente.
+          </p>
+
+          <div class="cuadricula-campos">
+            <div class="campo-formulario">
+              <label for="paciente-nombres">Nombres</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-nombres"
+                  formControlName="nombres"
+                  autocomplete="given-name"
+                  maxlength="100"
+                  placeholder="Ingresa los nombres"
+                >
+                @if (formulario.controls['nombres'].hasError('maxlength')) {
+                  <mat-error>Los nombres no deben superar 100 caracteres.</mat-error>
+                } @else {
+                  <mat-error>Ingresa los nombres del paciente.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="paciente-apellidos">Apellidos</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-apellidos"
+                  formControlName="apellidos"
+                  autocomplete="family-name"
+                  maxlength="100"
+                  placeholder="Ingresa los apellidos"
+                >
+                @if (formulario.controls['apellidos'].hasError('maxlength')) {
+                  <mat-error>Los apellidos no deben superar 100 caracteres.</mat-error>
+                } @else {
+                  <mat-error>Ingresa los apellidos del paciente.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="paciente-dni">DNI</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-dni"
+                  formControlName="dni"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  maxlength="8"
+                  placeholder="8 dígitos"
+                >
+                <mat-error>El DNI debe contener exactamente 8 dígitos.</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="paciente-fecha-nacimiento">Fecha de nacimiento</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-fecha-nacimiento"
+                  formControlName="fechaNacimiento"
+                  [matDatepicker]="fechaNacimientoPicker"
+                  [max]="fechaMaxima"
+                  autocomplete="bday"
+                  placeholder="dd/mm/aaaa"
+                >
+                <mat-datepicker-toggle matIconSuffix [for]="fechaNacimientoPicker" />
+                <mat-datepicker #fechaNacimientoPicker />
+                @if (formulario.controls['fechaNacimiento'].hasError('matDatepickerParse') ||
+                formulario.controls['fechaNacimiento'].hasError('fechaInvalida')) {
+                  <mat-error>Ingresa una fecha válida.</mat-error>
+                } @else if (formulario.controls['fechaNacimiento'].hasError('required')) {
+                  <mat-error>Ingresa la fecha de nacimiento.</mat-error>
+                } @else if (formulario.controls['fechaNacimiento'].hasError('fechaNoPasada') ||
+                formulario.controls['fechaNacimiento'].hasError('matDatepickerMax')) {
+                  <mat-error>La fecha de nacimiento debe ser anterior a hoy.</mat-error>
+                } @else {
+                  <mat-error>Ingresa una fecha válida.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="paciente-correo">Correo electrónico</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-correo"
+                  type="email"
+                  formControlName="correo"
+                  autocomplete="email"
+                  maxlength="254"
+                  placeholder="nombre@correo.com"
+                >
+                @if (formulario.controls['correo'].hasError('maxlength')) {
+                  <mat-error>El correo no debe superar 254 caracteres.</mat-error>
+                } @else if (formulario.controls['correo'].hasError('email')) {
+                  <mat-error>Ingresa un correo electrónico válido.</mat-error>
+                } @else {
+                  <mat-error>Ingresa el correo electrónico del paciente.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="campo-formulario">
+              <label for="paciente-telefono">Teléfono</label>
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                <input
+                  matInput
+                  id="paciente-telefono"
+                  type="tel"
+                  formControlName="telefono"
+                  autocomplete="tel"
+                  maxlength="20"
+                  placeholder="Ingresa el teléfono"
+                >
+                @if (formulario.controls['telefono'].hasError('maxlength')) {
+                  <mat-error>El teléfono no debe superar 20 caracteres.</mat-error>
+                } @else {
+                  <mat-error>Ingresa el teléfono del paciente.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+
+          @if (mensajeError()) {
+            <div class="mensaje-error" role="alert" aria-live="assertive">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7.5v5.5M12 16.5v.1" />
+              </svg>
+              <span>{{ mensajeError() }}</span>
+            </div>
+          }
+
+          <button
+            mat-flat-button
+            type="submit"
+            class="boton-registrar"
+            [disabled]="cargando()"
+          >
+            <span class="contenido-boton">
+              @if (cargando()) {
+                <mat-spinner diameter="18" aria-hidden="true" />
+                <span>Registrando…</span>
+              } @else {
+                <span>Registrar y enviar invitación</span>
+              }
+            </span>
+          </button>
+        </section>
+
+        <section class="panel-informativo panel-activacion" aria-labelledby="titulo-activacion">
+          <span class="etiqueta-seccion">ACTIVACIÓN</span>
+          <h2 id="titulo-activacion">Invitación individual</h2>
+          <p>
+            Al finalizar el registro, AliviaTech generará una invitación personal para activar la cuenta.
+          </p>
+          <p>
+            El paciente definirá su contraseña y aceptará el tratamiento de datos durante la activación.
+          </p>
+        </section>
+      </div>
+
+      <aside class="columna-lateral" aria-label="Información del dispositivo y activación">
+        <section class="tarjeta tarjeta-dispositivo" aria-labelledby="titulo-dispositivo">
+          <span class="etiqueta-seccion">DISPOSITIVO</span>
+          <h2 id="titulo-dispositivo">Pulsera asignada</h2>
+          <p class="descripcion-seccion">
+            Registra la pulsera simulada asociada al perfil. No corresponde a un dispositivo médico.
+          </p>
+
+          <div class="campo-formulario">
+            <label for="dispositivo-modelo">Modelo</label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input
+                matInput
+                id="dispositivo-modelo"
+                formControlName="modelo"
+                maxlength="100"
+                placeholder="Ingresa el modelo"
+              >
+              @if (formulario.controls['modelo'].hasError('maxlength')) {
+                <mat-error>El modelo no debe superar 100 caracteres.</mat-error>
+              } @else {
+                <mat-error>Ingresa el modelo del dispositivo.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="dispositivo-alias">Nombre del dispositivo</label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input
+                matInput
+                id="dispositivo-alias"
+                formControlName="alias"
+                maxlength="100"
+                placeholder="Ingresa un nombre para identificarlo"
+              >
+              @if (formulario.controls['alias'].hasError('maxlength')) {
+                <mat-error>El nombre no debe superar 100 caracteres.</mat-error>
+              } @else {
+                <mat-error>Ingresa el nombre del dispositivo.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </section>
+
+        <section class="panel-informativo panel-consentimiento" aria-labelledby="titulo-consentimiento">
+          <span class="etiqueta-seccion">CONSENTIMIENTO</span>
+          <h2 id="titulo-consentimiento">Datos personales y de salud</h2>
+          <p>
+            El consentimiento será solicitado al paciente durante la activación de su cuenta.
+            No es necesario aceptarlo desde este formulario.
+          </p>
+        </section>
+
+        <section class="tarjeta tarjeta-codigo" aria-labelledby="titulo-codigo">
+          <span class="etiqueta-seccion">CÓDIGO DE ACTIVACIÓN</span>
+          <h2 id="titulo-codigo">Acceso seguro</h2>
+          <p>
+            La invitación generada permitirá al paciente completar la activación mediante el flujo seguro de AliviaTech.
+          </p>
+        </section>
+      </aside>
+    </div>
+  </form>
+</section>

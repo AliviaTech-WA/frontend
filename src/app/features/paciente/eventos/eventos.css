@@ -1,7 +1,7 @@
 
 /* ======================================
    ALIVIATECH - EVENTOS
-   HU16 Y HU17
+   HU12, HU16 Y HU17
 ====================================== */
 
 :host {
@@ -36,11 +36,12 @@
 
 /* PÁGINA */
 
+/* HU12: junto al padding del layout, respeta los 36px laterales del Figma. */
 .eventos-pagina {
   width: 100%;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 20px 24px 32px;
+  max-width: none;
+  margin: 0;
+  padding: 8px 6px 24px;
 }
 
 /* ENCABEZADO */
@@ -83,10 +84,11 @@
 
 /* TARJETAS */
 
+/* HU12: tarjetas con el padding y radio de la referencia en Figma. */
 .eventos-tarjeta {
   background: var(--blanco);
   border-radius: 18px;
-  padding: 20px;
+  padding: 18px;
   box-shadow: 0 8px 22px rgba(24, 56, 46, 0.045);
 }
 
@@ -135,7 +137,17 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
+}
+
+/* HU12: título del evento y fecha, siguiendo el espacio del Figma. */
+.evento-identificacion {
+  min-width: 0;
+}
+.evento-fecha {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--texto-secundario);
 }
 
 .evento-cabecera h2 {
@@ -154,9 +166,10 @@
 
 /* MÉTRICAS */
 
+/* HU12: dos métricas ocupan todo el ancho; tres conservan las columnas de Figma. */
 .evento-metricas {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 10px;
   margin-bottom: 24px;
 }
@@ -166,11 +179,11 @@
   align-items: center;
   justify-content: center;
 
-  min-height: 40px;
+  min-height: 44px;
   padding: 10px 8px;
 
   background: var(--fondo-suave);
-  border-radius: 11px;
+  border-radius: 10px;
 
   color: #304540;
   font-size: 10px;
@@ -222,6 +235,32 @@
   border-color: var(--verde);
   box-shadow: 0 0 0 3px rgba(18, 133, 115, 0.1);
 }
+
+/* HU12 y HU13: campo de contexto sin bordes superpuestos. */
+.evento-campo-contexto {
+  display: block;
+  width: 100%;
+  --mat-form-field-outlined-outline-color: #e0e9e5;
+  --mat-form-field-outlined-hover-outline-color: #a8d8ca;
+  --mat-form-field-outlined-focus-outline-color: #128573;
+  --mat-form-field-outlined-container-shape: 12px;
+  --mat-form-field-outlined-input-text-color: #1d2c29;
+}
+
+.evento-formulario .evento-campo-contexto textarea[matInput] {
+  min-height: 58px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.evento-formulario .evento-campo-contexto textarea[matInput]:focus {
+  outline: none;
+  border: 0;
+  box-shadow: none;
+}
+
 
 .evento-formulario textarea:disabled {
   opacity: 0.65;
@@ -294,6 +333,34 @@
   border-color: var(--verde);
   color: white;
 }
+
+/* HU16: conserva el aspecto principal del botón de confirmación. */
+.boton-si[mat-flat-button] {
+  --mat-button-filled-container-color: #128573;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-container-shape: 11px;
+}
+
+.boton-si[mat-flat-button]:hover:not(:disabled) {
+  --mat-button-filled-container-color: #075d51;
+}
+
+.evento-boton[mat-stroked-button] {
+  --mat-button-outlined-outline-color: #e0e9e5;
+  --mat-button-outlined-label-text-color: #344641;
+  --mat-button-outlined-container-shape: 11px;
+}
+
+.evento-botones button[mat-stroked-button] {
+  min-width: 0;
+}
+
+.estado-general .evento-boton[mat-stroked-button],
+.historial .evento-boton[mat-stroked-button] {
+  --mat-button-outlined-outline-color: #128573;
+  --mat-button-outlined-label-text-color: #128573;
+}
+
 
 .boton-si:hover:not(:disabled) {
   background: var(--verde-oscuro);
@@ -663,6 +730,7 @@
   .historial-item {
     flex-wrap: wrap;
   }
+}
 
 /* ====================================
    HISTORIAL - AJUSTE VISUAL FIGMA
@@ -745,6 +813,3 @@
     padding: 7px 10px;
   }
 }
-
-}
-

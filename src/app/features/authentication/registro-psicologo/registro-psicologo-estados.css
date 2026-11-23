@@ -29,38 +29,26 @@
 }
 
 .opcion-checkbox {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
+  display: block;
   margin: 0;
-  color: #75807e;
-  font-size: 9.5px;
-  font-weight: 400;
-  line-height: 1.4;
   cursor: pointer;
+  --mat-checkbox-label-text-color: #75807e;
+  --mat-checkbox-label-text-size: 9.5px;
+  --mat-checkbox-label-text-weight: 400;
+  --mat-checkbox-label-text-line-height: 1.4;
+  --mat-checkbox-selected-icon-color: var(--verde);
+  --mat-checkbox-selected-focus-icon-color: var(--verde);
+  --mat-checkbox-selected-hover-icon-color: var(--verde);
+  --mat-checkbox-selected-pressed-icon-color: var(--verde);
+  --mat-checkbox-selected-focus-state-layer-color: var(--verde);
+  --mat-checkbox-selected-hover-state-layer-color: var(--verde);
+  --mat-checkbox-unselected-icon-color: #9ba8a5;
+  --mat-checkbox-touch-target-size: 32px;
+  --mat-checkbox-state-layer-size: 32px;
 }
 
-.opcion-checkbox input {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 15px;
-  margin: 0;
-  padding: 0;
-  appearance: none;
-  border: 1px solid #d8e1df;
-  border-radius: 4px;
-  background: #fff;
-  cursor: pointer;
-}
-
-.opcion-checkbox input:checked {
-  border-color: var(--verde);
-  background: var(--verde);
-  box-shadow: inset 0 0 0 3px #fff;
-}
-
-.opcion-checkbox input.invalido {
-  border-color: #df2929;
+.opcion-checkbox.checkbox-invalido {
+  --mat-checkbox-unselected-icon-color: #df2929;
 }
 
 .opcion-checkbox a {
@@ -76,7 +64,7 @@
 }
 
 .error-checkbox {
-  margin-left: 24px;
+  margin-left: 32px;
 }
 
 .acciones-profesionales {
@@ -85,6 +73,23 @@
 
 .acciones-profesionales .boton-principal {
   margin-top: 0;
+}
+
+.acciones-profesionales .boton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.boton-con-carga {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.indicador-carga {
+  flex: 0 0 auto;
+  --mat-progress-spinner-active-indicator-color: #fff;
 }
 
 .seguimiento-asincronico {
@@ -155,18 +160,6 @@
   overflow-wrap: anywhere;
 }
 
-.etiqueta-demostracion {
-  display: inline-block;
-  margin-top: 11px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: #58716c;
-  background: #f0f6f5;
-  font-size: 7.5px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-
 .siguiente-paso {
   margin-top: 18px;
   padding: 12px 14px;
@@ -189,11 +182,6 @@
 
 .tarjeta-resultado .boton-principal {
   margin-top: 29px;
-}
-
-.tarjeta-resultado .boton:disabled {
-  opacity: 1;
-  cursor: not-allowed;
 }
 
 @media (max-width: 800px) {

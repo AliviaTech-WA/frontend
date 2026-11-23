@@ -3,12 +3,17 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
+  DestroyRef,
   inject,
   OnInit,
   signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { finalize, interval } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
 import { EventoService } from './services/eventos.services';
@@ -21,7 +26,7 @@ import {
 @Component({
   selector: 'app-eventos',
   standalone: true,
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './eventos.html',
   styleUrl: './eventos.css'
 })
@@ -29,6 +34,10 @@ export class Eventos implements OnInit {
 
   private readonly autenticacion = inject(AutenticacionService);
   private readonly eventoService = inject(EventoService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  // HU13: evita que coincidan varias consultas automáticas.
+  private actualizandoEventos = false;
 
   // =====================================
   // HU16: EVENTOS PENDIENTES
@@ -63,6 +72,12 @@ export class Eventos implements OnInit {
 
   ngOnInit(): void {
     this.cargarEventos();
+
+    // HU13: busca nuevos eventos cada 30 segundos mientras se muestra esta página.
+    // El backend detecta las variaciones por encima de 110 lpm.
+    interval(30_000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.actualizarEventosDetectados());
   }
 
   private obtenerPacienteId(): number | null {
@@ -106,17 +121,7 @@ export class Eventos implements OnInit {
       )
       .subscribe({
         next: (respuesta) => {
-          this.eventosPendientes.set(
-            respuesta.filter(
-              evento => evento.estadoConfirmacion === null
-            )
-          );
-
-          this.historial.set(
-            respuesta.filter(
-              evento => evento.estadoConfirmacion !== null
-            )
-          );
+          this.actualizarListas(respuesta);
         },
         error: (error: HttpErrorResponse) => {
           console.error(
@@ -138,6 +143,53 @@ export class Eventos implements OnInit {
               ? 'No tienes permiso para consultar el historial.'
               : 'No se pudo cargar el historial de eventos.'
           );
+        }
+      });
+  }
+
+  // HU13, HU16 y HU17: conserva separados los pendientes y los eventos respondidos.
+  private actualizarListas(eventos: EventoWearable[]): void {
+    this.eventosPendientes.set(
+      eventos.filter(evento => evento.estadoConfirmacion === null)
+    );
+    this.historial.set(
+      eventos.filter(evento => evento.estadoConfirmacion !== null)
+    );
+  }
+
+  // HU13: actualiza en segundo plano sin vaciar la pantalla ni borrar el contexto escrito.
+  private actualizarEventosDetectados(): void {
+    const pacienteId = this.obtenerPacienteId();
+
+    if (
+      pacienteId === null ||
+      this.actualizandoEventos ||
+      this.cargandoPendientes() ||
+      this.guardandoEventoId() !== null
+    ) {
+      return;
+    }
+
+    this.actualizandoEventos = true;
+
+    this.eventoService.obtenerEventosWearable(pacienteId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.actualizandoEventos = false;
+        })
+      )
+      .subscribe({
+        next: (eventos) => {
+          // HU13: no interfiere con la confirmación de HU16 ni con recargas manuales.
+          if (this.guardandoEventoId() !== null || this.cargandoPendientes()) {
+            return;
+          }
+
+          this.actualizarListas(eventos);
+        },
+        error: () => {
+          // HU13: si falla la consulta, mantiene la lista hasta la próxima actualización.
         }
       });
   }

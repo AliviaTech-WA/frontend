@@ -10,13 +10,23 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$green-palette,
+        tertiary: mat.$cyan-palette,
       ),
       typography: Roboto,
       density: 0,
     )
   );
+
+  // La paleta principal coincide con los controles del portal.
+  @include mat.theme-overrides((
+    primary: #128573,
+    on-primary: #ffffff,
+    primary-container: #d8f2e8,
+    on-primary-container: #075d51,
+    secondary: #128573,
+    on-secondary: #ffffff,
+  ));
 }
 
 body {
