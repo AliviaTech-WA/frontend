@@ -76,6 +76,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'nuevo-paciente',
+        loadComponent: () =>
+          import('./features/psicologo/registrar-paciente/registrar-paciente').then(
+            (component) => component.RegistrarPaciente,
+          ),
+      },
+      {
         path: 'pacientes/:pacienteId/resumen',
         loadComponent: () =>
           import('./features/psicologo/resumen-paciente/resumen-paciente').then(
