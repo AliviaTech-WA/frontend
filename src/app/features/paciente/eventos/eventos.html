@@ -84,7 +84,7 @@
         @for (
           evento of eventosPendientes();
           track evento.eventoId
-          
+
         ) {
 
           <section class="eventos-tarjeta evento-pendiente">
@@ -151,9 +151,9 @@
             <!-- CAMPO DE CONTEXTO -->
             <div class="evento-formulario">
 
-              <!-- HU16: comentario opcional del paciente sin alterar su contenido. -->
-              <mat-form-field appearance="outline" class="evento-campo-contexto">
-                <mat-label>Contexto/Lugar opcional</mat-label>
+              <!-- HU16: conserva la etiqueta visible y el comentario opcional. -->
+              <label [for]="'contexto-' + evento.eventoId">Contexto/Lugar opcional</label>
+              <mat-form-field subscriptSizing="dynamic" appearance="outline" class="evento-campo-contexto">
               <textarea
                 matInput
                 [id]="'contexto-' + evento.eventoId"
