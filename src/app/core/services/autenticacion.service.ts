@@ -3,6 +3,10 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
+  CambiarContrasenaRequest,
+  CambiarContrasenaResponse,
+} from '../models/cambio-contrasena.model';
+import {
   IniciarSesionRequest,
   IniciarSesionResponse,
   RolUsuario,
@@ -34,12 +38,11 @@ export class AutenticacionService {
   }
   cambiarContrasena(
     usuarioId: number,
-    contrasenaActual: string,
-    nuevaContrasena: string,
-  ): Observable<{ mensaje: string }> {
-    return this.http.put<{ mensaje: string }>(
+    solicitud: CambiarContrasenaRequest,
+  ): Observable<CambiarContrasenaResponse> {
+    return this.http.put<CambiarContrasenaResponse>(
       `${environment.apiUrl}/v1/usuarios/${usuarioId}/contrasena`,
-      { contrasenaActual, nuevaContrasena },
+      solicitud,
     );
   }
 
