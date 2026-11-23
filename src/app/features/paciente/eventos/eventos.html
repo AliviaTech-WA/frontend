@@ -69,7 +69,7 @@
           <button
             type="button"
             class="evento-boton"
-            (click)="cargarPendientes()"
+            (click)="cargarEventos()"
           >
             Reintentar
           </button>
@@ -101,8 +101,10 @@
 
             <!-- DESCRIPCIÓN -->
             <p class="evento-descripcion">
-              Se registró una variación en tus datos
-              obtenidos del dispositivo wearable.
+              {{
+                evento.descripcionVariacion
+                || 'No disponible'
+              }}
             </p>
 
             <!-- MÉTRICAS -->
@@ -110,8 +112,11 @@
 
               <div class="evento-metrica">
                 Duración:
-                {{ evento.tiempoVariacion ?? '—' }}
-                min
+                @if (evento.duracionMinutos !== null) {
+                  {{ evento.duracionMinutos }} min
+                } @else {
+                  No disponible
+                }
               </div>
 
               <div class="evento-metrica">
@@ -264,7 +269,7 @@
           <button
             type="button"
             class="evento-boton"
-            (click)="cargarHistorial()"
+            (click)="cargarEventos()"
           >
             Reintentar
           </button>
@@ -298,16 +303,32 @@
                     @if (evento.fechaRespuesta) {
                         {{ evento.fechaRespuesta | date:'dd/MM · HH:mm' }}
                     } @else {
-                        Evento #{{ evento.eventoId }}
+                        No disponible
                     }
                   </h3>
 
                   <p>
-                    {{ evento.tiempoVariacion ?? '—' }}
-                    min ·
+                    Duración:
+                    @if (evento.duracionMinutos !== null) {
+                      {{ evento.duracionMinutos }} min
+                    } @else {
+                      No disponible
+                    }
+                  </p>
+
+                  <p>
+                    Variación:
                     {{
-                      evento.comentario
-                      || 'Sin comentario'
+                      evento.descripcionVariacion
+                      || 'No disponible'
+                    }}
+                  </p>
+
+                  <p>
+                    Contexto:
+                    {{
+                      evento.contextoPaciente
+                      || 'No disponible'
                     }}
                   </p>
 
