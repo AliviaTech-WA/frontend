@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { finalize } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
@@ -13,7 +14,7 @@ import { PerfilPersonalService } from './services/perfil-personal.service';
 
 @Component({
   selector: 'app-perfil-paciente',
-  imports: [DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule, MatButtonModule],
   templateUrl: './perfil-paciente.html',
   styleUrl: './perfil-paciente.css',
 })
