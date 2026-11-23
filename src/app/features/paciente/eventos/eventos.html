@@ -138,15 +138,10 @@
                   </div>
                 }
 
-                <!-- HU12: nivel de actividad y fecha del resumen usado. -->
+                <!-- HU12: muestra solo el nivel de actividad, según Figma. -->
                 @if (evento.nivelActividad !== null) {
                   <div class="evento-metrica">
                     Actividad {{ evento.nivelActividad.toLowerCase() }}
-                    @if (evento.fechaResumenActividad) {
-                      <small>
-                        Resumen del {{ evento.fechaResumenActividad | date:'dd/MM/yyyy':'UTC' }}
-                      </small>
-                    }
                   </div>
                 }
               </div>
