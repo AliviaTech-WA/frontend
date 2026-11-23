@@ -1,0 +1,284 @@
+:host {
+  display: block;
+  color: #263732;
+  font-family: Inter, Arial, sans-serif;
+}
+
+.pagina-registro-paciente {
+  width: 100%;
+  max-width: 1130px;
+  margin: 0 auto;
+  padding: 4px 0 32px;
+}
+
+.encabezado-registro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.encabezado-registro h1 {
+  margin: 0;
+  color: #263732;
+  font-size: clamp(24px, 2.5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.encabezado-registro p {
+  margin: 7px 0 0;
+  color: #687d75;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.boton-cancelar {
+  min-width: 94px;
+  min-height: 38px;
+  border-radius: 10px;
+  background: #fff;
+  color: #526860;
+  font: 600 12px Inter, Arial, sans-serif;
+}
+
+.columnas-registro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(275px, 0.85fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.columna-principal,
+.columna-lateral {
+  display: grid;
+  gap: 18px;
+}
+
+.tarjeta {
+  box-sizing: border-box;
+  padding: 23px 25px 25px;
+  border: 1px solid #e2ebe7;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(35, 65, 53, 0.045);
+}
+
+.etiqueta-seccion {
+  display: block;
+  margin-bottom: 8px;
+  color: #128575;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.tarjeta h2,
+.panel-informativo h2 {
+  margin: 0;
+  color: #263732;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.descripcion-seccion {
+  margin: 6px 0 20px;
+  color: #71837d;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.cuadricula-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 17px;
+  row-gap: 15px;
+}
+
+.campo-formulario {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.campo-formulario + .campo-formulario {
+  margin-top: 15px;
+}
+
+.cuadricula-campos .campo-formulario + .campo-formulario {
+  margin-top: 0;
+}
+
+.campo-formulario label {
+  color: #344842;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.campo-formulario mat-form-field {
+  --mat-form-field-container-height: 43px;
+  --mat-form-field-container-vertical-padding: 10px;
+  --mat-form-field-outlined-container-shape: 9px;
+  --mat-form-field-outlined-outline-color: #dce7e2;
+  --mat-form-field-outlined-hover-outline-color: #9dbfb5;
+  --mat-form-field-outlined-focus-outline-color: #128575;
+  --mat-form-field-error-text-color: #b42318;
+
+  width: 100%;
+}
+
+.campo-formulario input {
+  color: #263732;
+  font: 12px Inter, Arial, sans-serif;
+}
+
+.campo-formulario input::placeholder {
+  color: #9aa9a4;
+}
+
+.campo-formulario mat-error {
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.mensaje-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 18px;
+  padding: 11px 13px;
+  border: 1px solid #f0c7c2;
+  border-radius: 10px;
+  background: #fff3f1;
+  color: #9f2d20;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mensaje-error svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.boton-registrar {
+  width: 100%;
+  min-height: 43px;
+  margin-top: 21px;
+  border-radius: 10px;
+  background: #128575;
+  color: #fff;
+  font: 650 12px Inter, Arial, sans-serif;
+  box-shadow: none;
+}
+
+.boton-registrar:not(:disabled):hover {
+  background: #0d7567;
+}
+
+.boton-registrar:disabled {
+  background: #9bc9c0;
+  color: #fff;
+}
+
+.contenido-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.boton-registrar mat-spinner {
+  --mat-progress-spinner-active-indicator-color: #fff;
+}
+
+.panel-informativo {
+  padding: 18px 20px;
+  border-radius: 15px;
+}
+
+.panel-informativo p,
+.tarjeta-codigo p {
+  margin: 7px 0 0;
+  color: #687d75;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.panel-activacion {
+  padding-right: 28px;
+  padding-left: 4px;
+}
+
+.panel-activacion p {
+  max-width: 650px;
+}
+
+.panel-consentimiento {
+  background: #e6f5f0;
+}
+
+.panel-consentimiento h2,
+.panel-consentimiento p {
+  color: #175f53;
+}
+
+.tarjeta-dispositivo .descripcion-seccion {
+  margin-bottom: 17px;
+}
+
+.tarjeta-codigo {
+  padding-top: 19px;
+  padding-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .columnas-registro {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .columna-lateral {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tarjeta-dispositivo {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 680px) {
+  .encabezado-registro {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .boton-cancelar {
+    align-self: flex-start;
+  }
+
+  .cuadricula-campos,
+  .columna-lateral {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tarjeta-dispositivo {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .tarjeta {
+    padding: 20px 17px 22px;
+    border-radius: 14px;
+  }
+
+  .panel-activacion {
+    padding-left: 2px;
+  }
+}

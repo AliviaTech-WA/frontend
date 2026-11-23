@@ -30,23 +30,32 @@ export class EpisodiosPacienteComponent implements OnInit, OnDestroy {
   episodios = signal<EpisodioPaciente[]>([]);
   cargando = signal(false);
   errorCarga = signal('');
+  consultaCompletada = signal(false);
 
   // Episodios de los últimos 30 días para el resumen lateral
   ultimos30Dias = computed(() => {
     const limite = Date.now() - 30 * 24 * 60 * 60 * 1000;
-    return this.episodios().filter((episodio) => new Date(episodio.fechaHoraInicio).getTime() >= limite);
+    return this.episodios().filter((episodio) => {
+      if (episodio.fechaHoraInicio === null) return false;
+
+      const fechaInicio = new Date(episodio.fechaHoraInicio).getTime();
+      return Number.isFinite(fechaInicio) && fechaInicio >= limite;
+    });
   });
 
   duracionPromedio = computed(() => {
-    const lista = this.ultimos30Dias();
-    if (!lista.length) return null;
-    return lista.reduce((suma, episodio) => suma + episodio.duracionMinutos, 0) / lista.length;
+    const valores = this.ultimos30Dias()
+      .map((episodio) => episodio.duracionMinutos)
+      .filter((valor): valor is number => valor !== null && Number.isFinite(valor));
+
+    if (!valores.length) return null;
+    return valores.reduce((suma, duracion) => suma + duracion, 0) / valores.length;
   });
 
   frecuenciaMaxima = computed(() => {
     const valores = this.ultimos30Dias()
       .map((episodio) => episodio.frecuenciaCardiacaMaxima)
-      .filter((valor): valor is number => valor !== null);
+      .filter((valor): valor is number => valor !== null && Number.isFinite(valor));
     return valores.length ? Math.max(...valores) : null;
   });
 
@@ -75,20 +84,27 @@ export class EpisodiosPacienteComponent implements OnInit, OnDestroy {
 
   cargarEpisodios(): void {
     if (this.pacienteId === null) {
+      this.episodios.set([]);
+      this.consultaCompletada.set(false);
       this.errorCarga.set('El paciente indicado no es válido.');
       return;
     }
 
     this.cargando.set(true);
     this.errorCarga.set('');
+    this.consultaCompletada.set(false);
 
     this.episodiosService
       .listarConfirmados(this.pacienteId)
       .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
-        next: (respuesta) => this.episodios.set(respuesta),
+        next: (respuesta) => {
+          this.episodios.set(respuesta);
+          this.consultaCompletada.set(true);
+        },
         error: (error: HttpErrorResponse) => {
           this.episodios.set([]);
+          this.consultaCompletada.set(false);
           this.errorCarga.set(
             error.status === 403
               ? 'No tienes acceso a los episodios de este paciente.'

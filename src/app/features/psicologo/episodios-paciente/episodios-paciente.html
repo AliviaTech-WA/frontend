@@ -30,7 +30,13 @@
       <article class="tarjeta">
         <div class="cabecera-seccion">
           <h2>Episodios confirmados</h2>
-          <span class="insignia-roja">{{ ultimos30Dias().length }} en 30 días</span>
+          @if (cargando()) {
+            <span class="insignia-roja">Consultando...</span>
+          } @else if (consultaCompletada()) {
+            <span class="insignia-roja">{{ ultimos30Dias().length }} en 30 días</span>
+          } @else {
+            <span class="insignia-roja">No disponible</span>
+          }
         </div>
         <p class="subtitulo">
           Aquí solo aparecen eventos que el paciente confirmó como momentos de ansiedad o malestar.
@@ -54,30 +60,38 @@
 
           <article class="tarjeta episodio">
             <div class="cabecera-seccion">
-              <h3>{{ episodio.fechaHoraInicio | date: 'dd/MM/yyyy · HH:mm' }}</h3>
+              <h3>
+                {{ episodio.fechaHoraInicio !== null
+                  ? (episodio.fechaHoraInicio | date: 'dd/MM/yyyy · HH:mm')
+                  : 'No disponible' }}
+              </h3>
               <span class="insignia-roja">Confirmado</span>
             </div>
 
             <div class="datos-episodio">
               <div class="dato">
                 <span>DURACIÓN</span>
-                <strong>{{ episodio.duracionMinutos }} min</strong>
+                <strong>
+                  {{ episodio.duracionMinutos !== null
+                    ? episodio.duracionMinutos + ' min'
+                    : 'No disponible' }}
+                </strong>
               </div>
               <div class="dato">
                 <span>FC MÁXIMA</span>
-                <strong>{{ episodio.frecuenciaCardiacaMaxima !== null ? episodio.frecuenciaCardiacaMaxima + ' bpm' : 'Sin lecturas' }}</strong>
+                <strong>{{ episodio.frecuenciaCardiacaMaxima !== null ? episodio.frecuenciaCardiacaMaxima + ' bpm' : 'No disponible' }}</strong>
               </div>
               <div class="dato">
                 <span>HORAS DE SUEÑO</span>
                 <strong>
-                  {{ episodio.horasSuenoPrevio !== null ? (episodio.horasSuenoPrevio | number: '1.0-1') + ' horas en la última noche' : 'Sin dato' }}
+                  {{ episodio.horasSuenoPrevio !== null ? (episodio.horasSuenoPrevio | number: '1.0-1') + ' horas en la última noche' : 'No disponible' }}
                 </strong>
               </div>
             </div>
 
             <div class="dato contexto">
               <span>CONTEXTO REPORTADO</span>
-              <strong>{{ episodio.contextoPaciente || 'Sin comentario' }}</strong>
+              <strong>{{ episodio.contextoPaciente || 'No disponible' }}</strong>
             </div>
           </article>
 
@@ -97,17 +111,23 @@
     <aside class="columna-lateral">
       <article class="tarjeta">
         <p class="etiqueta">ÚLTIMOS 30 DÍAS</p>
-        <h2 class="total">{{ ultimos30Dias().length }} {{ ultimos30Dias().length === 1 ? 'episodio' : 'episodios' }}</h2>
+        @if (cargando()) {
+          <h2 class="total">Consultando...</h2>
+        } @else if (consultaCompletada()) {
+          <h2 class="total">{{ ultimos30Dias().length }} {{ ultimos30Dias().length === 1 ? 'episodio' : 'episodios' }}</h2>
+        } @else {
+          <h2 class="total">No disponible</h2>
+        }
         <p class="subtitulo">Todos fueron confirmados por el paciente antes de aparecer en esta vista.</p>
 
         <div class="resumen-lateral">
           <div class="dato">
             <span>DURACIÓN PROM.</span>
-            <strong>{{ duracionPromedio() !== null ? (duracionPromedio() | number: '1.0-0') + ' min' : '—' }}</strong>
+            <strong>{{ consultaCompletada() && duracionPromedio() !== null ? (duracionPromedio() | number: '1.0-0') + ' min' : 'No disponible' }}</strong>
           </div>
           <div class="dato">
             <span>FC MÁX. REGISTRADA</span>
-            <strong>{{ frecuenciaMaxima() !== null ? frecuenciaMaxima() + ' bpm' : '—' }}</strong>
+            <strong>{{ consultaCompletada() && frecuenciaMaxima() !== null ? frecuenciaMaxima() + ' bpm' : 'No disponible' }}</strong>
           </div>
         </div>
       </article>
