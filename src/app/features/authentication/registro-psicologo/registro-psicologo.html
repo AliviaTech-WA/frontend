@@ -82,10 +82,10 @@
                   inputmode="numeric"
                   maxlength="8"
                 />
-                @if (formulario.controls.dni.hasError('maxlength')) {
-                  <mat-error>Ingresa como máximo 8 caracteres.</mat-error>
-                } @else {
+                @if (formulario.controls.dni.hasError('required')) {
                   <mat-error>El DNI es obligatorio.</mat-error>
+                } @else if (formulario.controls.dni.hasError('pattern')) {
+                  <mat-error>El DNI debe contener exactamente 8 dígitos numéricos.</mat-error>
                 }
               </mat-form-field>
             </div>
