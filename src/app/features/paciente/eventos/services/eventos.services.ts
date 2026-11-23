@@ -20,12 +20,12 @@ export class EventoService {
   private readonly base =
     `${environment.apiUrl}/v1/pacientes`;
 
-  // HU16: Obtener todos los eventos pendientes
-  obtenerPendientes(
+  // HU16 y HU17: Obtener todos los eventos del wearable
+  obtenerEventosWearable(
     pacienteId: number
   ): Observable<EventoWearable[]> {
     return this.http.get<EventoWearable[]>(
-      `${this.base}/${pacienteId}/eventos/pendientes`
+      `${this.base}/${pacienteId}/eventos-wearable`
     );
   }
 
@@ -38,15 +38,6 @@ export class EventoService {
     return this.http.patch<EventoWearable>(
       `${this.base}/${pacienteId}/eventos/${eventoId}/respuesta`,
       solicitud
-    );
-  }
-
-  // HU17: Obtener solamente eventos respondidos
-  obtenerHistorial(
-    pacienteId: number
-  ): Observable<EventoWearable[]> {
-    return this.http.get<EventoWearable[]>(
-      `${this.base}/${pacienteId}/eventos/historial`
     );
   }
 }
