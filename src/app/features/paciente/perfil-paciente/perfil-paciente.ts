@@ -4,9 +4,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
+import { CambiarContrasena } from '../../../shared/components/cambiar-contrasena/cambiar-contrasena';
 import { ConsultaDispositivoAsignado } from '../dispositivos/models/dispositivo.model';
 import { DispositivoService } from '../dispositivos/services/dispositivo.service';
 import { ActualizarPerfilRequest, ContactoEmergencia, PerfilPersonal } from './models/perfil-personal.model';
@@ -24,6 +26,7 @@ export class PerfilPaciente implements OnInit {
   private readonly router = inject(Router);
   private readonly dispositivoService = inject(DispositivoService);
   private readonly perfilPersonalService = inject(PerfilPersonalService);
+  private readonly dialog = inject(MatDialog);
 
   // HU21: datos personales y contacto de emergencia
   perfil = signal<PerfilPersonal | null>(null);
@@ -82,6 +85,15 @@ export class PerfilPaciente implements OnInit {
   ngOnInit(): void {
     this.cargarPerfil();
     this.cargarDispositivo();
+  }
+
+  abrirCambioContrasena(): void {
+    this.dialog.open(CambiarContrasena, {
+      width: '620px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 32px)',
+      ariaLabel: 'Cambiar contraseña',
+    });
   }
 
   // ==============================

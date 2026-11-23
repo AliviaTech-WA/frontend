@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  background: #fff;
+  color: #1a2825;
+  font-family: Inter, Arial, sans-serif;
+}
+
+.confirmacion {
+  display: grid;
+  justify-items: center;
+  padding: 22px 28px 20px;
+  text-align: center;
+}
+
+.icono-exito {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f5ef;
+  color: #128573;
+}
+
+.icono-exito svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.confirmacion h2 {
+  margin: 18px 0 0;
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.confirmacion p {
+  margin: 11px 0 0;
+  color: #6e7d78;
+  font-size: 13px;
+}
+
+.confirmacion button {
+  width: min(200px, 100%);
+  min-height: 40px;
+  margin-top: 30px;
+  border-radius: 10px;
+  background: #128573;
+  color: #fff;
+  font: 600 12px Inter, Arial, sans-serif;
+  box-shadow: none;
+}
