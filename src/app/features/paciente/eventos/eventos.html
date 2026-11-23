@@ -151,9 +151,9 @@
             <!-- CAMPO DE CONTEXTO -->
             <div class="evento-formulario">
 
-              <!-- HU16: comentario opcional del paciente sin alterar su contenido. -->
+              <!-- HU16: conserva la etiqueta visible y el comentario opcional. -->
+              <label [for]="'contexto-' + evento.eventoId">Contexto/Lugar opcional</label>
               <mat-form-field appearance="outline" class="evento-campo-contexto">
-                <mat-label>Contexto/Lugar opcional</mat-label>
               <textarea
                 matInput
                 [id]="'contexto-' + evento.eventoId"
