@@ -1,0 +1,196 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 28px;
+  background: #fff;
+  color: #1a2825;
+  font-family: Inter, Arial, sans-serif;
+}
+
+:host form {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:host mat-dialog-content {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+:host mat-dialog-actions {
+  min-width: 0;
+  margin-right: 0;
+  margin-left: 0;
+  padding: 0;
+}
+
+.cabecera-dialogo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.cabecera-dialogo > div {
+  min-width: 0;
+}
+
+.cabecera-dialogo h2 {
+  margin: 0;
+  color: #1a2825;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.cabecera-dialogo p {
+  margin: 7px 0 0;
+  color: #6e7d78;
+  font-size: 13px;
+}
+
+.cerrar-dialogo {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  color: #0c5c50;
+  font-size: 27px;
+  line-height: 1;
+}
+
+.campos-contrasena {
+  display: grid;
+  min-width: 0;
+  gap: 18px;
+}
+
+.campo-contrasena {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.campo-contrasena label {
+  color: #1a2825;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.campo-contrasena mat-form-field {
+  --mat-form-field-container-height: 46px;
+  --mat-form-field-container-vertical-padding: 11px;
+  --mat-form-field-outlined-container-shape: 11px;
+  --mat-form-field-outlined-outline-color: #dbe6e2;
+  --mat-form-field-outlined-hover-outline-color: #9ebfb5;
+  --mat-form-field-outlined-focus-outline-color: #128573;
+  --mat-form-field-error-text-color: #b42318;
+
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.campo-contrasena input {
+  min-width: 0;
+  color: #263732;
+  font: 13px Inter, Arial, sans-serif;
+}
+
+.alternar-visibilidad {
+  --mat-icon-button-state-layer-size: 40px;
+
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  color: #6e7d78;
+  line-height: 1;
+}
+
+.alternar-visibilidad svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.error-validacion,
+.error-solicitud {
+  margin: 0;
+  color: #b42318;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.error-solicitud {
+  margin-top: 18px;
+  padding: 11px 13px;
+  border: 1px solid #f0c7c2;
+  border-radius: 10px;
+  background: #fff3f1;
+  font-size: 12px;
+}
+
+:host mat-dialog-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 38px;
+}
+
+:host mat-dialog-actions button {
+  min-height: 44px;
+  margin: 0;
+  border-radius: 11px;
+  font: 600 13px Inter, Arial, sans-serif;
+}
+
+:host mat-dialog-actions button[mat-dialog-close]:not(:disabled) {
+  border-color: #dbe6e2;
+  background: #fff;
+  color: #263732;
+}
+
+:host .boton-actualizar:not(:disabled) {
+  background: #128573;
+  color: #fff;
+  box-shadow: none;
+}
+
+:host .boton-actualizar:not(:disabled):hover {
+  background: #0c6e5e;
+}
+
+@media (max-width: 560px) {
+  :host {
+    padding: 22px 18px;
+  }
+
+  .cabecera-dialogo h2 {
+    font-size: 21px;
+  }
+
+  :host mat-dialog-actions {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 28px;
+  }
+}

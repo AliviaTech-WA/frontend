@@ -45,6 +45,12 @@
   gap: 20px;
 }
 
+.columna-derecha {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
 .tarjeta {
   background: white;
   border: 1px solid #e0e8e5;
@@ -170,6 +176,71 @@
 
 .boton-completo {
   width: 100%;
+}
+
+/* HU06: cuenta y seguridad */
+.tarjeta-cuenta {
+  display: grid;
+  gap: 12px;
+}
+
+.tarjeta-cuenta .etiqueta-tarjeta,
+.aviso-privacidad .etiqueta-tarjeta {
+  margin: 0;
+}
+
+.tarjeta-cuenta h2,
+.aviso-privacidad h2 {
+  margin: 0;
+  color: #1a2825;
+  font-size: 18px;
+}
+
+.correo-acceso {
+  margin: 0 0 2px;
+  color: #6e7d78;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.correo-acceso strong {
+  color: inherit;
+  font-weight: 500;
+}
+
+.tarjeta-cuenta .boton-secundario {
+  --mat-button-outlined-outline-color: #dbe6e2;
+  --mat-button-outlined-label-text-color: #263732;
+  --mat-button-outlined-container-shape: 11px;
+
+  margin-top: 2px;
+}
+
+.aviso-privacidad {
+  padding: 20px;
+  border-radius: 16px;
+  background: #eff9f6;
+}
+
+.aviso-privacidad h2 {
+  margin-top: 12px;
+}
+
+.aviso-privacidad > p:not(.etiqueta-tarjeta) {
+  margin: 10px 0 0;
+  color: #52645e;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.aviso-privacidad a {
+  display: inline-block;
+  margin-top: 13px;
+  color: #087766;
+  font-size: 12px;
+  font-weight: 650;
+  text-underline-offset: 3px;
 }
 
 button:disabled {

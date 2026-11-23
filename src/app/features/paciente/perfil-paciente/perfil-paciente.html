@@ -312,6 +312,42 @@
 
       }
 
+      <!-- HU06: seguridad de la cuenta -->
+      <article class="tarjeta tarjeta-cuenta" aria-labelledby="titulo-seguridad">
+        <p class="etiqueta-tarjeta">CUENTA</p>
+        <h2 id="titulo-seguridad">Seguridad</h2>
+        <p class="correo-acceso">
+          Correo de acceso:
+          <strong>{{ perfil()?.correo || 'No disponible' }}</strong>
+        </p>
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="boton-secundario boton-completo"
+          (click)="abrirCambioContrasena()"
+        >
+          Cambiar contraseña
+        </button>
+      </article>
+
+      <!-- Sección informativa; no presupone un consentimiento registrado. -->
+      <section class="aviso-privacidad" aria-labelledby="titulo-privacidad">
+        <p class="etiqueta-tarjeta">PRIVACIDAD</p>
+        <h2 id="titulo-privacidad">Tratamiento de datos</h2>
+        <p>
+          Consulta cómo AliviaTech describe el tratamiento de datos personales y de salud,
+          junto con las finalidades aplicables al servicio.
+        </p>
+        <a
+          href="/legal/politica-privacidad-v1.0.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ver política de privacidad
+        </a>
+      </section>
+
     </div>
   </div>
 </section>
