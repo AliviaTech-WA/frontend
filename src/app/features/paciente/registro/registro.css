@@ -143,6 +143,40 @@ textarea {
   outline-offset: 1px;
 }
 
+/* HU09: conserva la anchura y el espaciado del campo opcional. */
+.campo-comentario {
+  display: block;
+  width: 100%;
+}
+
+.campo .campo-comentario textarea[matInput] {
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  padding: 4px 0;
+  min-height: 100px;
+}
+
+.campo .campo-comentario textarea[matInput]:focus {
+  outline: none;
+}
+
+/* HU09: evita que las opciones crezcan fuera de su cuadrícula. */
+.escala-ansiedad .nivel[mat-stroked-button],
+.opciones-animo .opcion-animo[mat-stroked-button] {
+  min-width: 0;
+  width: 100%;
+  padding: 0 4px;
+}
+
+/* HU09: mantiene el color y el tamaño del botón de guardado. */
+.boton-guardar[mat-flat-button] {
+  --mdc-filled-button-container-color: #128573;
+  --mdc-filled-button-label-text-color: #ffffff;
+  min-height: 42px;
+}
+
+
 /* HU09: errores de validación y de guardado. */
 .mensaje-error {
   margin-top: 10px;
