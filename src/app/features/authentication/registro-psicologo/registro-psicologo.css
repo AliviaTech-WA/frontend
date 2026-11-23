@@ -143,6 +143,10 @@ form {
   grid-column: 1 / -1;
 }
 
+.campo {
+  min-width: 0;
+}
+
 label {
   display: block;
   margin-bottom: 5px;
@@ -150,37 +154,20 @@ label {
   font-weight: 700;
 }
 
-input {
+.campo mat-form-field {
   width: 100%;
-  height: 39px;
-  padding: 0 11px;
-  border: 1px solid #dce3e1;
-  border-radius: 10px;
-  outline: none;
-  color: var(--texto);
-  background: #fff;
-  font-size: 12px;
-}
-
-input::placeholder {
-  color: #83908d;
-  opacity: 1;
-}
-
-input:focus {
-  border-color: var(--verde);
-  box-shadow: 0 0 0 3px rgb(20 140 121 / 12%);
-}
-
-input.invalido {
-  border-color: #e13b3b;
-}
-
-.error-campo {
-  display: block;
-  margin: 4px 2px -10px;
-  color: #d72c2c;
-  font-size: 9px;
+  --mat-form-field-container-height: 39px;
+  --mat-form-field-container-vertical-padding: 8px;
+  --mat-form-field-container-text-size: 12px;
+  --mat-form-field-outlined-container-shape: 10px;
+  --mat-form-field-outlined-outline-color: #dce3e1;
+  --mat-form-field-outlined-hover-outline-color: #aab8b4;
+  --mat-form-field-outlined-focus-outline-color: var(--verde);
+  --mat-form-field-outlined-focus-outline-width: 1px;
+  --mat-form-field-outlined-input-text-color: var(--texto);
+  --mat-form-field-outlined-input-text-placeholder-color: #83908d;
+  --mat-form-field-error-text-color: #d72c2c;
+  --mat-form-field-subscript-text-size: 9px;
 }
 
 .error-general {
@@ -240,25 +227,27 @@ input.invalido {
 
 .boton {
   width: 100%;
-  height: 37px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
+  --mat-button-filled-container-height: 37px;
+  --mat-button-filled-container-shape: 10px;
+  --mat-button-filled-label-text-size: 11px;
+  --mat-button-filled-label-text-weight: 700;
+  --mat-button-outlined-container-height: 37px;
+  --mat-button-outlined-container-shape: 10px;
+  --mat-button-outlined-label-text-size: 11px;
+  --mat-button-outlined-label-text-weight: 700;
 }
 
 .boton-principal {
   margin-top: 20px;
-  border: 1px solid var(--verde);
-  color: #fff;
-  background: var(--verde);
+  --mat-button-filled-container-color: var(--verde);
+  --mat-button-filled-label-text-color: #fff;
   cursor: pointer;
 }
 
 .boton-secundario {
   margin-top: 10px;
-  border: 1px solid #dce3e1;
-  color: #41504d;
-  background: #fff;
+  --mat-button-outlined-outline-color: #dce3e1;
+  --mat-button-outlined-label-text-color: #41504d;
 }
 
 .pie-tarjeta {
@@ -313,7 +302,4 @@ input.invalido {
     gap: 15px;
   }
 
-  .error-campo {
-    margin-bottom: 0;
-  }
 }
