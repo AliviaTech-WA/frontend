@@ -153,7 +153,7 @@
 
               <!-- HU16: conserva la etiqueta visible y el comentario opcional. -->
               <label [for]="'contexto-' + evento.eventoId">Contexto/Lugar opcional</label>
-              <mat-form-field appearance="outline" class="evento-campo-contexto">
+              <mat-form-field subscriptSizing="dynamic" appearance="outline" class="evento-campo-contexto">
               <textarea
                 matInput
                 [id]="'contexto-' + evento.eventoId"
