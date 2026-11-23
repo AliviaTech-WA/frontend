@@ -25,6 +25,7 @@
         <div class="escala-ansiedad" role="group" aria-labelledby="titulo-ansiedad">
           @for (nivel of nivelesAnsiedad; track nivel) {
             <button
+              mat-stroked-button
               type="button"
               class="nivel"
               [class.seleccionado]="nivelAnsiedad() === nivel"
@@ -51,6 +52,7 @@
         <div class="opciones-animo" role="group" aria-labelledby="titulo-animo">
           @for (opcion of estadosAnimo; track opcion.valor) {
             <button
+              mat-stroked-button
               type="button"
               class="opcion-animo"
               [class.seleccionado]="estadoAnimo() === opcion.valor"
@@ -72,9 +74,11 @@
 
       <!-- HU09: comentario opcional del paciente. -->
       <div class="campo">
-        <label for="comentario">Comentario opcional</label>
-
-        <textarea
+        <!-- HU09: campo opcional con etiqueta accesible. -->
+        <mat-form-field appearance="outline" class="campo-comentario">
+          <mat-label>Comentario opcional</mat-label>
+          <textarea
+          matInput
           id="comentario"
           rows="5"
           [value]="comentario()"
@@ -82,6 +86,7 @@
           (input)="comentario.set($any($event.target).value)"
           placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
         ></textarea>
+        </mat-form-field>
       </div>
 
       @if (errorGuardado()) {
@@ -93,6 +98,7 @@
       <!-- HU09: registra la información en PostgreSQL mediante END08. -->
       <button
         type="button"
+        mat-flat-button
         class="boton-guardar"
         [disabled]="guardando()"
         (click)="guardarRegistro()"
@@ -124,6 +130,7 @@
 
         <button
           type="button"
+          mat-stroked-button
           class="boton-reintentar"
           (click)="cargarRegistros()"
         >
@@ -190,6 +197,7 @@
 
       <button
         type="button"
+        mat-flat-button
         class="boton-guardar"
         (click)="cerrarConfirmacion()"
       >
