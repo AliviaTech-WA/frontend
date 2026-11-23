@@ -1,0 +1,29 @@
+<section class="confirmacion-registro" aria-labelledby="titulo-confirmacion-paciente">
+  <div class="confirmacion-cabecera">
+    <span class="icono-confirmacion" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="m7.5 12.4 3 3 6-7" />
+      </svg>
+    </span>
+
+    <h2 mat-dialog-title id="titulo-confirmacion-paciente">Paciente registrado</h2>
+  </div>
+
+  <mat-dialog-content>
+    @if (datos.invitacionGenerada) {
+      <p>
+        El perfil se creó correctamente y se generó la invitación de activación.
+        El dispositivo asignado quedó registrado con el identificador #{{ datos.dispositivoId }}.
+      </p>
+    } @else {
+      <p>
+        El perfil se creó y el dispositivo #{{ datos.dispositivoId }} quedó asignado,
+        pero la invitación de activación no fue generada.
+      </p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-flat-button type="button" [mat-dialog-close]="true">Entendido</button>
+  </mat-dialog-actions>
+</section>

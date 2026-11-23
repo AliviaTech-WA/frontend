@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { EpisodioPaciente } from '../models/episodio-paciente.model';
 
@@ -11,6 +12,8 @@ export class EpisodiosPacienteService {
 
   // HU27: episodios que el paciente confirmó (respuesta SI)
   listarConfirmados(pacienteId: number): Observable<EpisodioPaciente[]> {
-    return this.http.get<EpisodioPaciente[]>(`${this.url}/${pacienteId}/eventos/confirmados`);
+    return this.http
+      .get<EpisodioPaciente[]>(`${this.url}/${pacienteId}/eventos-wearable`)
+      .pipe(map((eventos) => eventos.filter((evento) => evento.estadoConfirmacion === 'SI')));
   }
 }
