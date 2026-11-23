@@ -321,7 +321,7 @@
                 <div class="historial-informacion">
                   <h3>
                     @if (evento.fechaHoraInicio) {
-                      Evento {{ evento.eventoId }} · {{ evento.fechaHoraInicio | date:'dd/MM/yyyy · HH:mm' }}
+                      {{ evento.fechaHoraInicio | date:'dd/MM/yyyy · HH:mm' }}
                     } @else {
                       Evento {{ evento.eventoId }}
                     }
@@ -361,11 +361,6 @@
                     Contexto: {{ evento.contextoPaciente || 'No disponible' }}
                   </p>
 
-                  @if (evento.fechaRespuesta) {
-                    <p>
-                      Respondido: {{ evento.fechaRespuesta | date:'dd/MM/yyyy · HH:mm' }}
-                    </p>
-                  }
                 </div>
 
                 <span
@@ -412,7 +407,7 @@
           CÓMO FUNCIONA
         </span>
 
-        <h2>Primero es un evento</h2>
+          <h2>Aclaración</h2>
 
         <p>
           AliviaTech no asume que una variación del
