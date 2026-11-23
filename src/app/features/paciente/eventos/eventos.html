@@ -1,6 +1,7 @@
 
 <!-- ======================================
      ALIVIATECH - EVENTOS
+     HU12: Consultar datos del wearable asociados a un evento
      HU16: Responder eventos pendientes
      HU17: Consultar historial
 ====================================== -->
@@ -90,9 +91,15 @@
             <!-- CABECERA -->
             <div class="evento-cabecera">
 
-              <h2>
-                Evento #{{ $index + 1 }}
-              </h2>
+              <!-- HU12: número visible sin # y fecha real de inicio. -->
+              <div class="evento-identificacion">
+                <h2>Evento {{ $index + 1 }}</h2>
+                @if (evento.fechaHoraInicio) {
+                  <p class="evento-fecha">
+                    {{ evento.fechaHoraInicio | date:'dd/MM/yyyy · HH:mm' }}
+                  </p>
+                }
+              </div>
 
               <span class="evento-estado estado-pendiente">
                 Pendiente
@@ -100,35 +107,50 @@
 
             </div>
 
-            <!-- DESCRIPCIÓN -->
+            <!-- HU12: duración real de la variación detectada. -->
             <p class="evento-descripcion">
-              {{
-                evento.descripcionVariacion
-                || 'No disponible'
-              }}
+              @if (evento.duracionMinutos !== null) {
+                Se registró una variación en tus datos durante aproximadamente
+                {{ evento.duracionMinutos }} minutos.
+              } @else {
+                Se registró una variación en tus datos del wearable.
+              }
             </p>
 
-            <!-- MÉTRICAS -->
-            <div class="evento-metricas">
+            <!-- HU12: métricas del wearable; sin inventar datos ausentes. -->
+            @if (
+              evento.frecuenciaCardiacaMaxima !== null ||
+              evento.horasSuenoPrevio !== null ||
+              evento.nivelActividad !== null
+            ) {
+              <div class="evento-metricas">
+                <!-- HU12: frecuencia cardíaca máxima durante el evento. -->
+                @if (evento.frecuenciaCardiacaMaxima !== null) {
+                  <div class="evento-metrica">
+                    FC máx. {{ evento.frecuenciaCardiacaMaxima }} lpm
+                  </div>
+                }
 
-              <div class="evento-metrica">
-                Duración:
-                @if (evento.duracionMinutos !== null) {
-                  {{ evento.duracionMinutos }} min
-                } @else {
-                  No disponible
+                <!-- HU12: sueño previo redondeado a un decimal. -->
+                @if (evento.horasSuenoPrevio !== null) {
+                  <div class="evento-metrica">
+                    Sueño previo {{ evento.horasSuenoPrevio.toFixed(1) }} h
+                  </div>
+                }
+
+                <!-- HU12: nivel de actividad y fecha del resumen usado. -->
+                @if (evento.nivelActividad !== null) {
+                  <div class="evento-metrica">
+                    Actividad {{ evento.nivelActividad.toLowerCase() }}
+                    @if (evento.fechaResumenActividad) {
+                      <small>
+                        Resumen del {{ evento.fechaResumenActividad | date:'dd/MM/yyyy':'UTC' }}
+                      </small>
+                    }
+                  </div>
                 }
               </div>
-
-              <div class="evento-metrica">
-                Wearable
-              </div>
-
-              <div class="evento-metrica">
-                Pendiente de respuesta
-              </div>
-
-            </div>
+            }
 
             <!-- CAMPO DE CONTEXTO -->
             <div class="evento-formulario">
