@@ -813,3 +813,22 @@
     padding: 7px 10px;
   }
 }
+
+.historial-item {
+  align-items: flex-start;
+}
+
+.historial .historial-metricas {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.historial .historial-metricas .evento-metrica {
+  min-height: 38px;
+  padding: 8px;
+}
+
+.historial-paginador {
+  margin-top: 12px;
+}

@@ -313,67 +313,85 @@
           <div class="historial-lista">
 
             @for (
-              evento of historial();
+              evento of historialPaginado();
               track evento.eventoId
             ) {
 
               <article class="historial-item">
-
                 <div class="historial-informacion">
-
                   <h3>
-                    @if (evento.fechaRespuesta) {
-                        {{ evento.fechaRespuesta | date:'dd/MM · HH:mm' }}
+                    @if (evento.fechaHoraInicio) {
+                      Evento {{ evento.eventoId }} · {{ evento.fechaHoraInicio | date:'dd/MM/yyyy · HH:mm' }}
                     } @else {
-                        No disponible
+                      Evento {{ evento.eventoId }}
                     }
                   </h3>
 
                   <p>
                     Duración:
-                    @if (evento.duracionMinutos !== null) {
-                      {{ evento.duracionMinutos }} min
-                    } @else {
-                      No disponible
-                    }
+                    {{ evento.duracionMinutos !== null
+                      ? evento.duracionMinutos + ' min'
+                      : 'No disponible' }}
                   </p>
+
+                  <div class="evento-metricas historial-metricas">
+                    <div class="evento-metrica">
+                      FC máx.
+                      {{ evento.frecuenciaCardiacaMaxima !== null
+                        ? evento.frecuenciaCardiacaMaxima + ' lpm'
+                        : 'No disponible' }}
+                    </div>
+
+                    <div class="evento-metrica">
+                      Sueño previo
+                      {{ evento.horasSuenoPrevio !== null
+                        ? evento.horasSuenoPrevio.toFixed(1) + ' h'
+                        : 'No disponible' }}
+                    </div>
+
+                    <div class="evento-metrica">
+                      Actividad
+                      {{ evento.nivelActividad !== null
+                        ? evento.nivelActividad.toLowerCase()
+                        : 'No disponible' }}
+                    </div>
+                  </div>
 
                   <p>
-                    Variación:
-                    {{
-                      evento.descripcionVariacion
-                      || 'No disponible'
-                    }}
+                    Contexto: {{ evento.contextoPaciente || 'No disponible' }}
                   </p>
 
-                  <p>
-                    Contexto:
-                    {{
-                      evento.contextoPaciente
-                      || 'No disponible'
-                    }}
-                  </p>
-
+                  @if (evento.fechaRespuesta) {
+                    <p>
+                      Respondido: {{ evento.fechaRespuesta | date:'dd/MM/yyyy · HH:mm' }}
+                    </p>
+                  }
                 </div>
 
                 <span
                   class="evento-estado"
-                  [class]="claseEstado(
-                    evento.estadoConfirmacion
-                  )"
+                  [class]="claseEstado(evento.estadoConfirmacion)"
                 >
-                  {{
-                    etiquetaEstado(
-                      evento.estadoConfirmacion
-                    )
-                  }}
+                  {{ etiquetaEstado(evento.estadoConfirmacion) }}
                 </span>
-
               </article>
 
             }
 
           </div>
+
+          @if (historial().length > eventosPorPagina) {
+            <mat-paginator
+              class="historial-paginador"
+              [length]="historial().length"
+              [pageSize]="eventosPorPagina"
+              [pageIndex]="paginaHistorial()"
+              [hidePageSize]="true"
+              [showFirstLastButtons]="true"
+              (page)="cambiarPaginaHistorial($event)"
+              aria-label="Paginación del historial de eventos"
+            />
+          }
 
         }
 
