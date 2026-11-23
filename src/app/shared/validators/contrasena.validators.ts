@@ -12,3 +12,16 @@ export function camposCoinciden(campo: string, confirmacion: string): ValidatorF
     return { camposNoCoinciden: true };
   };
 }
+
+export function camposDiferentes(campoActual: string, campoNuevo: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const valorActual = control.get(campoActual)?.value as string | undefined;
+    const valorNuevo = control.get(campoNuevo)?.value as string | undefined;
+
+    if (!valorActual || !valorNuevo || valorActual !== valorNuevo) {
+      return null;
+    }
+
+    return { camposIguales: true };
+  };
+}

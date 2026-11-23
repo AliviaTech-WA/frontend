@@ -1,0 +1,144 @@
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content>
+    <header class="cabecera-dialogo">
+      <div>
+        <h2>Cambiar contraseña</h2>
+        <p>Este flujo se utiliza tanto para paciente como para psicólogo.</p>
+      </div>
+
+      <button
+        mat-icon-button
+        mat-dialog-close
+        type="button"
+        class="cerrar-dialogo"
+        aria-label="Cerrar cambio de contraseña"
+        [disabled]="guardando()"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="campos-contrasena">
+      <div class="campo-contrasena">
+        <label for="contrasena-actual">Contraseña actual</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input
+            matInput
+            id="contrasena-actual"
+            [type]="mostrarActual() ? 'text' : 'password'"
+            formControlName="contrasenaActual"
+            autocomplete="current-password"
+          >
+          <button
+            mat-icon-button
+            matIconSuffix
+            type="button"
+            class="alternar-visibilidad"
+            [attr.aria-label]="mostrarActual() ? 'Ocultar contraseña actual' : 'Mostrar contraseña actual'"
+            [attr.aria-pressed]="mostrarActual()"
+            (click)="mostrarActual.set(!mostrarActual())"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+              <circle cx="12" cy="12" r="2.5" />
+              @if (mostrarActual()) {
+                <path d="m4 4 16 16" />
+              }
+            </svg>
+          </button>
+          @if (formulario.controls.contrasenaActual.invalid) {
+            <mat-error>La contraseña actual es obligatoria.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="campo-contrasena">
+        <label for="contrasena-nueva">Nueva contraseña</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input
+            matInput
+            id="contrasena-nueva"
+            [type]="mostrarNueva() ? 'text' : 'password'"
+            formControlName="nuevaContrasena"
+            autocomplete="new-password"
+          >
+          <button
+            mat-icon-button
+            matIconSuffix
+            type="button"
+            class="alternar-visibilidad"
+            [attr.aria-label]="mostrarNueva() ? 'Ocultar nueva contraseña' : 'Mostrar nueva contraseña'"
+            [attr.aria-pressed]="mostrarNueva()"
+            (click)="mostrarNueva.set(!mostrarNueva())"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+              <circle cx="12" cy="12" r="2.5" />
+              @if (mostrarNueva()) {
+                <path d="m4 4 16 16" />
+              }
+            </svg>
+          </button>
+          @if (formulario.controls.nuevaContrasena.hasError('required') || formulario.controls.nuevaContrasena.hasError('pattern')) {
+            <mat-error>La nueva contraseña es obligatoria.</mat-error>
+          } @else if (formulario.controls.nuevaContrasena.hasError('minlength') || formulario.controls.nuevaContrasena.hasError('maxlength')) {
+            <mat-error>Debe tener entre 8 y 72 caracteres.</mat-error>
+          }
+        </mat-form-field>
+        @if (mostrarErrorDiferencia()) {
+          <p class="error-validacion">La nueva contraseña debe ser diferente de la actual.</p>
+        }
+      </div>
+
+      <div class="campo-contrasena">
+        <label for="contrasena-confirmacion">Confirmar nueva contraseña</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input
+            matInput
+            id="contrasena-confirmacion"
+            [type]="mostrarConfirmacion() ? 'text' : 'password'"
+            formControlName="confirmarContrasena"
+            autocomplete="new-password"
+          >
+          <button
+            mat-icon-button
+            matIconSuffix
+            type="button"
+            class="alternar-visibilidad"
+            [attr.aria-label]="mostrarConfirmacion() ? 'Ocultar confirmación de contraseña' : 'Mostrar confirmación de contraseña'"
+            [attr.aria-pressed]="mostrarConfirmacion()"
+            (click)="mostrarConfirmacion.set(!mostrarConfirmacion())"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+              <circle cx="12" cy="12" r="2.5" />
+              @if (mostrarConfirmacion()) {
+                <path d="m4 4 16 16" />
+              }
+            </svg>
+          </button>
+          @if (formulario.controls.confirmarContrasena.hasError('required')) {
+            <mat-error>Confirma la nueva contraseña.</mat-error>
+          }
+        </mat-form-field>
+        @if (mostrarErrorConfirmacion()) {
+          <p class="error-validacion">La nueva contraseña y su confirmación no coinciden.</p>
+        }
+      </div>
+    </div>
+
+    @if (mensajeError()) {
+      <p class="error-solicitud" role="alert">{{ mensajeError() }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-stroked-button type="button" mat-dialog-close [disabled]="guardando()">
+      Cancelar
+    </button>
+
+    <button mat-flat-button type="submit" class="boton-actualizar" [disabled]="guardando()">
+      {{ guardando() ? 'Actualizando…' : 'Actualizar contraseña' }}
+    </button>
+  </mat-dialog-actions>
+</form>
