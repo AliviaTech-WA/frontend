@@ -76,51 +76,67 @@ export class Eventos implements OnInit {
   }
 
   cargarEventos(): void {
-    this.cargarPendientes();
-    this.cargarHistorial();
-  }
-
-  // =====================================
-  // HU16: CONSULTAR EVENTOS PENDIENTES
-  // =====================================
-
-  cargarPendientes(): void {
     const pacienteId = this.obtenerPacienteId();
 
     if (pacienteId === null) {
       this.eventosPendientes.set([]);
+      this.historial.set([]);
       this.cargandoPendientes.set(false);
+      this.cargandoHistorial.set(false);
       this.errorPendientes.set(
+        'Debes iniciar sesión como paciente.'
+      );
+      this.errorHistorial.set(
         'Debes iniciar sesión como paciente.'
       );
       return;
     }
 
     this.cargandoPendientes.set(true);
+    this.cargandoHistorial.set(true);
     this.errorPendientes.set('');
+    this.errorHistorial.set('');
 
-    this.eventoService.obtenerPendientes(pacienteId)
+    this.eventoService.obtenerEventosWearable(pacienteId)
       .pipe(
         finalize(() => {
           this.cargandoPendientes.set(false);
+          this.cargandoHistorial.set(false);
         })
       )
       .subscribe({
         next: (respuesta) => {
-          this.eventosPendientes.set(respuesta);
+          this.eventosPendientes.set(
+            respuesta.filter(
+              evento => evento.estadoConfirmacion === null
+            )
+          );
+
+          this.historial.set(
+            respuesta.filter(
+              evento => evento.estadoConfirmacion !== null
+            )
+          );
         },
         error: (error: HttpErrorResponse) => {
           console.error(
-            'Error al cargar eventos pendientes:',
+            'Error al cargar eventos wearable:',
             error
           );
 
           this.eventosPendientes.set([]);
+          this.historial.set([]);
 
           this.errorPendientes.set(
             error.status === 403
               ? 'No tienes permiso para consultar tus eventos pendientes.'
               : 'No se pudieron cargar los eventos pendientes.'
+          );
+
+          this.errorHistorial.set(
+            error.status === 403
+              ? 'No tienes permiso para consultar el historial.'
+              : 'No se pudo cargar el historial de eventos.'
           );
         }
       });
@@ -228,8 +244,7 @@ export class Eventos implements OnInit {
           );
 
           // Sincronizar nuevamente con el backend
-          this.cargarPendientes();
-          this.cargarHistorial();
+          this.cargarEventos();
         },
 
         error: (error: HttpErrorResponse) => {
@@ -246,51 +261,6 @@ export class Eventos implements OnInit {
               : error.status === 404
                 ? 'El evento no existe o ya fue respondido.'
                 : 'No se pudo registrar tu respuesta. Intenta nuevamente.'
-          );
-        }
-      });
-  }
-
-  // =====================================
-  // HU17: CONSULTAR HISTORIAL
-  // =====================================
-
-  cargarHistorial(): void {
-    const pacienteId = this.obtenerPacienteId();
-
-    if (pacienteId === null) {
-      this.historial.set([]);
-      this.cargandoHistorial.set(false);
-      this.errorHistorial.set(
-        'Debes iniciar sesión como paciente.'
-      );
-      return;
-    }
-
-    this.cargandoHistorial.set(true);
-    this.errorHistorial.set('');
-
-    this.eventoService.obtenerHistorial(pacienteId)
-      .pipe(
-        finalize(() => {
-          this.cargandoHistorial.set(false);
-        })
-      )
-      .subscribe({
-        next: (respuesta) => {
-          this.historial.set(respuesta);
-        },
-
-        error: (error: HttpErrorResponse) => {
-          console.error(
-            'Error al cargar historial:',
-            error
-          );
-
-          this.errorHistorial.set(
-            error.status === 403
-              ? 'No tienes permiso para consultar el historial.'
-              : 'No se pudo cargar el historial de eventos.'
           );
         }
       });

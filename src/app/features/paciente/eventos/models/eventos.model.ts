@@ -6,10 +6,18 @@ export type EstadoConfirmacionEvento =
 
 export interface EventoWearable {
   eventoId: number;
+  fechaHoraInicio: string | null;
+  fechaHoraFin: string | null;
+  duracionMinutos: number | null;
+  frecuenciaCardiacaMaxima: number | null;
+  horasSuenoPrevio: number | null;
+  nivelActividad: string | null;
+  fechaResumenActividad: string | null;
   estadoConfirmacion: EstadoConfirmacionEvento | null;
+  contextoPaciente: string | null;
   tiempoVariacion: number | null;
-  comentario: string | null;
   fechaRespuesta: string | null;
+  descripcionVariacion: string | null;
 }
 
 export interface ResponderEventoRequest {
