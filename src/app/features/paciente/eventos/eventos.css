@@ -240,6 +240,11 @@
 .evento-campo-contexto {
   display: block;
   width: 100%;
+  --mat-form-field-outlined-outline-color: #e0e9e5;
+  --mat-form-field-outlined-hover-outline-color: #a8d8ca;
+  --mat-form-field-outlined-focus-outline-color: #128573;
+  --mat-form-field-outlined-container-shape: 12px;
+  --mat-form-field-outlined-input-text-color: #1d2c29;
 }
 
 .evento-formulario .evento-campo-contexto textarea[matInput] {
@@ -331,12 +336,29 @@
 
 /* HU16: conserva el aspecto principal del botón de confirmación. */
 .boton-si[mat-flat-button] {
-  --mdc-filled-button-container-color: #128573;
-  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-button-filled-container-color: #128573;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-container-shape: 11px;
+}
+
+.boton-si[mat-flat-button]:hover:not(:disabled) {
+  --mat-button-filled-container-color: #075d51;
+}
+
+.evento-boton[mat-stroked-button] {
+  --mat-button-outlined-outline-color: #e0e9e5;
+  --mat-button-outlined-label-text-color: #344641;
+  --mat-button-outlined-container-shape: 11px;
 }
 
 .evento-botones button[mat-stroked-button] {
   min-width: 0;
+}
+
+.estado-general .evento-boton[mat-stroked-button],
+.historial .evento-boton[mat-stroked-button] {
+  --mat-button-outlined-outline-color: #128573;
+  --mat-button-outlined-label-text-color: #128573;
 }
 
 

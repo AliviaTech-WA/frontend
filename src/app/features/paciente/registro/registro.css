@@ -143,10 +143,15 @@ textarea {
   outline-offset: 1px;
 }
 
-/* HU09: conserva la anchura y el espaciado del campo opcional. */
+/* HU09: respeta los bordes y colores de los campos del portal. */
 .campo-comentario {
   display: block;
   width: 100%;
+  --mat-form-field-outlined-outline-color: #e0e8e5;
+  --mat-form-field-outlined-hover-outline-color: #a8d8ca;
+  --mat-form-field-outlined-focus-outline-color: #128573;
+  --mat-form-field-outlined-container-shape: 12px;
+  --mat-form-field-outlined-input-text-color: #30403c;
 }
 
 .campo .campo-comentario textarea[matInput] {
@@ -161,19 +166,54 @@ textarea {
   outline: none;
 }
 
-/* HU09: evita que las opciones crezcan fuera de su cuadrícula. */
+/* HU09: estilos del selector, incluyendo los estados seleccionados. */
 .escala-ansiedad .nivel[mat-stroked-button],
 .opciones-animo .opcion-animo[mat-stroked-button] {
   min-width: 0;
   width: 100%;
   padding: 0 4px;
+  --mat-button-outlined-outline-color: transparent;
+  --mat-button-outlined-label-text-color: #30403c;
 }
 
-/* HU09: mantiene el color y el tamaño del botón de guardado. */
+.escala-ansiedad .nivel[mat-stroked-button] {
+  --mat-button-outlined-container-shape: 10px;
+  border: 0;
+}
+
+.escala-ansiedad .nivel.seleccionado[mat-stroked-button] {
+  --mat-button-outlined-label-text-color: #ffffff;
+  background: #128573;
+  color: #ffffff;
+}
+
+.opciones-animo .opcion-animo[mat-stroked-button] {
+  --mat-button-outlined-container-shape: 999px;
+  border: 0;
+}
+
+.opciones-animo .opcion-animo.seleccionado[mat-stroked-button] {
+  --mat-button-outlined-label-text-color: #0c5c50;
+  background: #e6f6f1;
+  color: #0c5c50;
+}
+
+/* HU09: color principal y bordes redondeados del botón de guardado. */
 .boton-guardar[mat-flat-button] {
-  --mdc-filled-button-container-color: #128573;
-  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-button-filled-container-color: #128573;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-container-shape: 12px;
   min-height: 42px;
+}
+
+.boton-guardar[mat-flat-button]:hover:not(:disabled) {
+  --mat-button-filled-container-color: #0c6e60;
+}
+
+.boton-reintentar[mat-stroked-button] {
+  --mat-button-outlined-outline-color: #128573;
+  --mat-button-outlined-label-text-color: #128573;
+  --mat-button-outlined-container-shape: 10px;
 }
 
 
