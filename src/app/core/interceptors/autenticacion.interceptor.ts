@@ -6,6 +6,7 @@ import { AutenticacionService } from '../services/autenticacion.service';
 const API_BASE = environment.apiUrl.replace(/\/$/, '');
 const ENDPOINTS_PUBLICOS = new Set([
   `${API_BASE}/v1/autenticacion/iniciar-sesion`,
+  `${API_BASE}/v1/psicologos`,
   `${API_BASE}/v1/activaciones-pacientes`,
   `${API_BASE}/v1/recuperaciones-contrasena`,
   `${API_BASE}/v1/recuperaciones-contrasena/validar-codigo`,
