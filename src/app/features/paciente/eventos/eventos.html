@@ -58,10 +58,7 @@
         <section class="eventos-tarjeta estado-general">
           <p>Cargando eventos pendientes...</p>
         </section>
-      }
-
-      <!-- ERROR AL CARGAR -->
-      @else if (errorPendientes()) {
+      }@else if (errorPendientes()) { <!--ERROR AL CARGAR -->
         <section class="eventos-tarjeta estado-general">
           <p class="mensaje-error" role="alert">
             {{ errorPendientes() }}
@@ -76,10 +73,7 @@
             Reintentar
           </button>
         </section>
-      }
-
-      <!-- TODOS LOS EVENTOS PENDIENTES -->
-      @else if (eventosPendientes().length > 0) {
+      }@else if (eventosPendientes().length > 0) { <!--TODOS LOS EVENTOS PEN DIENTES-->
 
         @for (
           evento of eventosPendientes();
@@ -250,10 +244,7 @@
 
         }
 
-      }
-
-      <!-- SIN EVENTOS PENDIENTES -->
-      @else {
+      }@else { <!--SIN EVENTOS PENDIENTES-->
         <section class="eventos-tarjeta estado-general">
 
           <h2>No hay eventos pendientes</h2>
@@ -278,37 +269,22 @@
           <p class="historial-mensaje">
             Cargando historial...
           </p>
-        }
-
-        <!-- ERROR -->
-        @else if (errorHistorial()) {
-
+        } @else if (errorHistorial()) { <!--ERROR-->
           <p class="mensaje-error" role="alert">
             {{ errorHistorial() }}
           </p>
-
           <button
             type="button"
             mat-stroked-button
             class="evento-boton"
-            (click)="cargarEventos()"
-          >
+            (click)="cargarEventos()">
             Reintentar
           </button>
-
-        }
-
-        <!-- HISTORIAL VACÍO -->
-        @else if (historial().length === 0) {
-
+        } @else if (historial().length === 0) { <!--HISTORIAL VACÍO-->
           <p class="historial-mensaje">
             Todavía no tienes eventos respondidos.
           </p>
-
-        }
-
-        <!-- EVENTOS RESPONDIDOS -->
-        @else {
+        }@else { <!--EVENTOS RESPONDIDOS-->
 
           <div class="historial-lista">
 
