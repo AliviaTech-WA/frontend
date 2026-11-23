@@ -71,7 +71,7 @@ export class RegistroPsicologo {
     }),
     dni: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, contenidoRequerido, Validators.maxLength(8)],
+      validators: [Validators.required, Validators.pattern(/^[0-9]{8}$/)],
     }),
     correoProfesional: new FormControl('', {
       nonNullable: true,
