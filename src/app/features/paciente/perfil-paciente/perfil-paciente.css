@@ -513,6 +513,12 @@ button:disabled {
   background: #f1f8f5;
 }
 
+/* HU07: mantiene el estilo del cierre de sesión en el perfil. */
+.boton-cerrar-sesion[mat-stroked-button] {
+  --mdc-outlined-button-outline-color: #dbe8e3;
+  --mdc-outlined-button-label-text-color: #52645e;
+}
+
 /* HU07: adapta el encabezado a pantallas pequeñas. */
 @media (max-width: 700px) {
   .encabezado {

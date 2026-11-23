@@ -10,6 +10,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { finalize, interval } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
@@ -23,7 +26,7 @@ import {
 @Component({
   selector: 'app-eventos',
   standalone: true,
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './eventos.html',
   styleUrl: './eventos.css'
 })

@@ -71,6 +71,19 @@
   cursor: pointer;
 }
 
+/* HU08: conserva el contraste del acceso a Mi registro. */
+.bienvenida button[mat-flat-button] {
+  --mdc-filled-button-container-color: #ffffff;
+  --mdc-filled-button-label-text-color: #30403c;
+  min-height: 44px;
+}
+
+/* HU08: conserva el aspecto del acceso a eventos pendientes. */
+.evento-boton[mat-stroked-button] {
+  --mdc-outlined-button-outline-color: #128573;
+  --mdc-outlined-button-label-text-color: #ffffff;
+}
+
 .bienvenida {
   display: flex;
   justify-content: space-between;

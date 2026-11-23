@@ -69,6 +69,7 @@
 
           <button
             type="button"
+            mat-stroked-button
             class="evento-boton"
             (click)="cargarEventos()"
           >
@@ -150,13 +151,11 @@
             <!-- CAMPO DE CONTEXTO -->
             <div class="evento-formulario">
 
-              <label
-                [for]="'contexto-' + evento.eventoId"
-              >
-                Contexto/Lugar opcional
-              </label>
-
+              <!-- HU16: comentario opcional del paciente sin alterar su contenido. -->
+              <mat-form-field appearance="outline" class="evento-campo-contexto">
+                <mat-label>Contexto/Lugar opcional</mat-label>
               <textarea
+                matInput
                 [id]="'contexto-' + evento.eventoId"
                 [name]="'contexto-' + evento.eventoId"
                 rows="4"
@@ -168,6 +167,7 @@
                 [disabled]="guardandoEventoId() !== null"
                 placeholder="Puedes escribir algo breve sobre lo que ocurrió o dejarlo vacío."
               ></textarea>
+              </mat-form-field>
 
             </div>
 
@@ -184,6 +184,7 @@
                 <!-- RESPUESTA SI -->
                 <button
                   type="button"
+                  mat-flat-button
                   class="evento-boton boton-si"
                   [disabled]="guardandoEventoId() !== null"
                   (click)="responderEvento(
@@ -197,6 +198,7 @@
                 <!-- RESPUESTA NO -->
                 <button
                   type="button"
+                  mat-stroked-button
                   class="evento-boton boton-no"
                   [disabled]="guardandoEventoId() !== null"
                   (click)="responderEvento(
@@ -210,6 +212,7 @@
                 <!-- RESPUESTA INCIERTO -->
                 <button
                   type="button"
+                  mat-stroked-button
                   class="evento-boton boton-inseguro"
                   [disabled]="guardandoEventoId() !== null"
                   (click)="responderEvento(
@@ -286,6 +289,7 @@
 
           <button
             type="button"
+            mat-stroked-button
             class="evento-boton"
             (click)="cargarEventos()"
           >

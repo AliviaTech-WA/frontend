@@ -1,5 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { finalize } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
@@ -8,7 +11,7 @@ import { RegistroBienestarService } from './services/registro-bienestar.service'
 
 @Component({
   selector: 'app-registro',
-  imports: [],
+  imports: [MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './registro.html',
   styleUrl: './registro.css',
 })

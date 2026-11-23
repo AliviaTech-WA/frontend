@@ -52,6 +52,12 @@
   background: #f1f8f5;
 }
 
+/* HU07: mantiene la presentación del cierre de sesión del psicólogo. */
+.btn-cerrar[mat-stroked-button] {
+  --mdc-outlined-button-outline-color: #dbe8e3;
+  --mdc-outlined-button-label-text-color: #52645e;
+}
+
 .btn-editar {
   margin-left: auto;
   background-color: #128575;
