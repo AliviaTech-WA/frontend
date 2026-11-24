@@ -340,7 +340,25 @@ h2 {
   font-size: 12px;
   line-height: 1.5;
 }
+.acciones-sesion {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.editar-sesion {
+  color: #087766;
+}
 
+.eliminar-sesion {
+  color: #b42318;
+}
+
+.acciones-sesion mat-icon,
+.acciones-sesion mat-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
 .ver-sesion {
   display: inline-flex;
   align-items: center;

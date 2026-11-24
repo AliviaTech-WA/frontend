@@ -27,4 +27,14 @@ export class SesionesService {
       `${environment.apiUrl}/v1/sesiones/${sesionId}`,
     );
   }
+  actualizarSesion(sesionId: number, datos: RegistrarSesionRequest): Observable<SesionDetalle> {
+    return this.http.put<SesionDetalle>(
+      `${environment.apiUrl}/v1/sesiones/${sesionId}`,
+      datos,
+    );
+  }
+
+  eliminarSesion(sesionId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/v1/sesiones/${sesionId}`);
+  }
 }

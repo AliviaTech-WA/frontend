@@ -32,7 +32,7 @@
         <mat-card-content>
           <span class="etiqueta-seccion">POST SESIÓN</span>
 
-          <h2>Registrar información de la sesión</h2>
+          <h2>{{ sesionEnEdicion() ? 'Editar información de la sesión' : 'Registrar información de la sesión' }}</h2>
 
           <form
             [formGroup]="sesionForm"
@@ -79,9 +79,14 @@
               class="boton-guardar"
               [disabled]="guardando() || pacienteId === null"
             >
-              {{ guardando() ? 'Guardando…' : 'Guardar información de sesión' }}
+              {{ guardando() ? 'Guardando…' : sesionEnEdicion() ? 'Guardar cambios' : 'Guardar información de sesión' }}
             </button>
 
+            @if (sesionEnEdicion()) {
+              <button mat-button type="button" [disabled]="guardando()" (click)="cancelarEdicion()">
+                Cancelar edición
+              </button>
+            }
             @if (errorGuardado()) {
               <p class="error-campo" role="alert">{{ errorGuardado() }}</p>
             }
@@ -115,14 +120,50 @@
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    class="ver-sesion"
-                    [attr.aria-label]="'Ver sesión del ' + (sesion.fechaSesion | date:'dd/MM/yyyy')"
-                    (click)="abrirDetalle(sesion.sesionId, modalDetalleSesion)"
-                  >
-                    Ver <span aria-hidden="true">→</span>
-                  </button>
+                  <div class="acciones-sesion">
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="editar-sesion"
+                      title="Editar sesión"
+                      aria-label="Editar sesión"
+                      [disabled]="guardando()"
+                      (click)="editarSesion(sesion.sesionId)"
+                    >
+                      <mat-icon>
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71
+                            7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41
+                            0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                      </mat-icon>
+                    </button>
+
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="eliminar-sesion"
+                      title="Eliminar sesión"
+                      aria-label="Eliminar sesión"
+                      [disabled]="guardando()"
+                      (click)="confirmarEliminarSesion(sesion, confirmacionSesion)"
+                    >
+                      <mat-icon>
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5
+                            l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                      </mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="ver-sesion"
+                      [attr.aria-label]="'Ver sesión del ' + (sesion.fechaSesion | date:'dd/MM/yyyy')"
+                      (click)="abrirDetalle(sesion.sesionId, modalDetalleSesion)"
+                    >
+                      Ver <span aria-hidden="true">→</span>
+                    </button>
+                  </div>
                 </article>
               } @empty {
                 <p class="texto-secundario">Este paciente aún no tiene sesiones registradas.</p>
@@ -208,9 +249,21 @@
       {{ datos?.mensaje ?? 'La información ingresada quedó registrada en la sesión.' }}
     </p>
 
-    <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
-      Entendido
-    </button>
+    @if (datos?.confirmarEliminacion) {
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" [mat-dialog-close]="false">
+          Cancelar
+        </button>
+
+        <button mat-flat-button type="button" [mat-dialog-close]="true">
+          Eliminar sesión
+        </button>
+      </mat-dialog-actions>
+    } @else {
+      <button mat-flat-button mat-dialog-close type="button" class="confirmacion-boton">
+        Entendido
+      </button>
+    }
   </div>
 </ng-template>
 
