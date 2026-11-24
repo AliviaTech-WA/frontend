@@ -2,7 +2,8 @@ import { DatePipe, registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { Component, inject, OnDestroy, OnInit, signal, TemplateRef} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription, takeUntil } from 'rxjs';
@@ -18,7 +19,8 @@ registerLocaleData(localeEs);
     ReactiveFormsModule,
     MatCard,
     MatCardContent,
-    MatButton,
+    MatButtonModule,
+    MatIconModule,
     MatDialogModule,
     RouterLink,
     CabeceraPaciente,
@@ -55,8 +57,7 @@ export class Sesiones implements OnInit, OnDestroy {
     this.cargandoDetalle.set(true);
 
     this.nombrePacienteDetalle =
-      this.resumenActual.obtener(this.pacienteId)?.nombreCompleto ??
-      `Paciente #${this.pacienteId}`;
+      this.resumenActual.obtener(this.pacienteId)?.nombreCompleto ?? `Paciente #${this.pacienteId}`;
 
     const referencia = this.dialogo.open(plantilla, {
       width: '680px',
@@ -73,7 +74,8 @@ export class Sesiones implements OnInit, OnDestroy {
       this.cargandoDetalle.set(false);
     });
 
-    this.sesionesService.obtenerDetalle(sesionId)
+    this.sesionesService
+      .obtenerDetalle(sesionId)
       .pipe(takeUntil(referencia.afterClosed()))
       .subscribe({
         next: (detalle) => {
@@ -172,9 +174,7 @@ export class Sesiones implements OnInit, OnDestroy {
         },
       });
     } catch {
-      this.errorDescargaSesion.set(
-        'No se pudo generar el PDF. Intenta nuevamente.',
-      );
+      this.errorDescargaSesion.set('No se pudo generar el PDF. Intenta nuevamente.');
     } finally {
       this.descargandoSesion.set(false);
     }
@@ -183,6 +183,7 @@ export class Sesiones implements OnInit, OnDestroy {
   pacienteId: number | null = null;
   fechaMostrada = signal(new Date());
   historial = signal<SesionResumen[]>([]);
+  sesionEnEdicion = signal<{ id: number; fecha: string } | null>(null);
   cargandoHistorial = signal(false);
   errorHistorial = signal('');
   guardando = signal(false);
@@ -200,6 +201,7 @@ export class Sesiones implements OnInit, OnDestroy {
 
       this.guardado?.unsubscribe();
       this.guardando.set(false);
+      this.sesionEnEdicion.set(null);
       this.sesionForm.reset();
       this.errorGuardado.set('');
       this.fechaMostrada.set(new Date());
@@ -245,6 +247,12 @@ export class Sesiones implements OnInit, OnDestroy {
     if (this.pacienteId === null || this.guardando()) {
       return;
     }
+    const sesion = this.sesionEnEdicion();
+
+    if (sesion) {
+      this.actualizarInformacion(sesion.id, sesion.fecha, confirmacion);
+      return;
+    }
 
     const fecha = new Date();
     const { notaInterna, resumenCompartido, recomendacionCompartida } =
@@ -263,6 +271,7 @@ export class Sesiones implements OnInit, OnDestroy {
       })
       .subscribe({
         next: () => {
+          this.sesionEnEdicion.set(null);
           this.sesionForm.reset();
           this.guardando.set(false);
           this.cargarHistorial();
@@ -278,5 +287,136 @@ export class Sesiones implements OnInit, OnDestroy {
           this.errorGuardado.set('No se pudo confirmar el guardado de la sesión.');
         },
       });
+  }
+  editarSesion(sesionId: number): void {
+    if (this.guardando()) return;
+
+    this.errorGuardado.set('');
+    this.guardando.set(true);
+
+    this.guardado = this.sesionesService.obtenerDetalle(sesionId).subscribe({
+      next: (sesion) => {
+        this.sesionEnEdicion.set({ id: sesion.sesionId, fecha: sesion.fechaSesion });
+        this.fechaMostrada.set(new Date(sesion.fechaSesion));
+        this.sesionForm.reset({
+          notaInterna: sesion.notaInterna ?? '',
+          resumenCompartido: sesion.resumenCompartido ?? '',
+          recomendacionCompartida: sesion.recomendacionCompartida ?? '',
+        });
+        this.guardando.set(false);
+        document.getElementById('nota-interna')?.focus();
+      },
+      error: () => {
+        this.guardando.set(false);
+        this.errorGuardado.set('No se pudo cargar la sesión para editarla.');
+      },
+    });
+  }
+
+  cancelarEdicion(): void {
+    this.sesionEnEdicion.set(null);
+    this.sesionForm.reset();
+    this.fechaMostrada.set(new Date());
+    this.errorGuardado.set('');
+  }
+
+  actualizarInformacion(
+    sesionId: number,
+    fechaSesion: string,
+    confirmacion: TemplateRef<unknown>,
+  ): void {
+    const { notaInterna, resumenCompartido, recomendacionCompartida } =
+      this.sesionForm.getRawValue();
+
+    this.errorGuardado.set('');
+    this.guardando.set(true);
+
+    this.guardado = this.sesionesService
+      .actualizarSesion(sesionId, {
+        fechaSesion,
+        notaInterna: notaInterna.trim() || null,
+        resumenCompartido: resumenCompartido.trim() || null,
+        recomendacionCompartida: recomendacionCompartida.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.cancelarEdicion();
+          this.guardando.set(false);
+          this.cargarHistorial();
+
+          this.dialogo.open(confirmacion, {
+            width: '380px',
+            maxWidth: 'calc(100vw - 32px)',
+            ariaLabel: 'Cambios guardados',
+            data: {
+              titulo: 'Cambios guardados',
+              mensaje: 'La información de la sesión se actualizó correctamente.',
+            },
+          });
+        },
+        error: () => {
+          this.guardando.set(false);
+          this.errorGuardado.set('No se pudieron guardar los cambios de la sesión.');
+        },
+      });
+  }
+  confirmarEliminarSesion(sesion: SesionResumen, confirmacion: TemplateRef<unknown>): void {
+    if (this.guardando()) {
+      return;
+    }
+
+    const fecha = new Date(sesion.fechaSesion).toLocaleDateString('es-PE');
+
+    this.dialogo
+      .open(confirmacion, {
+        width: '380px',
+        maxWidth: 'calc(100vw - 32px)',
+        ariaLabel: 'Confirmar eliminación',
+        data: {
+          titulo: 'Eliminar sesión',
+          mensaje: `¿Quieres eliminar la sesión del ${fecha}?`,
+          confirmarEliminacion: true,
+        },
+      })
+      .afterClosed()
+      .subscribe((aceptado) => {
+        if (aceptado === true) {
+          this.eliminarSesion(sesion, confirmacion);
+        }
+      });
+  }
+
+  eliminarSesion(sesion: SesionResumen, confirmacion: TemplateRef<unknown>): void {
+    if (this.guardando()) {
+      return;
+    }
+
+    this.errorGuardado.set('');
+    this.guardando.set(true);
+
+    this.guardado = this.sesionesService.eliminarSesion(sesion.sesionId).subscribe({
+      next: () => {
+        if (this.sesionEnEdicion()?.id === sesion.sesionId) {
+          this.cancelarEdicion();
+        }
+
+        this.historial.update((lista) => lista.filter((item) => item.sesionId !== sesion.sesionId));
+        this.guardando.set(false);
+
+        this.dialogo.open(confirmacion, {
+          width: '380px',
+          maxWidth: 'calc(100vw - 32px)',
+          ariaLabel: 'Sesión eliminada',
+          data: {
+            titulo: 'Sesión eliminada',
+            mensaje: 'La sesión se eliminó correctamente del historial.',
+          },
+        });
+      },
+      error: () => {
+        this.guardando.set(false);
+        this.errorGuardado.set('No se pudo eliminar la sesión.');
+      },
+    });
   }
 }
