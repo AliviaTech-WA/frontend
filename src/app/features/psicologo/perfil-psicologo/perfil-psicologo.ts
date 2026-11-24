@@ -5,7 +5,7 @@ import { PerfilPsicologoService } from './services/perfil-psicologo-service';
 import { Router } from '@angular/router';
 import { MatButton } from '@angular/material/button';
 import { MatDialog, MatDialogClose } from '@angular/material/dialog';
-import { CambiarContrasena } from './components/cambiar-contrasena/cambiar-contrasena';
+import { CambiarContrasena } from '../../../shared/components/cambiar-contrasena/cambiar-contrasena';
 
 @Component({
   imports: [MatButton, MatDialogClose],
@@ -115,22 +115,12 @@ export class PerfilPsicologo implements OnInit {
       });
     });
   }
-  abrirCambioContrasena(confirmacion: TemplateRef<unknown>): void {
-    const dialogRef = this.dialog.open<CambiarContrasena, void, boolean>(CambiarContrasena, {
-      width: '480px',
+  abrirCambioContrasena(): void {
+    this.dialog.open(CambiarContrasena, {
+      width: '620px',
       maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 32px)',
       ariaLabel: 'Cambiar contraseña',
-    });
-
-    dialogRef.afterClosed().subscribe((actualizada) => {
-      if (!actualizada) return;
-
-      this.dialog.open(confirmacion, {
-        width: '380px',
-        maxWidth: 'calc(100vw - 32px)',
-        ariaLabel: 'Contraseña actualizada',
-        data: { titulo: 'Contraseña actualizada' },
-      });
     });
   }
 }
