@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { finalize, interval } from 'rxjs';
 
 import { AutenticacionService } from '../../../core/services/autenticacion.service';
@@ -26,7 +28,7 @@ import {
 @Component({
   selector: 'app-eventos',
   standalone: true,
-  imports: [FormsModule, DatePipe, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [FormsModule, DatePipe, MatButtonModule, MatFormFieldModule, MatInputModule, MatPaginatorModule],
   templateUrl: './eventos.html',
   styleUrl: './eventos.css'
 })
@@ -65,6 +67,18 @@ export class Eventos implements OnInit {
   historial = signal<EventoWearable[]>([]);
   cargandoHistorial = signal(false);
   errorHistorial = signal('');
+
+  readonly eventosPorPagina = 5;
+  paginaHistorial = signal(0);
+
+  historialPaginado = computed(() => {
+    const inicio = this.paginaHistorial() * this.eventosPorPagina;
+    return this.historial().slice(inicio, inicio + this.eventosPorPagina);
+  });
+
+  cambiarPaginaHistorial(evento: PageEvent): void {
+    this.paginaHistorial.set(evento.pageIndex);
+  }
 
   // =====================================
   // INICIALIZACIÓN
@@ -152,9 +166,23 @@ export class Eventos implements OnInit {
     this.eventosPendientes.set(
       eventos.filter(evento => evento.estadoConfirmacion === null)
     );
-    this.historial.set(
-      eventos.filter(evento => evento.estadoConfirmacion !== null)
+    const respondidos = eventos
+      .filter(evento => evento.estadoConfirmacion !== null)
+      .sort((a, b) => {
+        const fechaA = a.fechaHoraInicio ? Date.parse(a.fechaHoraInicio) : 0;
+        const fechaB = b.fechaHoraInicio ? Date.parse(b.fechaHoraInicio) : 0;
+        return fechaB - fechaA || b.eventoId - a.eventoId;
+      });
+
+    this.historial.set(respondidos);
+
+    const ultimaPagina = Math.max(
+      0,
+      Math.ceil(respondidos.length / this.eventosPorPagina) - 1
     );
+    if (this.paginaHistorial() > ultimaPagina) {
+      this.paginaHistorial.set(ultimaPagina);
+    }
   }
 
   // HU13: actualiza en segundo plano sin vaciar la pantalla ni borrar el contexto escrito.
