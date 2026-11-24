@@ -25,11 +25,11 @@ export class Login {
   protected readonly formulario = new FormGroup({
     correo: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.email],
+      validators: [Validators.required, Validators.email, Validators.maxLength(254)],
     }),
     contrasena: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(72)],
     }),
   });
 
