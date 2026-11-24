@@ -1,0 +1,15 @@
+services:
+  frontend:
+    image: aliviatech-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    networks:
+      - aliviatech
+
+networks:
+  aliviatech:
+    external: true
